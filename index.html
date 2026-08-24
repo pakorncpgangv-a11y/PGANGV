@@ -24,396 +24,393 @@
 </style>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NGV Dashboard - กรุงเทพกรีฑา</title>
+<title>NGV Dashboard - กรุงเทพกรีฑา | Blue Eco Theme</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@3.0.1/dist/chartjs-plugin-annotation.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&display=swap" rel="stylesheet">
-<style>body{font-family:'Prompt',sans-serif}</style>
+<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+body{font-family:'Prompt',sans-serif}
+.eco-gradient{background: linear-gradient(135deg,#0ea5e9 0%,#0284c7 30%,#0369a1 70%,#075985 100%)}
+.glass{background: rgba(255,255,255,0.92); backdrop-filter: blur(10px)}
+.kpi-pass{box-shadow: 0 0 0 2px #22c55e, 0 0 20px rgba(34,197,94,0.4)}
+@keyframes pulse-green{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
+.animate-pass{animation: pulse-green 1.5s ease-in-out infinite}
+</style>
 </head>
-<body class="bg-gray-50">
-<!-- Header -->
-<div class="bg-[#0a5c36] text-white p-4">
-  <div class="max-w-7xl mx-auto flex justify-between items-center">
-    <div>
-      <h1 class="text-xl font-semibold">NGV ปั้ม ปตท. กรุงเทพกรีฑาขาออก</h1>
-      <p class="text-sm opacity-80">Dashboard ยอดขายและการมาทำงาน - ปี 2568-2569</p>
+<body class="bg-[#f0f9ff] min-h-screen">
+<!-- Header Blue Eco -->
+<div class="eco-gradient text-white p-5 shadow-lg">
+  <div class="max-w-7xl mx-auto flex justify-between items-center flex-wrap gap-3">
+    <div class="flex items-center gap-3">
+      <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center text-2xl">🌊</div>
+      <div>
+        <h1 class="text-xl font-bold tracking-wide">NGV BLUE ECO • กรุงเทพกรีฑาขาออก</h1>
+        <p class="text-sm opacity-90">เป็นมิตรต่อโลก • ประหยัดพลังงาน • KPI 16,000 กก./วัน</p>
+      </div>
     </div>
-    <div class="flex gap-2 items-center">
-      <span id="supaStatus" class="px-3 py-1 rounded-full text-xs bg-yellow-500 text-black">กำลังเชื่อมต่อ...</span>
-      <button onclick="exportCSV()" class="bg-white/20 px-3 py-1 rounded text-sm">Export CSV</button>
-      <button onclick="dedupAll()" class="bg-white/20 px-3 py-1 rounded text-sm">ลบวันที่ซ้ำ</button>
-      <button onclick="document.getElementById('settingModal').classList.remove('hidden')" class="bg-white text-[#0a5c36] px-4 py-1 rounded font-medium text-sm">Setting</button>
+    <div class="flex gap-2 items-center flex-wrap">
+      <span id="supaStatus" class="px-3 py-1 rounded-full text-xs bg-yellow-400 text-black font-medium">กำลังเชื่อมต่อ...</span>
+      <button onclick="exportCSV()" class="bg-white/20 hover:bg-white/30 px-3 py-1.5 rounded-lg text-sm">Export</button>
+      <button onclick="dedupAll()" class="bg-white/20 hover:bg-white/30 px-3 py-1.5 rounded-lg text-sm">ลบวันที่ซ้ำ</button>
+      <button onclick="document.getElementById('settingModal').classList.remove('hidden')" class="bg-white text-[#0369a1] px-4 py-1.5 rounded-lg font-semibold text-sm shadow">Setting</button>
     </div>
   </div>
 </div>
 
-<!-- Tabs -->
+<!-- KPI Banner -->
 <div class="max-w-7xl mx-auto p-4">
+  <div class="bg-gradient-to-r from-sky-100 to-blue-100 border border-sky-200 rounded-2xl p-4 flex flex-wrap justify-between items-center gap-3">
+    <div class="flex gap-6 text-sm">
+      <div><span class="text-gray-500">เป้าหมาย KPI</span> <span class="font-bold text-[#0369a1] text-lg">16,000 กก./วัน</span></div>
+      <div class="flex items-center gap-2"><span class="w-4 h-4 bg-emerald-500 rounded"></span> ≥16,000 เขียวผ่าน</div>
+      <div class="flex items-center gap-2"><span class="w-4 h-4 bg-yellow-400 rounded"></span> 15,000-15,999 เหลือง</div>
+      <div class="flex items-center gap-2"><span class="w-4 h-4 bg-orange-400 rounded"></span> 14,000-14,999 ส้ม</div>
+      <div class="flex items-center gap-2"><span class="w-4 h-4 bg-red-500 rounded"></span> ≤13,999 แดง</div>
+    </div>
+    <div class="text-xs text-sky-700">💧 ธีมน้ำเงินเป็นมิตรต่อโลก • ประหยัดพลังงาน NGV</div>
+  </div>
+</div>
+
+<!-- Tabs -->
+<div class="max-w-7xl mx-auto px-4 pb-6">
   <div class="flex gap-2 mb-4">
-    <button onclick="switchTab(1)" id="tabBtn1" class="px-6 py-2 bg-[#0a5c36] text-white rounded-lg">ยอดขาย</button>
-    <button onclick="switchTab(2)" id="tabBtn2" class="px-6 py-2 bg-white text-gray-700 rounded-lg">ขาดลามาสาย</button>
-    <button onclick="switchTab(3)" id="tabBtn3" class="px-6 py-2 bg-white text-gray-700 rounded-lg">คู่มือ</button>
+    <button onclick="switchTab(1)" id="tabBtn1" class="px-6 py-2.5 bg-[#0284c7] text-white rounded-xl shadow">ยอดขาย & KPI</button>
+    <button onclick="switchTab(2)" id="tabBtn2" class="px-6 py-2.5 bg-white text-sky-700 rounded-xl shadow">ขาดลามาสาย</button>
+    <button onclick="switchTab(3)" id="tabBtn3" class="px-6 py-2.5 bg-white text-sky-700 rounded-xl shadow">คู่มือ</button>
   </div>
 
-  <!-- Tab1 -->
   <div id="tab1" class="space-y-4">
     <!-- Summary -->
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
-      <div class="bg-white p-4 rounded-xl shadow"><p class="text-xs text-gray-500">ยอดวันนี้ (กก.)</p><p id="sumGasToday" class="text-2xl font-bold text-[#0a5c36]">0</p></div>
-      <div class="bg-white p-4 rounded-xl shadow"><p class="text-xs text-gray-500">ยอดวันนี้ (บาท)</p><p id="sumSaleToday" class="text-2xl font-bold">0</p></div>
-      <div class="bg-white p-4 rounded-xl shadow"><p class="text-xs text-gray-500">รถวันนี้</p><p id="sumCarToday" class="text-2xl font-bold">0</p></div>
-      <div class="bg-white p-4 rounded-xl shadow"><p class="text-xs text-gray-500">เฉลี่ย/วัน (กก.)</p><p id="avgGas" class="text-2xl font-bold text-blue-600">0</p></div>
+    <div class="grid grid-cols-2 md:grid-cols-5 gap-3">
+      <div class="glass p-4 rounded-2xl shadow border border-sky-100"><p class="text-xs text-sky-600">ยอดวันนี้ (กก.)</p><p id="sumGasToday" class="text-2xl font-bold text-[#0284c7]">0</p><p id="kpiBadgeToday" class="text-xs mt-1"></p></div>
+      <div class="glass p-4 rounded-2xl shadow border border-sky-100"><p class="text-xs text-sky-600">ยอดวันนี้ (บาท)</p><p id="sumSaleToday" class="text-2xl font-bold">0</p></div>
+      <div class="glass p-4 rounded-2xl shadow border border-sky-100"><p class="text-xs text-sky-600">รถวันนี้</p><p id="sumCarToday" class="text-2xl font-bold">0</p></div>
+      <div class="glass p-4 rounded-2xl shadow border border-sky-100"><p class="text-xs text-sky-600">เฉลี่ย/วัน (กก.)</p><p id="avgGas" class="text-2xl font-bold text-[#0284c7]">0</p></div>
+      <div class="glass p-4 rounded-2xl shadow border border-sky-100 bg-gradient-to-br from-emerald-50 to-teal-50"><p class="text-xs text-emerald-700">วันผ่าน KPI</p><p id="passDays" class="text-2xl font-bold text-emerald-600">0 วัน</p></div>
     </div>
 
-    <!-- Graph Controls - ไม่ล็อกแล้ว -->
-    <div class="bg-white p-4 rounded-xl shadow">
+    <!-- Graph Section -->
+    <div class="bg-white p-5 rounded-2xl shadow border border-sky-100">
       <div class="flex flex-wrap gap-3 items-end mb-4">
-        <div><label class="text-xs">ช่วงเวลา</label><select id="timeRange" onchange="renderCharts()" class="border rounded px-2 py-1 text-sm"><option value="7">7 วัน</option><option value="30" selected>30 วัน</option><option value="thisMonth">เดือนนี้</option><option value="2025">ปี 2568</option><option value="2026">ปี 2569</option><option value="all">ทั้งหมด</option><option value="custom">กำหนดเอง</option></select></div>
-        <div id="customDateDiv" class="hidden flex gap-2"><input type="date" id="customStart" class="border rounded px-2 py-1 text-sm"><input type="date" id="customEnd" class="border rounded px-2 py-1 text-sm"><button onclick="renderCharts()" class="bg-[#0a5c36] text-white px-3 py-1 rounded text-sm">ดู</button></div>
-        <div><label class="text-xs">มุมมอง</label><select id="viewMode" onchange="renderCharts()" class="border rounded px-2 py-1 text-sm"><option value="morning">กะเช้า 08-20</option><option value="night" selected>รวมกะดึก</option><option value="all">ทั้งวัน</option></select></div>
-        <div><label class="text-xs">Metric</label><select id="metric" onchange="renderCharts()" class="border rounded px-2 py-1 text-sm"><option value="gas">ก๊าซ กก.</option><option value="sale">ยอดขาย บาท</option><option value="car">จำนวนรถ</option></select></div>
+        <div><label class="text-xs text-sky-700">ช่วงเวลา</label><select id="timeRange" onchange="renderCharts()" class="border border-sky-200 rounded-lg px-3 py-1.5 text-sm bg-sky-50"><option value="7">7 วัน</option><option value="30" selected>30 วัน</option><option value="thisMonth">เดือนนี้</option><option value="2025">ปี 2568</option><option value="2026">ปี 2569</option><option value="all">ทั้งหมด</option><option value="custom">กำหนดเอง</option></select></div>
+        <div id="customDateDiv" class="hidden flex gap-2"><input type="date" id="customStart" class="border rounded-lg px-2 py-1.5 text-sm"><input type="date" id="customEnd" class="border rounded-lg px-2 py-1.5 text-sm"><button onclick="renderCharts()" class="bg-[#0284c7] text-white px-4 py-1.5 rounded-lg text-sm">ดู</button></div>
+        <div><label class="text-xs text-sky-700">มุมมอง</label><select id="viewMode" onchange="renderCharts()" class="border border-sky-200 rounded-lg px-3 py-1.5 text-sm bg-sky-50"><option value="bar" selected>กราฟแท่ง กะเช้า vs กะดึก</option><option value="kpi">กราฟทั้งวัน + เส้น KPI 16,000</option></select></div>
       </div>
-      <div class="grid md:grid-cols-2 gap-4">
-        <div><h3 class="text-sm font-medium mb-2">ยอดขาย - <span id="chartLabel1">ก๊าซ กก.</span></h3><div style="height:280px"><canvas id="chartGas"></canvas></div></div>
-        <div><h3 class="text-sm font-medium mb-2">จำนวนรถ</h3><div style="height:280px"><canvas id="chartCar"></canvas></div></div>
+      
+      <div class="grid lg:grid-cols-2 gap-6">
+        <div class="bg-[#f0f9ff] p-3 rounded-xl border border-sky-100">
+          <h3 class="text-sm font-semibold mb-2 text-[#0369a1]">📊 แบบที่ 1: กะเช้า vs รวมกะดึก (กก.) - แท่งคู่</h3>
+          <div style="height:320px"><canvas id="chartBar"></canvas></div>
+          <p class="text-xs text-gray-500 mt-2">สีฟ้าเข้ม = กะเช้า 08-20 | สีฟ้าอ่อน = รวมกะดึก (20-24+00-08)</p>
+        </div>
+        <div class="bg-[#f0f9ff] p-3 rounded-xl border border-sky-100">
+          <h3 class="text-sm font-semibold mb-2 text-[#0369a1]">🎯 แบบที่ 2: ยอดทั้งวัน + เส้น KPI 16,000 กก.</h3>
+          <div style="height:320px"><canvas id="chartKpi"></canvas></div>
+          <p class="text-xs text-gray-500 mt-2">เส้นแดงประ = KPI 16,000 | เขียวโดดเด่น = ผ่าน KPI | มีป้าย 🏆</p>
+        </div>
       </div>
     </div>
 
     <!-- Form -->
-    <div class="bg-white p-4 rounded-xl shadow">
-      <h3 class="font-semibold mb-3">กรอกข้อมูลยอดขาย (วันที่ซ้ำจะทับของเดิมอัตโนมัติ)</h3>
+    <div class="bg-white p-5 rounded-2xl shadow border border-sky-100">
+      <h3 class="font-semibold mb-3 text-[#0369a1]">📝 กรอกข้อมูลยอดขาย (ซ้ำทับอัตโนมัติ + แถวสีตาม KPI)</h3>
       <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
-        <div class="col-span-2 md:col-span-1"><label class="text-xs">วันที่ *</label><input type="date" id="s_date" class="w-full border rounded px-2 py-1 text-sm"></div>
-        <div><label class="text-xs">กะเช้า 08-20 รถ</label><input type="number" id="s_k1_car" class="w-full border rounded px-2 py-1 text-sm" oninput="calc()"></div>
-        <div><label class="text-xs">ก๊าซ กก.</label><input type="number" id="s_k1_gas" step="0.001" class="w-full border rounded px-2 py-1 text-sm" oninput="calc()"></div>
-        <div><label class="text-xs">ยอดขาย บาท</label><input type="number" id="s_k1_sale" step="0.01" class="w-full border rounded px-2 py-1 text-sm" oninput="calc()"></div>
-
-        <div><label class="text-xs">กะ2 20-24 รถ</label><input type="number" id="s_k2_car" class="w-full border rounded px-2 py-1 text-sm" oninput="calc()"></div>
-        <div><label class="text-xs">ก๊าซ</label><input type="number" id="s_k2_gas" step="0.001" class="w-full border rounded px-2 py-1 text-sm" oninput="calc()"></div>
-        <div><label class="text-xs">ยอดขาย</label><input type="number" id="s_k2_sale" step="0.01" class="w-full border rounded px-2 py-1 text-sm" oninput="calc()"></div>
-        <div><label class="text-xs">กะ3 00-08 รถ</label><input type="number" id="s_k3_car" class="w-full border rounded px-2 py-1 text-sm" oninput="calc()"></div>
-        <div><label class="text-xs">ก๊าซ</label><input type="number" id="s_k3_gas" step="0.001" class="w-full border rounded px-2 py-1 text-sm" oninput="calc()"></div>
-        <div><label class="text-xs">ยอดขาย</label><input type="number" id="s_k3_sale" step="0.01" class="w-full border rounded px-2 py-1 text-sm" oninput="calc()"></div>
-
-        <div class="bg-blue-50 p-2 rounded"><label class="text-xs font-medium">รวมกะดึก รถ (auto)</label><input type="number" id="s_n_car" readonly class="w-full bg-blue-50 font-bold text-blue-700 text-sm"></div>
-        <div class="bg-blue-50 p-2 rounded"><label class="text-xs font-medium">ก๊าซ (auto)</label><input type="number" id="s_n_gas" readonly class="w-full bg-blue-50 font-bold text-blue-700 text-sm"></div>
-        <div class="bg-blue-50 p-2 rounded"><label class="text-xs font-medium">ยอดขาย (auto)</label><input type="number" id="s_n_sale" readonly class="w-full bg-blue-50 font-bold text-blue-700 text-sm"></div>
-        <div class="bg-green-50 p-2 rounded"><label class="text-xs font-medium">ปิดวัน รถ (auto)</label><input type="number" id="s_all_car" readonly class="w-full bg-green-50 font-bold text-green-700 text-sm"></div>
-        <div class="bg-green-50 p-2 rounded"><label class="text-xs font-medium">ก๊าซ (auto)</label><input type="number" id="s_all_gas" readonly class="w-full bg-green-50 font-bold text-green-700 text-sm"></div>
-        <div class="bg-green-50 p-2 rounded"><label class="text-xs font-medium">เงิน (auto)</label><input type="number" id="s_all_sale" readonly class="w-full bg-green-50 font-bold text-green-700 text-sm"></div>
-
-        <div><label class="text-xs">ทิปเช้า</label><input type="number" id="s_tip_m" class="w-full border rounded px-2 py-1 text-sm"></div>
-        <div><label class="text-xs">ทิปดึก</label><input type="number" id="s_tip_n" class="w-full border rounded px-2 py-1 text-sm"></div>
-        <div class="col-span-2"><label class="text-xs">หมายเหตุ (ซ่อม ปิดหัวจ่าย ตรวจpayin เซ็นรับทราบ สาเหตุหยุดขาย)</label><textarea id="s_note" rows="2" class="w-full border rounded px-2 py-1 text-sm" placeholder="เช่น ปิดหัวจ่าย 2 ซ่อมบำรุง..."></textarea></div>
+        <div class="col-span-2 md:col-span-1"><label class="text-xs text-sky-700">วันที่ *</label><input type="date" id="s_date" class="w-full border border-sky-200 rounded-lg px-3 py-2 text-sm bg-sky-50/50"></div>
+        <div><label class="text-xs">กะเช้า รถ</label><input type="number" id="s_k1_car" class="w-full border rounded-lg px-2 py-2 text-sm" oninput="calc()"></div>
+        <div><label class="text-xs">ก๊าซ กก.</label><input type="number" id="s_k1_gas" step="0.001" class="w-full border rounded-lg px-2 py-2 text-sm" oninput="calc()"></div>
+        <div><label class="text-xs">ยอดขาย บาท</label><input type="number" id="s_k1_sale" step="0.01" class="w-full border rounded-lg px-2 py-2 text-sm" oninput="calc()"></div>
+        <div><label class="text-xs">กะ2 20-24 รถ</label><input type="number" id="s_k2_car" class="w-full border rounded-lg px-2 py-2 text-sm" oninput="calc()"></div>
+        <div><label class="text-xs">ก๊าซ</label><input type="number" id="s_k2_gas" step="0.001" class="w-full border rounded-lg px-2 py-2 text-sm" oninput="calc()"></div>
+        <div><label class="text-xs">ยอดขาย</label><input type="number" id="s_k2_sale" step="0.01" class="w-full border rounded-lg px-2 py-2 text-sm" oninput="calc()"></div>
+        <div><label class="text-xs">กะ3 00-08 รถ</label><input type="number" id="s_k3_car" class="w-full border rounded-lg px-2 py-2 text-sm" oninput="calc()"></div>
+        <div><label class="text-xs">ก๊าซ</label><input type="number" id="s_k3_gas" step="0.001" class="w-full border rounded-lg px-2 py-2 text-sm" oninput="calc()"></div>
+        <div><label class="text-xs">ยอดขาย</label><input type="number" id="s_k3_sale" step="0.01" class="w-full border rounded-lg px-2 py-2 text-sm" oninput="calc()"></div>
+        <div class="bg-sky-50 p-2 rounded-xl border border-sky-200"><label class="text-xs font-medium text-sky-700">รวมกะดึก รถ</label><input id="s_n_car" readonly class="w-full bg-transparent font-bold text-sky-700 text-sm"></div>
+        <div class="bg-sky-50 p-2 rounded-xl border border-sky-200"><label class="text-xs font-medium text-sky-700">ก๊าซ</label><input id="s_n_gas" readonly class="w-full bg-transparent font-bold text-sky-700 text-sm"></div>
+        <div class="bg-sky-50 p-2 rounded-xl border border-sky-200"><label class="text-xs font-medium text-sky-700">ยอดขาย</label><input id="s_n_sale" readonly class="w-full bg-transparent font-bold text-sky-700 text-sm"></div>
+        <div class="bg-blue-100 p-2 rounded-xl border border-blue-300"><label class="text-xs font-bold text-[#0369a1]">ปิดวัน รถ</label><input id="s_all_car" readonly class="w-full bg-transparent font-bold text-[#0369a1] text-sm"></div>
+        <div class="bg-blue-100 p-2 rounded-xl border border-blue-300"><label class="text-xs font-bold text-[#0369a1]">ก๊าซ รวม (KPI)</label><input id="s_all_gas" readonly class="w-full bg-transparent font-bold text-lg"></div>
+        <div class="bg-blue-100 p-2 rounded-xl border border-blue-300"><label class="text-xs font-bold text-[#0369a1]">เงิน รวม</label><input id="s_all_sale" readonly class="w-full bg-transparent font-bold text-[#0369a1] text-sm"></div>
+        <div><label class="text-xs">ทิปเช้า</label><input type="number" id="s_tip_m" class="w-full border rounded-lg px-2 py-2 text-sm"></div>
+        <div><label class="text-xs">ทิปดึก</label><input type="number" id="s_tip_n" class="w-full border rounded-lg px-2 py-2 text-sm"></div>
+        <div class="col-span-2"><label class="text-xs">หมายเหตุ (ซ่อม ปิดหัวจ่าย ตรวจpayin)</label><textarea id="s_note" rows="2" class="w-full border border-sky-200 rounded-lg px-3 py-2 text-sm" placeholder="เช่น ปิดหัวจ่าย 2 ซ่อม..."></textarea></div>
       </div>
       <div class="mt-3 flex gap-2">
-        <button onclick="saveSale()" class="bg-[#0a5c36] text-white px-6 py-2 rounded-lg">บันทึก (ทับถ้าซ้ำ)</button>
-        <button onclick="clearSaleForm()" class="bg-gray-200 px-4 py-2 rounded-lg text-sm">ล้าง</button>
-        <label class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm cursor-pointer">Import Excel<input type="file" id="excelFile" accept=".xlsx,.xls" class="hidden" onchange="importExcel(event)"></label>
+        <button onclick="saveSale()" class="bg-[#0284c7] hover:bg-[#0369a1] text-white px-6 py-2.5 rounded-xl font-medium shadow">บันทึก (ทับถ้าซ้ำ)</button>
+        <button onclick="clearSaleForm()" class="bg-gray-100 px-4 py-2.5 rounded-xl text-sm">ล้าง</button>
       </div>
+      <div id="kpiPreview" class="mt-3 p-3 rounded-xl text-sm hidden"></div>
     </div>
 
-    <!-- Table -->
-    <div class="bg-white rounded-xl shadow overflow-auto">
-      <div class="p-3 flex justify-between items-center"><h3 class="font-semibold">ประวัติยอดขาย</h3>
-        <select id="yearFilter" onchange="renderTable()" class="border rounded px-2 py-1 text-sm"><option value="all">ทั้งหมด</option><option value="2025" selected>ปี 2568 (2025)</option><option value="2026">ปี 2569 (2026)</option></select>
+    <div class="bg-white rounded-2xl shadow border border-sky-100 overflow-auto">
+      <div class="p-4 flex justify-between items-center"><h3 class="font-semibold text-[#0369a1]">ประวัติยอดขาย (สีตาม KPI 16,000)</h3>
+        <select id="yearFilter" onchange="renderTable()" class="border border-sky-200 rounded-lg px-3 py-1.5 text-sm bg-sky-50"><option value="all">ทั้งหมด</option><option value="2025" selected>ปี 2568</option><option value="2026">ปี 2569</option></select>
       </div>
       <table class="w-full text-xs">
-        <thead class="bg-gray-100"><tr><th class="p-2 text-left">วันที่</th><th>กะเช้า รถ/ก๊าซ/ยอด</th><th>รวมดึก รถ/ก๊าซ/ยอด</th><th>ปิดวัน ก๊าซ/เงิน</th><th>ทิป</th><th>หมายเหตุ</th><th>จัดการ</th></tr></thead>
+        <thead class="bg-[#e0f2fe] text-[#0369a1]"><tr><th class="p-3 text-left">วันที่</th><th>กะเช้า</th><th>รวมกะดึก</th><th>ปิดวัน (KPI)</th><th>ทิป</th><th>หมายเหตุ</th><th>จัดการ</th></tr></thead>
         <tbody id="salesTable"></tbody>
       </table>
     </div>
   </div>
 
-  <!-- Tab2 -->
   <div id="tab2" class="hidden space-y-4">
-    <div class="bg-white p-4 rounded-xl shadow">
-      <h3 class="font-semibold mb-3">กรอกข้อมูลขาดลามาสาย</h3>
+    <div class="bg-white p-5 rounded-2xl shadow border border-sky-100">
+      <h3 class="font-semibold mb-3 text-[#0369a1]">กรอกข้อมูลขาดลามาสาย</h3>
       <div class="grid grid-cols-2 md:grid-cols-6 gap-3">
-        <div><label class="text-xs">วันที่</label><input type="date" id="a_date" class="w-full border rounded px-2 py-1 text-sm"></div>
-        <div><label class="text-xs">กะเช้า มาทำ</label><input type="number" id="a_m_work" class="w-full border rounded px-2 py-1 text-sm"></div>
-        <div><label class="text-xs">ขาด</label><input type="number" id="a_m_abs" class="w-full border rounded px-2 py-1 text-sm"></div>
-        <div><label class="text-xs">กะดึก มาทำ</label><input type="number" id="a_n_work" class="w-full border rounded px-2 py-1 text-sm"></div>
-        <div><label class="text-xs">ขาด</label><input type="number" id="a_n_abs" class="w-full border rounded px-2 py-1 text-sm"></div>
-        <div class="col-span-2"><label class="text-xs">ใครหยุดบ้าง</label><input type="text" id="a_names" class="w-full border rounded px-2 py-1 text-sm" placeholder="เช่น เป้, ดา"></div>
-        <div class="col-span-2 md:col-span-4"><label class="text-xs">หมายเหตุเพิ่มเติม</label><input type="text" id="a_note" class="w-full border rounded px-2 py-1 text-sm"></div>
+        <div><label class="text-xs">วันที่</label><input type="date" id="a_date" class="w-full border rounded-lg px-2 py-2 text-sm"></div>
+        <div><label class="text-xs">เช้า มาทำ</label><input type="number" id="a_m_work" class="w-full border rounded-lg px-2 py-2 text-sm"></div>
+        <div><label class="text-xs">ขาด</label><input type="number" id="a_m_abs" class="w-full border rounded-lg px-2 py-2 text-sm"></div>
+        <div><label class="text-xs">ดึก มาทำ</label><input type="number" id="a_n_work" class="w-full border rounded-lg px-2 py-2 text-sm"></div>
+        <div><label class="text-xs">ขาด</label><input type="number" id="a_n_abs" class="w-full border rounded-lg px-2 py-2 text-sm"></div>
+        <div class="col-span-2"><label class="text-xs">ใครหยุด</label><input type="text" id="a_names" class="w-full border rounded-lg px-2 py-2 text-sm"></div>
+        <div class="col-span-4"><label class="text-xs">หมายเหตุ</label><input type="text" id="a_note" class="w-full border rounded-lg px-2 py-2 text-sm"></div>
       </div>
-      <button onclick="saveAtt()" class="mt-3 bg-[#0a5c36] text-white px-6 py-2 rounded-lg">บันทึก</button>
+      <button onclick="saveAtt()" class="mt-3 bg-[#0284c7] text-white px-6 py-2.5 rounded-xl">บันทึก</button>
     </div>
-    <div class="bg-white p-4 rounded-xl shadow"><div style="height:300px"><canvas id="chartAtt"></canvas></div></div>
-    <div class="bg-white rounded-xl shadow overflow-auto"><table class="w-full text-xs"><thead class="bg-gray-100"><tr><th class="p-2">วันที่</th><th>เช้า มาทำ/ขาด</th><th>ดึก มาทำ/ขาด</th><th>ใครหยุด</th><th>หมายเหตุ</th><th>ลบ</th></tr></thead><tbody id="attTable"></tbody></table></div>
+    <div class="bg-white p-4 rounded-2xl shadow border border-sky-100"><div style="height:300px"><canvas id="chartAtt"></canvas></div></div>
+    <div class="bg-white rounded-2xl shadow border border-sky-100 overflow-auto"><table class="w-full text-xs"><thead class="bg-[#e0f2fe] text-[#0369a1]"><tr><th class="p-3">วันที่</th><th>เช้า</th><th>ดึก</th><th>ใครหยุด</th><th>หมายเหตุ</th><th>ลบ</th></tr></thead><tbody id="attTable"></tbody></table></div>
   </div>
 
-  <!-- Tab3 -->
-  <div id="tab3" class="hidden bg-white p-6 rounded-xl shadow">
-    <h2 class="text-lg font-bold mb-4">คู่มือการใช้งาน</h2>
+  <div id="tab3" class="hidden bg-white p-6 rounded-2xl shadow border border-sky-100">
+    <h2 class="text-lg font-bold mb-4 text-[#0369a1]">คู่มือ Blue Eco Theme</h2>
     <div class="space-y-3 text-sm">
-      <p><b>1. กรอกยอดขาย:</b> ใส่เฉพาะกะ1,กะ2,กะ3 ระบบคำนวณรวมกะดึกและปิดวันให้อัตโนมัติ ถ้าวันที่ซ้ำจะทับของเดิม</p>
-      <p><b>2. กราฟ:</b> เลือกช่วงเวลาได้ 7วัน/30วัน/เดือนนี้/ปี2568/2569/ทั้งหมด/กำหนดเอง และเลือกดู กะเช้า/รวมกะดึก/ทั้งวัน</p>
-      <p><b>3. หมายเหตุ:</b> ใส่สาเหตุหยุดขาย ซ่อม ปิดหัวจ่าย ตรวจpayin ได้</p>
-      <p><b>4. Supabase:</b> ฝัง URL และ Key ไว้แล้ว Connect ตลอดเวลาแบบ Realtime เครื่องไหนแก้ อีกเครื่องเห็นทันที</p>
-      <p><b>5. ลบวันที่ซ้ำ:</b> กดปุ่มลบวันที่ซ้ำ ระบบจะเหลือวันละ 1 แถว (ตัวล่าสุด)</p>
-      <p class="bg-yellow-50 p-3 rounded">Supabase URL: https://abntmmyshbgxoeuxuhwh.supabase.co<br>ตารางที่ต้องมี: ngv_sales (date, k1_car, k1_gas, k1_sale, k2_car, k2_gas, k2_sale, k3_car, k3_gas, k3_sale, tip_morning, tip_night, note) และ ngv_attendance</p>
+      <p>🎨 <b>ธีมน้ำเงินเป็นมิตรต่อโลก:</b> ฟ้า-น้ำเงิน สื่อถึงน้ำ ความสะอาด พลังงานสะอาด NGV</p>
+      <p>📊 <b>กราฟ 1 แท่งคู่:</b> กะเช้า (น้ำเงินเข้ม #0284c7) vs รวมกะดึก (ฟ้าอ่อน #7dd3fc) แยกกันชัดเจน หน่วย กก.</p>
+      <p>🎯 <b>กราฟ 2 KPI:</b> เส้นแนวนอนสีแดงประที่ 16,000 กก. ถ้าวันไหนเกิน 16,000 จะเป็นสีเขียวโดดเด่น มีป้าย 🏆 และเรืองแสง</p>
+      <p>🌈 <b>สีแถวตาม KPI:</b> ≥16,000 เขียว #22c55e | 15,000-15,999 เหลือง #facc15 | 14,000-14,999 ส้ม #fb923c | ≤13,999 แดง #ef4444</p>
     </div>
   </div>
 </div>
 
-<!-- Setting Modal -->
-<div id="settingModal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-  <div class="bg-white rounded-xl p-6 w-full max-w-lg">
-    <h3 class="font-bold mb-3">Supabase Setting (ฝังไว้แล้ว Connect ตลอด)</h3>
-    <p class="text-xs text-gray-600 mb-2">URL:</p><input id="supaUrl" class="w-full border rounded px-2 py-1 text-xs mb-2" readonly>
-    <p class="text-xs text-gray-600">Service Key:</p><input id="supaKey" type="password" class="w-full border rounded px-2 py-1 text-xs mb-3" readonly>
-    <div id="supaTestResult" class="text-xs mb-3"></div>
-    <div class="flex gap-2"><button onclick="testSupa()" class="bg-blue-600 text-white px-4 py-1 rounded text-sm">Test Connection</button><button onclick="document.getElementById('settingModal').classList.add('hidden')" class="bg-gray-200 px-4 py-1 rounded text-sm">ปิด</button></div>
-  </div>
-</div>
-
-<div id="toast" class="fixed bottom-4 right-4 bg-black text-white px-4 py-2 rounded-lg text-sm hidden"></div>
+<div id="settingModal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50"><div class="bg-white rounded-2xl p-6 w-full max-w-lg"><h3 class="font-bold mb-3 text-[#0369a1]">Supabase Auto Connected</h3><input id="supaUrl" class="w-full border rounded-lg px-3 py-2 text-xs mb-2" readonly><input id="supaKey" type="password" class="w-full border rounded-lg px-3 py-2 text-xs mb-3" readonly><div id="supaTestResult" class="text-xs mb-3"></div><div class="flex gap-2"><button onclick="testSupa()" class="bg-[#0284c7] text-white px-4 py-2 rounded-xl text-sm">Test</button><button onclick="document.getElementById('settingModal').classList.add('hidden')" class="bg-gray-100 px-4 py-2 rounded-xl text-sm">ปิด</button></div></div></div>
+<div id="toast" class="fixed bottom-4 right-4 bg-[#0369a1] text-white px-5 py-3 rounded-xl text-sm hidden shadow-lg z-50"></div>
 
 <script>
-const SUPABASE_URL = 'https://abntmmyshbgxoeuxuhwh.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFibnRtbXlzaGJneG9ldXh1aHdoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc1NzM2NDMsImV4cCI6MjEwMzE0OTY0M30.o3AEaWtmytkpevYHYPsMqJC4PD7hRN_I7DyCTYt-PZw';
-let supa = null;
-let salesData = JSON.parse(localStorage.getItem('ngv_sales_final')||'[]');
-let attData = JSON.parse(localStorage.getItem('ngv_att_final')||'[]');
-let chart1=null, chart2=null, chartAtt=null;
+const SUPABASE_URL='https://abntmmyshbgxoeuxuhwh.supabase.co';
+const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFibnRtbXlzaGJneG9ldXh1aHdoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc1NzM2NDMsImV4cCI6MjEwMzE0OTY0M30.o3AEaWtmytkpevYHYPsMqJC4PD7hRN_I7DyCTYt-PZw';
+let supa=null;
+let salesData=JSON.parse(localStorage.getItem('ngv_sales_final')||'[]');
+let attData=JSON.parse(localStorage.getItem('ngv_att_final')||'[]');
+let chartBar=null, chartKpi=null, chartAtt=null;
 
-function dedup(arr){ const m=new Map(); arr.forEach(i=>{ if(i.date) m.set(i.date,i); }); return [...m.values()].sort((a,b)=>new Date(a.date)-new Date(b.date)); }
-function showToast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.remove('hidden'); setTimeout(()=>t.classList.add('hidden'),3000); }
-
+function dedup(arr){const m=new Map();arr.forEach(i=>{if(i.date) m.set(i.date,i);});return [...m.values()].sort((a,b)=>new Date(a.date)-new Date(b.date));}
+function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.remove('hidden');setTimeout(()=>t.classList.add('hidden'),3000);}
+function getRowColor(all_gas){
+  const g=parseFloat(all_gas)||0;
+  if(g>=16000) return {bg:'bg-emerald-50', border:'border-l-4 border-emerald-500', badge:'<span class="bg-emerald-500 text-white px-2 py-0.5 rounded-full text-[10px]">🏆 ผ่าน KPI</span>'};
+  if(g>=15000) return {bg:'bg-yellow-50', border:'border-l-4 border-yellow-400', badge:'<span class="bg-yellow-400 text-black px-2 py-0.5 rounded-full text-[10px]">ใกล้เป้า</span>'};
+  if(g>=14000) return {bg:'bg-orange-50', border:'border-l-4 border-orange-400', badge:'<span class="bg-orange-400 text-white px-2 py-0.5 rounded-full text-[10px]">ปานกลาง</span>'};
+  return {bg:'bg-red-50', border:'border-l-4 border-red-500', badge:'<span class="bg-red-500 text-white px-2 py-0.5 rounded-full text-[10px]">ต่ำกว่าเป้า</span>'};
+}
 function calc(){
-  const k2c=parseInt(document.getElementById('s_k2_car').value)||0, k3c=parseInt(document.getElementById('s_k3_car').value)||0;
-  const k2g=parseFloat(document.getElementById('s_k2_gas').value)||0, k3g=parseFloat(document.getElementById('s_k3_gas').value)||0;
-  const k2s=parseFloat(document.getElementById('s_k2_sale').value)||0, k3s=parseFloat(document.getElementById('s_k3_sale').value)||0;
-  const k1c=parseInt(document.getElementById('s_k1_car').value)||0, k1g=parseFloat(document.getElementById('s_k1_gas').value)||0, k1s=parseFloat(document.getElementById('s_k1_sale').value)||0;
+  const k2c=parseInt(document.getElementById('s_k2_car').value)||0,k3c=parseInt(document.getElementById('s_k3_car').value)||0;
+  const k2g=parseFloat(document.getElementById('s_k2_gas').value)||0,k3g=parseFloat(document.getElementById('s_k3_gas').value)||0;
+  const k2s=parseFloat(document.getElementById('s_k2_sale').value)||0,k3s=parseFloat(document.getElementById('s_k3_sale').value)||0;
+  const k1c=parseInt(document.getElementById('s_k1_car').value)||0,k1g=parseFloat(document.getElementById('s_k1_gas').value)||0,k1s=parseFloat(document.getElementById('s_k1_sale').value)||0;
   document.getElementById('s_n_car').value=k2c+k3c;
   document.getElementById('s_n_gas').value=(k2g+k3g).toFixed(3);
   document.getElementById('s_n_sale').value=(k2s+k3s).toFixed(2);
-  document.getElementById('s_all_car').value=k1c+k2c+k3c;
-  document.getElementById('s_all_gas').value=(k1g+k2g+k3g).toFixed(3);
-  document.getElementById('s_all_sale').value=(k1s+k2s+k3s).toFixed(2);
+  const allCar=k1c+k2c+k3c, allGas=k1g+k2g+k3g, allSale=k1s+k2s+k3s;
+  document.getElementById('s_all_car').value=allCar;
+  document.getElementById('s_all_gas').value=allGas.toFixed(3);
+  document.getElementById('s_all_sale').value=allSale.toFixed(2);
+  // KPI preview
+  const preview=document.getElementById('kpiPreview');
+  if(allGas>0){
+    const color=getRowColor(allGas);
+    preview.className=`mt-3 p-3 rounded-xl text-sm flex justify-between items-center ${color.bg} ${color.border}`;
+    preview.innerHTML=`<span>ยอดรวม ${allGas.toFixed(0)} กก. ${color.badge}</span><span>${allGas>=16000?'✅ ผ่าน KPI 16,000':'❌ ยังไม่ถึง 16,000'}</span>`;
+    preview.classList.remove('hidden');
+    // change input color
+    const gasInput=document.getElementById('s_all_gas');
+    if(allGas>=16000) gasInput.className='w-full bg-transparent font-bold text-lg text-emerald-600';
+    else if(allGas>=15000) gasInput.className='w-full bg-transparent font-bold text-lg text-yellow-600';
+    else if(allGas>=14000) gasInput.className='w-full bg-transparent font-bold text-lg text-orange-600';
+    else gasInput.className='w-full bg-transparent font-bold text-lg text-red-600';
+  }
 }
-
 function switchTab(n){
-  document.getElementById('tab1').classList.add('hidden');
-  document.getElementById('tab2').classList.add('hidden');
-  document.getElementById('tab3').classList.add('hidden');
-  document.getElementById('tabBtn1').className='px-6 py-2 bg-white text-gray-700 rounded-lg';
-  document.getElementById('tabBtn2').className='px-6 py-2 bg-white text-gray-700 rounded-lg';
-  document.getElementById('tabBtn3').className='px-6 py-2 bg-white text-gray-700 rounded-lg';
+  [1,2,3].forEach(i=>{
+    document.getElementById('tab'+i).classList.add('hidden');
+    document.getElementById('tabBtn'+i).className='px-6 py-2.5 bg-white text-sky-700 rounded-xl shadow';
+  });
   document.getElementById('tab'+n).classList.remove('hidden');
-  document.getElementById('tabBtn'+n).className='px-6 py-2 bg-[#0a5c36] text-white rounded-lg';
-  setTimeout(()=>{ renderCharts(); renderAttChart(); },200);
+  document.getElementById('tabBtn'+n).className='px-6 py-2.5 bg-[#0284c7] text-white rounded-xl shadow';
+  setTimeout(()=>{renderCharts();renderAttChart();},200);
 }
-
 function saveSale(){
-  const date=document.getElementById('s_date').value;
-  if(!date){ showToast('เลือกวันที่ก่อน'); return; }
+  const date=document.getElementById('s_date').value; if(!date){showToast('เลือกวันที่');return;}
   const obj={
     date,
-    k1_car:parseInt(document.getElementById('s_k1_car').value)||0,
-    k1_gas:parseFloat(document.getElementById('s_k1_gas').value)||0,
-    k1_sale:parseFloat(document.getElementById('s_k1_sale').value)||0,
-    k2_car:parseInt(document.getElementById('s_k2_car').value)||0,
-    k2_gas:parseFloat(document.getElementById('s_k2_gas').value)||0,
-    k2_sale:parseFloat(document.getElementById('s_k2_sale').value)||0,
-    k3_car:parseInt(document.getElementById('s_k3_car').value)||0,
-    k3_gas:parseFloat(document.getElementById('s_k3_gas').value)||0,
-    k3_sale:parseFloat(document.getElementById('s_k3_sale').value)||0,
-    tip_morning:parseFloat(document.getElementById('s_tip_m').value)||0,
-    tip_night:parseFloat(document.getElementById('s_tip_n').value)||0,
-    note:document.getElementById('s_note').value||'',
-    n_car:parseInt(document.getElementById('s_n_car').value)||0,
-    n_gas:parseFloat(document.getElementById('s_n_gas').value)||0,
-    n_sale:parseFloat(document.getElementById('s_n_sale').value)||0,
-    all_car:parseInt(document.getElementById('s_all_car').value)||0,
-    all_gas:parseFloat(document.getElementById('s_all_gas').value)||0,
-    all_sale:parseFloat(document.getElementById('s_all_sale').value)||0,
+    k1_car:parseInt(document.getElementById('s_k1_car').value)||0, k1_gas:parseFloat(document.getElementById('s_k1_gas').value)||0, k1_sale:parseFloat(document.getElementById('s_k1_sale').value)||0,
+    k2_car:parseInt(document.getElementById('s_k2_car').value)||0, k2_gas:parseFloat(document.getElementById('s_k2_gas').value)||0, k2_sale:parseFloat(document.getElementById('s_k2_sale').value)||0,
+    k3_car:parseInt(document.getElementById('s_k3_car').value)||0, k3_gas:parseFloat(document.getElementById('s_k3_gas').value)||0, k3_sale:parseFloat(document.getElementById('s_k3_sale').value)||0,
+    tip_morning:parseFloat(document.getElementById('s_tip_m').value)||0, tip_night:parseFloat(document.getElementById('s_tip_n').value)||0, note:document.getElementById('s_note').value||'',
+    n_car:parseInt(document.getElementById('s_n_car').value)||0, n_gas:parseFloat(document.getElementById('s_n_gas').value)||0, n_sale:parseFloat(document.getElementById('s_n_sale').value)||0,
+    all_car:parseInt(document.getElementById('s_all_car').value)||0, all_gas:parseFloat(document.getElementById('s_all_gas').value)||0, all_sale:parseFloat(document.getElementById('s_all_sale').value)||0,
   };
   const idx=salesData.findIndex(x=>x.date===date);
-  if(idx>=0){ salesData[idx]=obj; showToast('อัปเดตวันที่ '+date+' (ทับของเดิม)'); }
-  else { salesData.push(obj); showToast('บันทึก '+date); }
-  salesData=dedup(salesData);
-  localStorage.setItem('ngv_sales_final', JSON.stringify(salesData));
-  renderTable(); renderCharts(); updateSummary();
-  if(supa){ supa.from('ngv_sales').upsert(obj, {onConflict:'date'}).then(r=>{ if(r.error) console.log(r.error); else showToast('Sync Supabase สำเร็จ'); }); }
+  if(idx>=0){salesData[idx]=obj; showToast('อัปเดต '+date+' (ทับเดิม) - '+(obj.all_gas>=16000?'ผ่าน KPI!':'ยังไม่ถึง'));} else {salesData.push(obj); showToast('บันทึก '+date);}
+  salesData=dedup(salesData); localStorage.setItem('ngv_sales_final',JSON.stringify(salesData)); renderTable(); renderCharts(); updateSummary();
+  if(supa) supa.from('ngv_sales').upsert(obj,{onConflict:'date'}).then(r=>{if(!r.error) showToast('Sync Supabase สำเร็จ');});
   clearSaleForm();
 }
-
-function clearSaleForm(){ ['s_k1_car','s_k1_gas','s_k1_sale','s_k2_car','s_k2_gas','s_k2_sale','s_k3_car','s_k3_gas','s_k3_sale','s_tip_m','s_tip_n','s_note'].forEach(id=>document.getElementById(id).value=''); calc(); }
-
+function clearSaleForm(){['s_k1_car','s_k1_gas','s_k1_sale','s_k2_car','s_k2_gas','s_k2_sale','s_k3_car','s_k3_gas','s_k3_sale','s_tip_m','s_tip_n','s_note'].forEach(id=>document.getElementById(id).value=''); document.getElementById('kpiPreview').classList.add('hidden'); calc();}
 function saveAtt(){
-  const date=document.getElementById('a_date').value;
-  if(!date){ showToast('เลือกวันที่'); return; }
-  const obj={ date, m_work:parseInt(document.getElementById('a_m_work').value)||0, m_abs:parseInt(document.getElementById('a_m_abs').value)||0, n_work:parseInt(document.getElementById('a_n_work').value)||0, n_abs:parseInt(document.getElementById('a_n_abs').value)||0, names:document.getElementById('a_names').value||'', note:document.getElementById('a_note').value||'' };
-  const idx=attData.findIndex(x=>x.date===date);
-  if(idx>=0) attData[idx]=obj; else attData.push(obj);
-  attData=dedup(attData);
-  localStorage.setItem('ngv_att_final', JSON.stringify(attData));
-  renderAttTable(); renderAttChart();
-  if(supa) supa.from('ngv_attendance').upsert(obj,{onConflict:'date'}).then(()=>{});
-  showToast('บันทึกพนักงาน '+date);
+  const date=document.getElementById('a_date').value; if(!date){showToast('เลือกวันที่');return;}
+  const obj={date,m_work:parseInt(document.getElementById('a_m_work').value)||0,m_abs:parseInt(document.getElementById('a_m_abs').value)||0,n_work:parseInt(document.getElementById('a_n_work').value)||0,n_abs:parseInt(document.getElementById('a_n_abs').value)||0,names:document.getElementById('a_names').value||'',note:document.getElementById('a_note').value||''};
+  const idx=attData.findIndex(x=>x.date===date); if(idx>=0) attData[idx]=obj; else attData.push(obj);
+  attData=dedup(attData); localStorage.setItem('ngv_att_final',JSON.stringify(attData)); renderAttTable(); renderAttChart(); if(supa) supa.from('ngv_attendance').upsert(obj,{onConflict:'date'}).then(()=>{}); showToast('บันทึกพนักงาน '+date);
 }
-
 function getFiltered(){
-  const range=document.getElementById('timeRange').value;
-  let data=[...salesData];
-  const now=new Date();
-  if(range==='7'){ const d=new Date(); d.setDate(now.getDate()-7); data=data.filter(x=>new Date(x.date)>=d); }
-  else if(range==='30'){ const d=new Date(); d.setDate(now.getDate()-30); data=data.filter(x=>new Date(x.date)>=d); }
-  else if(range==='thisMonth'){ data=data.filter(x=>{ const dt=new Date(x.date); return dt.getMonth()===now.getMonth() && dt.getFullYear()===now.getFullYear(); }); }
-  else if(range==='2025'){ data=data.filter(x=>x.date.startsWith('2025')); }
-  else if(range==='2026'){ data=data.filter(x=>x.date.startsWith('2026')); }
-  else if(range==='custom'){ const s=document.getElementById('customStart').value, e=document.getElementById('customEnd').value; if(s&&e) data=data.filter(x=>x.date>=s && x.date<=e); }
-  // ถ้าไม่มีข้อมูล สร้าง mock
+  const range=document.getElementById('timeRange').value; let data=[...salesData]; const now=new Date();
+  if(range==='7'){const d=new Date();d.setDate(now.getDate()-7);data=data.filter(x=>new Date(x.date)>=d);}
+  else if(range==='30'){const d=new Date();d.setDate(now.getDate()-30);data=data.filter(x=>new Date(x.date)>=d);}
+  else if(range==='thisMonth'){data=data.filter(x=>{const dt=new Date(x.date);return dt.getMonth()===now.getMonth()&&dt.getFullYear()===now.getFullYear();});}
+  else if(range==='2025'){data=data.filter(x=>x.date.startsWith('2025'));}
+  else if(range==='2026'){data=data.filter(x=>x.date.startsWith('2026'));}
+  else if(range==='custom'){const s=document.getElementById('customStart').value,e=document.getElementById('customEnd').value;if(s&&e) data=data.filter(x=>x.date>=s&&x.date<=e);}
   if(data.length===0 && salesData.length===0){
-    data=[]; for(let i=29;i>=0;i--){ const d=new Date(); d.setDate(d.getDate()-i); const ds=d.toISOString().slice(0,10); data.push({date:ds, k1_car:600+Math.floor(Math.random()*200), k1_gas:8000+Math.random()*2000, k1_sale:130000+Math.random()*20000, n_car:400+Math.floor(Math.random()*100), n_gas:6000+Math.random()*1000, n_sale:100000+Math.random()*15000, all_car:1000+Math.floor(Math.random()*200), all_gas:14000+Math.random()*2000, all_sale:230000+Math.random()*30000}); }
+    data=[]; for(let i=29;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i);const ds=d.toISOString().slice(0,10); const base=13000+Math.random()*4000; const pass=base>=16000; data.push({date:ds,k1_car:600+Math.floor(Math.random()*200),k1_gas:base*0.55,k1_sale:130000+Math.random()*20000,n_car:400+Math.floor(Math.random()*100),n_gas:base*0.45,n_sale:100000+Math.random()*15000,all_car:1000+Math.floor(Math.random()*200),all_gas:base,all_sale:230000+Math.random()*30000});}
   }
   return data.sort((a,b)=>new Date(a.date)-new Date(b.date));
 }
-
 function renderCharts(){
-  const timeRange=document.getElementById('timeRange');
-  document.getElementById('customDateDiv').classList.toggle('hidden', timeRange.value!=='custom');
+  document.getElementById('customDateDiv').classList.toggle('hidden', document.getElementById('timeRange').value!=='custom');
   const filtered=getFiltered();
-  const view=document.getElementById('viewMode').value;
-  const metric=document.getElementById('metric').value;
-  document.getElementById('chartLabel1').textContent = metric==='gas'?'ก๊าซ กก.':metric==='sale'?'ยอดขาย บาท':'จำนวนรถ';
-  const labels=filtered.map(x=>{ const d=new Date(x.date); return d.getDate()+'/'+(d.getMonth()+1); });
-  let morningData, nightData;
-  if(metric==='gas'){
-    morningData=filtered.map(x=> view==='night'?0 : (x.k1_gas||0));
-    nightData=filtered.map(x=> view==='morning'?0 : (x.n_gas||x.k2_gas+x.k3_gas||0));
-    if(view==='all'){ morningData=filtered.map(x=> (x.k1_gas||0)+(x.n_gas||0)); nightData=[]; }
-  } else if(metric==='sale'){
-    morningData=filtered.map(x=> view==='night'?0 : (x.k1_sale||0));
-    nightData=filtered.map(x=> view==='morning'?0 : (x.n_sale||0));
-    if(view==='all') morningData=filtered.map(x=> (x.k1_sale||0)+(x.n_sale||0));
-  } else {
-    morningData=filtered.map(x=> view==='night'?0 : (x.k1_car||0));
-    nightData=filtered.map(x=> view==='morning'?0 : (x.n_car||0));
-    if(view==='all') morningData=filtered.map(x=> (x.all_car||0));
+  const labels=filtered.map(x=>{const d=new Date(x.date);return d.getDate()+'/'+(d.getMonth()+1);});
+  const morning=filtered.map(x=>x.k1_gas||0);
+  const night=filtered.map(x=>x.n_gas||0);
+  const all=filtered.map(x=>x.all_gas||0);
+
+  // Chart 1 - Bar คู่ กะเช้า vs กะดึก
+  const ctxBar=document.getElementById('chartBar');
+  if(ctxBar){
+    if(chartBar) chartBar.destroy();
+    chartBar=new Chart(ctxBar,{
+      type:'bar',
+      data:{labels, datasets:[
+        {label:'กะเช้า 08-20 กก.', data:morning, backgroundColor:'#0284c7', borderRadius:6, borderSkipped:false},
+        {label:'รวมกะดึก กก.', data:night, backgroundColor:'#7dd3fc', borderRadius:6, borderSkipped:false}
+      ]},
+      options:{responsive:true, maintainAspectRatio:false, plugins:{legend:{position:'top'}}, scales:{x:{stacked:false}, y:{beginAtZero:true, title:{display:true,text:'กก.'}}}}
+    });
   }
 
-  const ctx1=document.getElementById('chartGas');
-  if(ctx1){
-    if(chart1) chart1.destroy();
-    chart1=new Chart(ctx1, {type:'line', data:{labels, datasets:[
-      ...(view!=='night'||view==='all'?[{label:view==='all'?'ทั้งวัน':'กะเช้า 08-20', data:morningData, borderColor:'#0a5c36', backgroundColor:'rgba(10,92,54,0.1)', tension:0.3, fill:true}]:[]),
-      ...(view!=='morning' && view!=='all'?[{label:'รวมกะดึก', data:nightData, borderColor:'#2563eb', backgroundColor:'rgba(37,99,235,0.1)', tension:0.3, fill:true}]:[])
-    ]}, options:{responsive:true, maintainAspectRatio:false, plugins:{legend:{display:true}}}});
-  }
-  const ctx2=document.getElementById('chartCar');
-  if(ctx2){
-    if(chart2) chart2.destroy();
-    chart2=new Chart(ctx2, {type:'bar', data:{labels, datasets:[
-      ...(view!=='night'||view==='all'?[{label:view==='all'?'ทั้งวัน':'กะเช้า รถ', data:filtered.map(x=>view==='all'?x.all_car:x.k1_car), backgroundColor:'#0a5c36'}]:[]),
-      ...(view!=='morning'&&view!=='all'?[{label:'รวมกะดึก รถ', data:filtered.map(x=>x.n_car), backgroundColor:'#2563eb'}]:[])
-    ]}, options:{responsive:true, maintainAspectRatio:false}});
+  // Chart 2 - KPI line 16000 + โดดเด่นเมื่อผ่าน
+  const ctxKpi=document.getElementById('chartKpi');
+  if(ctxKpi){
+    if(chartKpi) chartKpi.destroy();
+    const bgColors=all.map(v=> v>=16000 ? '#22c55e' : v>=15000 ? '#facc15' : v>=14000 ? '#fb923c' : '#ef4444');
+    const borderColors=all.map(v=> v>=16000 ? '#16a34a' : v>=15000 ? '#eab308' : v>=14000 ? '#f97316' : '#dc2626');
+    
+    chartKpi=new Chart(ctxKpi,{
+      type:'bar',
+      data:{labels, datasets:[
+        {label:'ยอดทั้งวัน กก.', data:all, backgroundColor:bgColors, borderColor:borderColors, borderWidth:2, borderRadius:8},
+        {label:'KPI 16,000', data:labels.map(()=>16000), type:'line', borderColor:'#ef4444', borderWidth:2, borderDash:[6,6], pointRadius:0, fill:false}
+      ]},
+      options:{
+        responsive:true, maintainAspectRatio:false,
+        plugins:{
+          legend:{position:'top'},
+          annotation:{annotations:{kpiLine:{type:'line', yMin:16000, yMax:16000, borderColor:'#ef4444', borderWidth:2, borderDash:[6,6], label:{display:true, content:'KPI 16,000 กก.', backgroundColor:'#ef4444', color:'white'}}}},
+          tooltip:{
+            callbacks:{
+              afterBody:(items)=>{
+                const v=items[0].parsed.y;
+                if(v>=16000) return '🏆 ผ่าน KPI โดดเด่น!';
+                if(v>=15000) return 'ใกล้เป้าแล้ว';
+                return 'ต่ำกว่าเป้า';
+              }
+            }
+          }
+        },
+        scales:{y:{beginAtZero:true, title:{display:true,text:'กก.'}}}
+      }
+    });
   }
 }
-
 function renderAttChart(){
   const ctx=document.getElementById('chartAtt'); if(!ctx) return;
   if(chartAtt) chartAtt.destroy();
   const data=[...attData].sort((a,b)=>new Date(a.date)-new Date(b.date)).slice(-30);
-  const labels=data.map(x=>{ const d=new Date(x.date); return d.getDate()+'/'+(d.getMonth()+1); });
-  chartAtt=new Chart(ctx, {type:'bar', data:{labels, datasets:[
-    {label:'เช้า มาทำ', data:data.map(x=>x.m_work), backgroundColor:'#0a5c36'},
+  const labels=data.map(x=>{const d=new Date(x.date);return d.getDate()+'/'+(d.getMonth()+1);});
+  chartAtt=new Chart(ctx,{type:'bar',data:{labels,datasets:[
+    {label:'เช้า มาทำ', data:data.map(x=>x.m_work), backgroundColor:'#0284c7'},
     {label:'เช้า ขาด', data:data.map(x=>x.m_abs), backgroundColor:'#ef4444'},
-    {label:'ดึก มาทำ', data:data.map(x=>x.n_work), backgroundColor:'#2563eb'},
+    {label:'ดึก มาทำ', data:data.map(x=>x.n_work), backgroundColor:'#7dd3fc'},
     {label:'ดึก ขาด', data:data.map(x=>x.n_abs), backgroundColor:'#f59e0b'}
-  ]}, options:{responsive:true, maintainAspectRatio:false}});
+  ]},options:{responsive:true,maintainAspectRatio:false}});
 }
-
 function renderTable(){
-  const year=document.getElementById('yearFilter').value;
-  let data=[...salesData]; if(year!=='all') data=data.filter(x=>x.date.startsWith(year));
+  const year=document.getElementById('yearFilter').value; let data=[...salesData]; if(year!=='all') data=data.filter(x=>x.date.startsWith(year));
   data=data.sort((a,b)=>new Date(b.date)-new Date(a.date));
-  document.getElementById('salesTable').innerHTML=data.map(x=>`<tr class="border-b hover:bg-gray-50"><td class="p-2">${x.date} <span class="text-xs">${toThaiDate(x.date)}</span></td><td class="p-2">${x.k1_car}/${(x.k1_gas||0).toFixed(0)}/${(x.k1_sale||0).toFixed(0)}</td><td class="p-2 text-blue-700">${x.n_car}/${(x.n_gas||0).toFixed(0)}/${(x.n_sale||0).toFixed(0)}</td><td class="p-2 font-medium">${(x.all_gas||0).toFixed(0)}/${(x.all_sale||0).toFixed(0)}</td><td class="p-2">${x.tip_morning||0}/${x.tip_night||0}</td><td class="p-2 max-w-[150px] truncate" title="${x.note||''}">${(x.note||'').slice(0,40)}</td><td class="p-2"><button onclick="editSale('${x.date}')" class="text-blue-600 mr-2">แก้</button><button onclick="delSale('${x.date}')" class="text-red-600">ลบ</button></td></tr>`).join('');
+  document.getElementById('salesTable').innerHTML=data.map(x=>{
+    const c=getRowColor(x.all_gas);
+    return `<tr class="border-b ${c.bg} ${c.border} hover:brightness-95 transition"><td class="p-3 font-medium">${x.date}<br><span class="text-[10px] text-gray-500">${toThaiDate(x.date)}</span><br>${c.badge}</td><td class="p-2">${x.k1_car}/${(x.k1_gas||0).toFixed(0)}/${(x.k1_sale||0).toFixed(0)}</td><td class="p-2">${x.n_car}/${(x.n_gas||0).toFixed(0)}/${(x.n_sale||0).toFixed(0)}</td><td class="p-2 font-bold text-sm ${x.all_gas>=16000?'text-emerald-700':x.all_gas>=15000?'text-yellow-700':x.all_gas>=14000?'text-orange-600':'text-red-600'}">${(x.all_gas||0).toFixed(0)} กก.<br><span class="text-xs">${(x.all_sale||0).toFixed(0)} บ.</span></td><td class="p-2">${x.tip_morning||0}/${x.tip_night||0}</td><td class="p-2 max-w-[140px] truncate" title="${x.note||''}">${(x.note||'').slice(0,40)}</td><td class="p-2"><button onclick="editSale('${x.date}')" class="text-[#0284c7] mr-2 hover:underline">แก้</button><button onclick="delSale('${x.date}')" class="text-red-600 hover:underline">ลบ</button></td></tr>`;
+  }).join('');
 }
-
 function renderAttTable(){
   const data=[...attData].sort((a,b)=>new Date(b.date)-new Date(a.date));
-  document.getElementById('attTable').innerHTML=data.map(x=>`<tr class="border-b"><td class="p-2">${x.date}</td><td class="p-2">${x.m_work}/${x.m_abs}</td><td class="p-2">${x.n_work}/${x.n_abs}</td><td class="p-2">${x.names||''}</td><td class="p-2">${x.note||''}</td><td class="p-2"><button onclick="delAtt('${x.date}')" class="text-red-600">ลบ</button></td></tr>`).join('');
+  document.getElementById('attTable').innerHTML=data.map(x=>`<tr class="border-b hover:bg-sky-50"><td class="p-3">${x.date}</td><td class="p-2">${x.m_work}/${x.m_abs}</td><td class="p-2">${x.n_work}/${x.n_abs}</td><td class="p-2">${x.names||''}</td><td class="p-2">${x.note||''}</td><td class="p-2"><button onclick="delAtt('${x.date}')" class="text-red-600">ลบ</button></td></tr>`).join('');
 }
-
-function toThaiDate(s){ if(!s) return ''; const d=new Date(s); return `${d.getDate()}/${d.getMonth()+1}/${d.getFullYear()+543}`; }
-function editSale(date){ const x=salesData.find(o=>o.date===date); if(!x) return; document.getElementById('s_date').value=x.date; document.getElementById('s_k1_car').value=x.k1_car; document.getElementById('s_k1_gas').value=x.k1_gas; document.getElementById('s_k1_sale').value=x.k1_sale; document.getElementById('s_k2_car').value=x.k2_car; document.getElementById('s_k2_gas').value=x.k2_gas; document.getElementById('s_k2_sale').value=x.k2_sale; document.getElementById('s_k3_car').value=x.k3_car; document.getElementById('s_k3_gas').value=x.k3_gas; document.getElementById('s_k3_sale').value=x.k3_sale; document.getElementById('s_tip_m').value=x.tip_morning; document.getElementById('s_tip_n').value=x.tip_night; document.getElementById('s_note').value=x.note; calc(); window.scrollTo(0,0); }
-function delSale(date){ if(!confirm('ลบ '+date+' ?')) return; salesData=salesData.filter(x=>x.date!==date); localStorage.setItem('ngv_sales_final', JSON.stringify(salesData)); if(supa) supa.from('ngv_sales').delete().eq('date',date).then(()=>{}); renderTable(); renderCharts(); updateSummary(); }
-function delAtt(date){ if(!confirm('ลบ '+date+' ?')) return; attData=attData.filter(x=>x.date!==date); localStorage.setItem('ngv_att_final', JSON.stringify(attData)); if(supa) supa.from('ngv_attendance').delete().eq('date',date).then(()=>{}); renderAttTable(); renderAttChart(); }
-
-function dedupAll(){
-  const before=salesData.length; salesData=dedup(salesData); const after=salesData.length;
-  const before2=attData.length; attData=dedup(attData); const after2=attData.length;
-  localStorage.setItem('ngv_sales_final', JSON.stringify(salesData)); localStorage.setItem('ngv_att_final', JSON.stringify(attData));
-  renderTable(); renderAttTable(); renderCharts(); renderAttChart(); updateSummary();
-  showToast(`ลบซ้ำ: ยอดขาย ${before-after} แถว, พนักงาน ${before2-after2} แถว`);
-}
-
+function toThaiDate(s){if(!s) return '';const d=new Date(s);return `${d.getDate()}/${d.getMonth()+1}/${d.getFullYear()+543}`;}
+function editSale(date){const x=salesData.find(o=>o.date===date);if(!x) return;document.getElementById('s_date').value=x.date;document.getElementById('s_k1_car').value=x.k1_car;document.getElementById('s_k1_gas').value=x.k1_gas;document.getElementById('s_k1_sale').value=x.k1_sale;document.getElementById('s_k2_car').value=x.k2_car;document.getElementById('s_k2_gas').value=x.k2_gas;document.getElementById('s_k2_sale').value=x.k2_sale;document.getElementById('s_k3_car').value=x.k3_car;document.getElementById('s_k3_gas').value=x.k3_gas;document.getElementById('s_k3_sale').value=x.k3_sale;document.getElementById('s_tip_m').value=x.tip_morning;document.getElementById('s_tip_n').value=x.tip_night;document.getElementById('s_note').value=x.note;calc();window.scrollTo({top:0,behavior:'smooth'});}
+function delSale(date){if(!confirm('ลบ '+date+' ?')) return;salesData=salesData.filter(x=>x.date!==date);localStorage.setItem('ngv_sales_final',JSON.stringify(salesData));if(supa) supa.from('ngv_sales').delete().eq('date',date).then(()=>{});renderTable();renderCharts();updateSummary();}
+function delAtt(date){if(!confirm('ลบ '+date+' ?')) return;attData=attData.filter(x=>x.date!==date);localStorage.setItem('ngv_att_final',JSON.stringify(attData));if(supa) supa.from('ngv_attendance').delete().eq('date',date).then(()=>{});renderAttTable();renderAttChart();}
+function dedupAll(){const b=salesData.length;salesData=dedup(salesData);const b2=attData.length;attData=dedup(attData);localStorage.setItem('ngv_sales_final',JSON.stringify(salesData));localStorage.setItem('ngv_att_final',JSON.stringify(attData));renderTable();renderAttTable();renderCharts();renderAttChart();updateSummary();showToast(`ลบซ้ำ: ยอดขาย ${b-salesData.length}, พนักงาน ${b2-attData.length}`);}
 function updateSummary(){
   const today=new Date().toISOString().slice(0,10);
-  const t=salesData.find(x=>x.date===today) || salesData[salesData.length-1];
-  if(t){ document.getElementById('sumGasToday').textContent=(t.all_gas||0).toFixed(0); document.getElementById('sumSaleToday').textContent=(t.all_sale||0).toFixed(0); document.getElementById('sumCarToday').textContent=t.all_car||0; }
-  if(salesData.length>0){ const avg=salesData.reduce((s,x)=>s+(x.all_gas||0),0)/salesData.length; document.getElementById('avgGas').textContent=avg.toFixed(0); }
-}
-
-function exportCSV(){
-  let csv='date,k1_car,k1_gas,k1_sale,k2_car,k2_gas,k2_sale,k3_car,k3_gas,k3_sale,n_car,n_gas,n_sale,all_car,all_gas,all_sale,tip_morning,tip_night,note\n';
-  salesData.forEach(x=>{ csv+=`${x.date},${x.k1_car},${x.k1_gas},${x.k1_sale},${x.k2_car},${x.k2_gas},${x.k2_sale},${x.k3_car},${x.k3_gas},${x.k3_sale},${x.n_car},${x.n_gas},${x.n_sale},${x.all_car},${x.all_gas},${x.all_sale},${x.tip_morning},${x.tip_night},"${(x.note||'').replace(/"/g,'""')}"\n`; });
-  const blob=new Blob([csv],{type:'text/csv'}); const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download='ngv_sales.csv'; a.click();
-}
-
-function importExcel(e){
-  const file=e.target.files[0]; if(!file) return;
-  const reader=new FileReader(); reader.onload=(evt)=>{
-    const data=new Uint8Array(evt.target.result); const wb=XLSX.read(data,{type:'array'});
-    const sheet=wb.Sheets[wb.SheetNames[0]]; const json=XLSX.utils.sheet_to_json(sheet,{header:1});
-    // simple import logic - skip for now
-    showToast('Import ได้ '+json.length+' แถว (ต้อง map เอง)');
-  }; reader.readAsArrayBuffer(file);
-}
-
-async function initSupabase(){
-  document.getElementById('supaUrl').value=SUPABASE_URL;
-  document.getElementById('supaKey').value=SUPABASE_KEY;
-  try{
-    supa=supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-    const {data, error} = await supa.from('ngv_sales').select('*').limit(1);
-    if(error) throw error;
-    document.getElementById('supaStatus').textContent='Supabase: Connected'; document.getElementById('supaStatus').className='px-3 py-1 rounded-full text-xs bg-green-600 text-white';
-    document.getElementById('supaTestResult').textContent='เชื่อมต่อสำเร็จ!';
-    // fetch all
-    const {data: sales} = await supa.from('ngv_sales').select('*');
-    if(sales && sales.length>0){ salesData=dedup([...salesData, ...sales]); localStorage.setItem('ngv_sales_final', JSON.stringify(salesData)); }
-    const {data: atts} = await supa.from('ngv_attendance').select('*');
-    if(atts && atts.length>0){ attData=dedup([...attData, ...atts]); localStorage.setItem('ngv_att_final', JSON.stringify(attData)); }
-    renderTable(); renderAttTable(); renderCharts(); renderAttChart(); updateSummary();
-    // realtime
-    supa.channel('ngv').on('postgres_changes',{event:'*', schema:'public', table:'ngv_sales'}, payload=>{
-      if(payload.eventType==='INSERT' || payload.eventType==='UPDATE'){ const idx=salesData.findIndex(x=>x.date===payload.new.date); if(idx>=0) salesData[idx]=payload.new; else salesData.push(payload.new); salesData=dedup(salesData); localStorage.setItem('ngv_sales_final', JSON.stringify(salesData)); renderTable(); renderCharts(); updateSummary(); }
-      if(payload.eventType==='DELETE'){ salesData=salesData.filter(x=>x.date!==payload.old.date); localStorage.setItem('ngv_sales_final', JSON.stringify(salesData)); renderTable(); renderCharts(); }
-    }).on('postgres_changes',{event:'*', schema:'public', table:'ngv_attendance'}, payload=>{
-      if(payload.eventType==='INSERT' || payload.eventType==='UPDATE'){ const idx=attData.findIndex(x=>x.date===payload.new.date); if(idx>=0) attData[idx]=payload.new; else attData.push(payload.new); attData=dedup(attData); localStorage.setItem('ngv_att_final', JSON.stringify(attData)); renderAttTable(); renderAttChart(); }
-    }).subscribe();
-  }catch(err){
-    console.log('Supa error', err);
-    document.getElementById('supaStatus').textContent='Supabase: Offline'; document.getElementById('supaStatus').className='px-3 py-1 rounded-full text-xs bg-red-600 text-white';
-    document.getElementById('supaTestResult').textContent='เชื่อมต่อไม่ได้: '+err.message+' (ใช้ offline)';
-    setTimeout(initSupabase, 30000);
+  const t=salesData.find(x=>x.date===today)||salesData[salesData.length-1];
+  if(t){
+    document.getElementById('sumGasToday').textContent=(t.all_gas||0).toFixed(0);
+    document.getElementById('sumSaleToday').textContent=(t.all_sale||0).toFixed(0);
+    document.getElementById('sumCarToday').textContent=t.all_car||0;
+    const badge=document.getElementById('kpiBadgeToday');
+    const c=getRowColor(t.all_gas); badge.innerHTML=c.badge;
+  }
+  if(salesData.length>0){
+    const avg=salesData.reduce((s,x)=>s+(x.all_gas||0),0)/salesData.length;
+    document.getElementById('avgGas').textContent=avg.toFixed(0);
+    const pass=salesData.filter(x=>x.all_gas>=16000).length;
+    document.getElementById('passDays').textContent=pass+' วัน ('+((pass/salesData.length)*100).toFixed(0)+'%)';
   }
 }
-async function testSupa(){ showToast('กำลังทดสอบ...'); await initSupabase(); }
-
+function exportCSV(){
+  let csv='date,k1_car,k1_gas,k1_sale,k2_car,k2_gas,k2_sale,k3_car,k3_gas,k3_sale,n_car,n_gas,n_sale,all_car,all_gas,all_sale,tip_morning,tip_night,note\n';
+  salesData.forEach(x=>{csv+=`${x.date},${x.k1_car},${x.k1_gas},${x.k1_sale},${x.k2_car},${x.k2_gas},${x.k2_sale},${x.k3_car},${x.k3_gas},${x.k3_sale},${x.n_car},${x.n_gas},${x.n_sale},${x.all_car},${x.all_gas},${x.all_sale},${x.tip_morning},${x.tip_night},"${(x.note||'').replace(/"/g,'""')}"\n`;});
+  const blob=new Blob([csv],{type:'text/csv'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='ngv_sales_blue.csv';a.click();
+}
+async function initSupabase(){
+  document.getElementById('supaUrl').value=SUPABASE_URL; document.getElementById('supaKey').value=SUPABASE_KEY;
+  try{
+    supa=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+    const {error}=await supa.from('ngv_sales').select('*').limit(1); if(error) throw error;
+    document.getElementById('supaStatus').textContent='Supabase: Connected 🌊'; document.getElementById('supaStatus').className='px-3 py-1 rounded-full text-xs bg-emerald-500 text-white font-medium';
+    document.getElementById('supaTestResult').textContent='เชื่อมต่อสำเร็จ!';
+    const {data:sales}=await supa.from('ngv_sales').select('*'); if(sales&&sales.length>0){salesData=dedup([...salesData,...sales]);localStorage.setItem('ngv_sales_final',JSON.stringify(salesData));}
+    const {data:atts}=await supa.from('ngv_attendance').select('*'); if(atts&&atts.length>0){attData=dedup([...attData,...atts]);localStorage.setItem('ngv_att_final',JSON.stringify(attData));}
+    renderTable();renderAttTable();renderCharts();renderAttChart();updateSummary();
+    supa.channel('ngv-blue').on('postgres_changes',{event:'*',schema:'public',table:'ngv_sales'},p=>{
+      if(p.eventType==='INSERT'||p.eventType==='UPDATE'){const i=salesData.findIndex(x=>x.date===p.new.date); if(i>=0) salesData[i]=p.new; else salesData.push(p.new); salesData=dedup(salesData); localStorage.setItem('ngv_sales_final',JSON.stringify(salesData)); renderTable();renderCharts();updateSummary();}
+      if(p.eventType==='DELETE'){salesData=salesData.filter(x=>x.date!==p.old.date); localStorage.setItem('ngv_sales_final',JSON.stringify(salesData)); renderTable();renderCharts();}
+    }).on('postgres_changes',{event:'*',schema:'public',table:'ngv_attendance'},p=>{
+      if(p.eventType==='INSERT'||p.eventType==='UPDATE'){const i=attData.findIndex(x=>x.date===p.new.date); if(i>=0) attData[i]=p.new; else attData.push(p.new); attData=dedup(attData); localStorage.setItem('ngv_att_final',JSON.stringify(attData)); renderAttTable();renderAttChart();}
+    }).subscribe();
+  }catch(err){
+    document.getElementById('supaStatus').textContent='Offline'; document.getElementById('supaStatus').className='px-3 py-1 rounded-full text-xs bg-red-500 text-white';
+    document.getElementById('supaTestResult').textContent='Offline: '+err.message; setTimeout(initSupabase,30000);
+  }
+}
+async function testSupa(){showToast('ทดสอบ...');await initSupabase();}
 window.onload=()=>{
   salesData=dedup(salesData); attData=dedup(attData);
-  localStorage.setItem('ngv_sales_final', JSON.stringify(salesData));
-  localStorage.setItem('ngv_att_final', JSON.stringify(attData));
-  renderTable(); renderAttTable(); updateSummary();
-  setTimeout(()=>{ renderCharts(); renderAttChart(); },500);
+  localStorage.setItem('ngv_sales_final',JSON.stringify(salesData)); localStorage.setItem('ngv_att_final',JSON.stringify(attData));
+  renderTable();renderAttTable();updateSummary();
+  setTimeout(()=>{renderCharts();renderAttChart();},600);
   initSupabase();
 };
 </script>
