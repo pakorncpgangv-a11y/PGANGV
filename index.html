@@ -173,13 +173,89 @@ body{font-family:'Prompt',sans-serif}
     <div class="bg-white rounded-2xl shadow border border-sky-100 overflow-auto"><table class="w-full text-xs"><thead class="bg-[#e0f2fe] text-[#0369a1]"><tr><th class="p-3">วันที่</th><th>เช้า</th><th>ดึก</th><th>ใครหยุด</th><th>หมายเหตุ</th><th>ลบ</th></tr></thead><tbody id="attTable"></tbody></table></div>
   </div>
 
-  <div id="tab3" class="hidden bg-white p-6 rounded-2xl shadow border border-sky-100">
-    <h2 class="text-lg font-bold mb-4 text-[#0369a1]">คู่มือ Blue Eco Theme</h2>
-    <div class="space-y-3 text-sm">
-      <p>🎨 <b>ธีมน้ำเงินเป็นมิตรต่อโลก:</b> ฟ้า-น้ำเงิน สื่อถึงน้ำ ความสะอาด พลังงานสะอาด NGV</p>
-      <p>📊 <b>กราฟ 1 แท่งคู่:</b> กะเช้า (น้ำเงินเข้ม #0284c7) vs รวมกะดึก (ฟ้าอ่อน #7dd3fc) แยกกันชัดเจน หน่วย กก.</p>
-      <p>🎯 <b>กราฟ 2 KPI:</b> เส้นแนวนอนสีแดงประที่ 16,000 กก. ถ้าวันไหนเกิน 16,000 จะเป็นสีเขียวโดดเด่น มีป้าย 🏆 และเรืองแสง</p>
-      <p>🌈 <b>สีแถวตาม KPI:</b> ≥16,000 เขียว #22c55e | 15,000-15,999 เหลือง #facc15 | 14,000-14,999 ส้ม #fb923c | ≤13,999 แดง #ef4444</p>
+  <div id="tab3" class="hidden space-y-4">
+    <div class="bg-gradient-to-r from-[#0284c7] to-[#0369a1] text-white p-6 rounded-2xl">
+      <h2 class="text-2xl font-bold">📘 คู่มือการใช้งาน NGV Blue Eco Dashboard ฉบับละเอียด</h2>
+      <p class="text-sm opacity-90 mt-1">สอนทุกขั้นตอน ตั้งแต่เปิดเว็บ กรอกข้อมูล ดูกราฟ Import Excel จนถึง Supabase Realtime</p>
+    </div>
+    <div class="bg-white p-4 rounded-2xl shadow border border-sky-100 flex flex-wrap gap-2 text-xs">
+      <span class="bg-sky-50 px-3 py-1.5 rounded-full border">1. ภาพรวม - ไฟล์เดียวจบ</span>
+      <span class="bg-sky-50 px-3 py-1.5 rounded-full border">2. ยอดขาย - กรอกยังไง</span>
+      <span class="bg-sky-50 px-3 py-1.5 rounded-full border">3. กราฟ KPI 16,000</span>
+      <span class="bg-sky-50 px-3 py-1.5 rounded-full border">4. ขาดลามาสาย</span>
+      <span class="bg-sky-50 px-3 py-1.5 rounded-full border">5. Import Excel</span>
+      <span class="bg-sky-50 px-3 py-1.5 rounded-full border">6. Supabase</span>
+      <span class="bg-sky-50 px-3 py-1.5 rounded-full border">7. สีตาม KPI</span>
+      <span class="bg-sky-50 px-3 py-1.5 rounded-full border">8. Tips</span>
+    </div>
+
+    <div class="bg-white p-6 rounded-2xl shadow border border-sky-100">
+      <h3 class="font-bold text-lg text-[#0369a1] mb-3">1️⃣ ภาพรวมระบบ - เปิดที่ไหนก็ได้</h3>
+      <div class="grid md:grid-cols-2 gap-4 text-sm">
+        <div><b>ไฟล์เดียวจบ:</b> นี่คือไฟล์ HTML เดียว ก๊อปไปวางเครื่องไหนก็เปิดได้เลย ดับเบิลคลิกเปิดด้วย Chrome/Edge ได้ทันที ไม่ต้องติดตั้งโปรแกรม<br><br><b>ทำงาน Offline:</b> ข้อมูลเก็บในเครื่อง (localStorage) ถ้าไม่มีเน็ตก็กรอกได้ พอต่อเน็ตจะ Sync ไป Supabase อัตโนมัติ<br><br><b>ปี พ.ศ. / ค.ศ.:</b> ในเว็บเลือกปี 2568 = 2025, 2569 = 2026 แต่ตอนเก็บเป็น YYYY-MM-DD</div>
+        <div class="bg-[#f0f9ff] p-3 rounded-xl border"><b>ปุ่มบน Header:</b><br>🌊 Supabase Connected - สถานะเชื่อมต่อ เขียวคือต่อแล้ว แดงคือ Offline<br>📥 โหลดเทมเพลต Excel - โหลดไฟล์ตัวอย่างไปกรอก<br>📤 Import Excel - เอาไฟล์ Excel เดิม import เข้ามา<br>📄 Export CSV - โหลดข้อมูลเป็น CSV<br>🧹 ลบวันที่ซ้ำ - ถ้ามีวันที่ซ้ำ (เช่น 2025-06-01 มี 2 แถว) กดปุ่มนี้จะเหลือแถวเดียว (ตัวล่าสุด)<br>⚙️ Setting - ดู URL Supabase ที่ฝังไว้</div>
+      </div>
+    </div>
+
+    <div class="bg-white p-6 rounded-2xl shadow border border-sky-100">
+      <h3 class="font-bold text-lg text-[#0369a1] mb-3">2️⃣ Tab ยอดขาย - วิธีกรอกข้อมูลแบบละเอียด</h3>
+      <div class="space-y-3 text-sm">
+        <div class="bg-yellow-50 border-l-4 border-yellow-400 p-3 rounded"><b>สูตรคำนวณอัตโนมัติ (ไม่ต้องกรอกเอง):</b><br>รวมกะดึก รถ = รถกะ2(20-24) + รถกะ3(00-08)<br>รวมกะดึก ก๊าซ = ก๊าซกะ2 + ก๊าซกะ3<br>รวมกะดึก ยอดขาย = ยอดกะ2 + ยอดกะ3<br>ปิดวัน รถ = รถกะ1+กะ2+กะ3, ก๊าซ = ก๊าซกะ1+กะ2+กะ3, เงิน = ยอดกะ1+กะ2+กะ3</div>
+        <ol class="list-decimal ml-6 space-y-2">
+          <li><b>เลือกวันที่:</b> ช่องวันที่ * ต้องเลือกก่อน เช่น 2025-06-01 ถ้าวันนี้มีอยู่แล้ว ระบบจะทับของเดิม (upsert)</li>
+          <li><b>กรอกกะเช้า 08.00-20.00:</b> รถ, จำนวนก๊าซ (กก. ทศนิยม 3 ตำแหน่ง), ยอดขาย (บาท)</li>
+          <li><b>กรอกกะ2 20.00-24.00:</b> รถ, ก๊าซ, ยอดขาย</li>
+          <li><b>กรอกกะ3 00.00-08.00:</b> รถ, ก๊าซ, ยอดขาย</li>
+          <li>ระบบคำนวณ <b>รวมกะดึก</b> และ <b>ปิดวัน</b> ให้ทันที</li>
+          <li><b>ทิปเช้า/ทิปกดึก:</b> ใส่จำนวนเงินทิป</li>
+          <li><b>หมายเหตุ:</b> ใส่สาเหตุ เช่น "ปิดหัวจ่าย 2 ซ่อมบำรุง", "ตรวจ payin"</li>
+          <li>ดู <b>KPI Preview</b> ด้านล่างฟอร์ม จะบอกทันทีว่าผ่าน 16,000 ไหม</li>
+          <li>กด <b>บันทึก (ทับถ้าซ้ำ)</b> - ถ้าวันที่ซ้ำจะทับของเดิมเลย</li>
+          <li>ข้อมูลจะไปโผล่ในตารางด้านล่าง พร้อมสีตาม KPI และ Sync ไป Supabase อัตโนมัติ</li>
+        </ol>
+        <p class="bg-sky-50 p-3 rounded-xl border text-xs"><b>แก้ไข/ลบ:</b> ในตารางกด "แก้" จะดึงข้อมูลขึ้นมาที่ฟอร์มด้านบนให้แก้แล้วบันทึกทับ, กด "ลบ" จะลบทั้งในเครื่องและ Supabase</p>
+      </div>
+    </div>
+
+    <div class="bg-white p-6 rounded-2xl shadow border border-sky-100">
+      <h3 class="font-bold text-lg text-[#0369a1] mb-3">3️⃣ กราฟ - ดู KPI 16,000 แบบโดดเด่น</h3>
+      <div class="grid md:grid-cols-2 gap-4 text-sm">
+        <div class="border rounded-xl p-4"><h4 class="font-bold mb-2">📊 แบบที่ 1: แท่งคู่ กะเช้า vs รวมกะดึก (กก.)</h4><p>แท่งน้ำเงินเข้ม #0284c7 = กะเช้า 08-20<br>แท่งฟ้าอ่อน #7dd3fc = รวมกะดึก<br>ใช้ดูว่ากะไหนขายดีกว่า<br>เลือกช่วงเวลา 7วัน/30วัน/เดือนนี้/ปี2568/2569/ทั้งหมด/กำหนดเอง ได้</p></div>
+        <div class="border rounded-xl p-4 bg-emerald-50/50"><h4 class="font-bold mb-2">🎯 แบบที่ 2: ยอดทั้งวัน + เส้น KPI 16,000 กก.</h4><p>แท่งสีตาม KPI:<br>🟢 เขียว ≥16,000 = ผ่าน KPI โดดเด่น มีเงาเรืองแสง + 🏆<br>🟡 เหลือง 15,000-15,999 = ใกล้เป้า<br>🟠 ส้ม 14,000-14,999 = ปานกลาง<br>🔴 แดง ≤13,999 = ต่ำกว่าเป้า<br>เส้นประแดงแนวนอนที่ 16,000 กก. คือเป้าหมาย</p></div>
+      </div>
+    </div>
+
+    <div class="bg-white p-6 rounded-2xl shadow border border-sky-100">
+      <h3 class="font-bold text-lg text-[#0369a1] mb-3">4️⃣ Tab ขาดลามาสาย - วิธีกรอก</h3>
+      <ol class="list-decimal ml-6 text-sm space-y-1"><li>เลือกวันที่</li><li>กรอก กะเช้า มาทำกี่คน, ขาดกี่คน, กะดึก มาทำกี่คน, ขาดกี่คน</li><li>ช่อง "ใครหยุดบ้าง" พิมพ์ชื่อ เช่น "เป้ หยุด, ดา ลา"</li><li>ช่อง "หมายเหตุ" เช่น "ลาป่วย"</li><li>กดบันทึก - ถ้าวันที่ซ้ำจะทับของเดิม</li><li>กราฟแท่งด้านบนแสดง มาทำ vs ขาด แยกสี</li></ol>
+    </div>
+
+    <div class="bg-white p-6 rounded-2xl shadow border border-sky-100">
+      <h3 class="font-bold text-lg text-[#0369a1] mb-3">5️⃣ Import Excel - โครงสร้างคอลัมน์ที่ต้องมี</h3>
+      <div class="space-y-3 text-sm">
+        <div class="bg-emerald-50 p-3 rounded-xl border border-emerald-200"><b>ขั้นตอน:</b> 1. กด 📥 โหลดเทมเพลต Excel → 2. เปิดไฟล์ด้วย Excel → 3. กรอกข้อมูลตามคอลัมน์ → 4. กด 📤 Import Excel เลือกไฟล์ → 5. ระบบโชว์ว่า Import ได้กี่แถว → 6. Auto Sync ไป Supabase</div>
+        <div class="border rounded-xl overflow-hidden"><div class="bg-[#0284c7] text-white p-3 font-semibold">📊 Sheet Data base / sales</div><div class="p-3 overflow-auto"><table class="w-full text-xs border"><thead class="bg-sky-100"><tr><th class="border p-2">ต้องมี</th><th class="border p-2">ชื่อที่รับได้ทั้งหมด</th><th class="border p-2">ตัวอย่าง</th></tr></thead><tbody><tr><td class="border p-2 font-bold">วันที่</td><td class="border p-2">date, วันที่, วัน</td><td class="border p-2">2025-06-01</td></tr><tr><td class="border p-2">กะเช้า รถ</td><td class="border p-2">k1_car, รถ</td><td class="border p-2">650</td></tr><tr><td class="border p-2">กะเช้า ก๊าซ</td><td class="border p-2">k1_gas, จำนวนก๊าซ, ก๊าซ</td><td class="border p-2">8500.5</td></tr><tr><td class="border p-2">กะเช้า ยอดขาย</td><td class="border p-2">k1_sale, ยอดขาย</td><td class="border p-2">145000</td></tr><tr><td class="border p-2">กะ2 รถ</td><td class="border p-2">k2_car, รถ.1</td><td class="border p-2">200</td></tr><tr><td class="border p-2">กะ2 ก๊าซ</td><td class="border p-2">k2_gas, จำนวนก๊าซ.1</td><td class="border p-2">3000</td></tr><tr><td class="border p-2">กะ2 ยอดขาย</td><td class="border p-2">k2_sale, ยอดขาย.1</td><td class="border p-2">50000</td></tr><tr><td class="border p-2">กะ3 รถ</td><td class="border p-2">k3_car, รถ.2</td><td class="border p-2">180</td></tr><tr><td class="border p-2">กะ3 ก๊าซ</td><td class="border p-2">k3_gas, จำนวนก๊าซ.2</td><td class="border p-2">2800</td></tr><tr><td class="border p-2">กะ3 ยอดขาย</td><td class="border p-2">k3_sale, ยอดขาย.2</td><td class="border p-2">45000</td></tr><tr><td class="border p-2">ทิปเช้า</td><td class="border p-2">tip_morning, ทิปเช้า</td><td class="border p-2">100</td></tr><tr><td class="border p-2">ทิปกดึก</td><td class="border p-2">tip_night, ทิปกดึก</td><td class="border p-2">80</td></tr><tr><td class="border p-2">หมายเหตุ</td><td class="border p-2">note, หมายเหตุ, ซ่อม</td><td class="border p-2">ปิดหัวจ่าย 2 ซ่อม</td></tr></tbody></table></div></div>
+        <div class="border rounded-xl overflow-hidden"><div class="bg-[#0ea5e9] text-white p-3 font-semibold">👥 Sheet ขาดลามาสาย</div><div class="p-3 overflow-auto"><table class="w-full text-xs border"><thead class="bg-sky-100"><tr><th class="border p-2">คอลัมน์</th><th class="border p-2">ชื่อรับ</th><th class="border p-2">ตัวอย่าง</th></tr></thead><tbody><tr><td class="border p-2">วันที่</td><td class="border p-2">date, วันที่</td><td class="border p-2">2025-06-01</td></tr><tr><td class="border p-2">กะเช้า มาทำ</td><td class="border p-2">m_work, กะเช้า</td><td class="border p-2">7</td></tr><tr><td class="border p-2">กะเช้า ขาด</td><td class="border p-2">m_abs, ขาด</td><td class="border p-2">1</td></tr><tr><td class="border p-2">กะดึก มาทำ</td><td class="border p-2">n_work, กะดึก</td><td class="border p-2">3</td></tr><tr><td class="border p-2">กะดึก ขาด</td><td class="border p-2">n_abs, ขาด.1</td><td class="border p-2">0</td></tr><tr><td class="border p-2">ใครหยุด</td><td class="border p-2">names, ใครหยุด</td><td class="border p-2">เป้ หยุด</td></tr><tr><td class="border p-2">หมายเหตุ</td><td class="border p-2">note, หมายเหตุ</td><td class="border p-2">ลาป่วย</td></tr></tbody></table></div></div>
+        <p class="text-xs text-gray-600">💡 วันที่ซ้ำใน Excel จะถูกลบให้เหลือตัวล่าสุดอัตโนมัติ, รวมกะดึกและปิดวันคำนวณ auto</p>
+      </div>
+    </div>
+
+    <div class="bg-white p-6 rounded-2xl shadow border border-sky-100">
+      <h3 class="font-bold text-lg text-[#0369a1] mb-3">6️⃣ Supabase - Connect ตลอดเวลา</h3>
+      <div class="text-sm space-y-2"><p>ระบบฝัง URL https://abntmmyshbgxoeuxuhwh.supabase.co และ anon key ไว้แล้ว เปิดเว็บมาจะ Connect อัตโนมัติ</p><p><b>Realtime:</b> แก้เครื่องไหน อีกเครื่องเห็นทันที ไม่ต้องรีเฟรช</p><pre class="bg-gray-900 text-green-400 p-3 rounded-xl text-xs overflow-auto">create table ngv_sales (date text primary key, k1_car int, k1_gas float, k1_sale float, k2_car int, k2_gas float, k2_sale float, k3_car int, k3_gas float, k3_sale float, n_car int, n_gas float, n_sale float, all_car int, all_gas float, all_sale float, tip_morning float, tip_night float, note text);
+create table ngv_attendance (date text primary key, m_work int, m_abs int, n_work int, n_abs int, names text, note text);
+alter publication supabase_realtime add table ngv_sales;
+alter publication supabase_realtime add table ngv_attendance;</pre></div>
+    </div>
+
+    <div class="bg-white p-6 rounded-2xl shadow border border-sky-100">
+      <h3 class="font-bold text-lg text-[#0369a1] mb-3">7️⃣ สีตาม KPI 16,000 กก.</h3>
+      <div class="grid md:grid-cols-2 gap-4 text-sm"><div><div class="space-y-2 mt-2"><div class="flex items-center gap-2"><span class="w-6 h-6 bg-emerald-500 rounded"></span> ≥16,000 เขียว + 🏆 ผ่าน KPI โดดเด่น เรืองแสง</div><div class="flex items-center gap-2"><span class="w-6 h-6 bg-yellow-400 rounded"></span> 15,000-15,999 เหลือง ใกล้เป้า</div><div class="flex items-center gap-2"><span class="w-6 h-6 bg-orange-400 rounded"></span> 14,000-14,999 ส้ม ปานกลาง</div><div class="flex items-center gap-2"><span class="w-6 h-6 bg-red-500 rounded"></span> ≤13,999 แดง ต่ำกว่าเป้า</div></div></div><div><p><b>กราฟ:</b> เส้นประแดงที่ 16,000 คือเป้า, แท่งเขียวที่เกินเส้นคือวันที่ทำได้เกินเป้า มี tooltip "🏆 ผ่าน KPI โดดเด่น!"</p><p class="mt-2"><b>Summary:</b> แสดงยอดวันนี้, เฉลี่ย/วัน, จำนวนวันผ่าน KPI (%)</p></div></div>
+    </div>
+
+    <div class="bg-gradient-to-r from-sky-50 to-blue-50 p-6 rounded-2xl shadow border border-sky-200">
+      <h3 class="font-bold text-lg text-[#0369a1] mb-3">8️⃣ Tips การใช้งาน</h3>
+      <ul class="list-disc ml-6 text-sm space-y-1"><li>ก็อปไฟล์ไปเครื่องไหนก็ใช้ได้ ไฟล์เดียวจบ</li><li>วันที่ซ้ำระบบทับให้อัตโนมัติ หรือกดปุ่ม "ลบวันที่ซ้ำ"</li><li>กราฟถ้าไม่มีข้อมูลจะสร้างตัวอย่าง 30 วันให้ดู</li><li>Export CSV เอาไปทำรายงานต่อ</li><li>ไม่ล็อกหน้าจอ เลื่อนตามหน้าได้ปกติ</li><li>มือถือก็เปิดได้ responsive</li><li>ข้อมูลอยู่ทั้งในเครื่องและ Supabase ลบ cache ก็ดึงกลับมาได้</li></ul>
     </div>
   </div>
 </div>
