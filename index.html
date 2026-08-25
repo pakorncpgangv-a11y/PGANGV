@@ -1,27 +1,6 @@
 <!DOCTYPE html>
 <html lang="th">
-<head><style>
-@font-face {
-  font-family: "Optimistic";
-  font-style: normal;
-  font-weight: 400 600;
-  font-display: swap;
-  src: url("/fonts/OptimisticAI_VF_Optimized.woff2") format("woff2");
-}
-@font-face {
-  font-family: "Optimistic Mono";
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url("/fonts/OptimisticMono_W_TextRegular.woff2") format("woff2");
-}
-:where(html) {
-  font-family: "Optimistic", system-ui, sans-serif;
-}
-:where(code, pre, kbd, samp) {
-  font-family: "Optimistic Mono", ui-monospace, monospace;
-}
-</style>
+<head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>NGV Dashboard - กรุงเทพกรีฑา | Blue Eco Theme</title>
@@ -29,6 +8,7 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@3.0.1/dist/chartjs-plugin-annotation.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 body{font-family:'Prompt',sans-serif}
@@ -52,8 +32,10 @@ body{font-family:'Prompt',sans-serif}
     </div>
     <div class="flex gap-2 items-center flex-wrap">
       <span id="supaStatus" class="px-3 py-1 rounded-full text-xs bg-yellow-400 text-black font-medium">กำลังเชื่อมต่อ...</span>
+      <button onclick="downloadTemplate()" class="bg-emerald-500 hover:bg-emerald-600 px-3 py-1.5 rounded-lg text-sm text-white">📥 เทมเพลต</button>
+      <label class="bg-white/20 hover:bg-white/30 px-3 py-1.5 rounded-lg text-sm cursor-pointer">📤 Import<input type="file" accept=".xlsx,.xls" class="hidden" onchange="importExcel(event)"></label>
       <button onclick="exportCSV()" class="bg-white/20 hover:bg-white/30 px-3 py-1.5 rounded-lg text-sm">Export</button>
-      <button onclick="dedupAll()" class="bg-white/20 hover:bg-white/30 px-3 py-1.5 rounded-lg text-sm">ลบวันที่ซ้ำ</button>
+      <button onclick="dedupAll()" class="bg-white/20 hover:bg-white/30 px-3 py-1.5 rounded-lg text-sm">ลบซ้ำ</button>
       <button onclick="document.getElementById('settingModal').classList.remove('hidden')" class="bg-white text-[#0369a1] px-4 py-1.5 rounded-lg font-semibold text-sm shadow">Setting</button>
     </div>
   </div>
@@ -137,11 +119,14 @@ body{font-family:'Prompt',sans-serif}
         <div><label class="text-xs">ทิปดึก</label><input type="number" id="s_tip_n" class="w-full border rounded-lg px-2 py-2 text-sm"></div>
         <div class="col-span-2"><label class="text-xs">หมายเหตุ (ซ่อม ปิดหัวจ่าย ตรวจpayin)</label><textarea id="s_note" rows="2" class="w-full border border-sky-200 rounded-lg px-3 py-2 text-sm" placeholder="เช่น ปิดหัวจ่าย 2 ซ่อม..."></textarea></div>
       </div>
-      <div class="mt-3 flex gap-2">
+      <div class="mt-3 flex gap-2 flex-wrap">
         <button onclick="saveSale()" class="bg-[#0284c7] hover:bg-[#0369a1] text-white px-6 py-2.5 rounded-xl font-medium shadow">บันทึก (ทับถ้าซ้ำ)</button>
         <button onclick="clearSaleForm()" class="bg-gray-100 px-4 py-2.5 rounded-xl text-sm">ล้าง</button>
+        <label class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2.5 rounded-xl text-sm cursor-pointer">📤 Import Excel<input type="file" accept=".xlsx,.xls" class="hidden" onchange="importExcel(event)"></label>
+        <button onclick="downloadTemplate()" class="bg-sky-100 text-sky-700 px-4 py-2.5 rounded-xl text-sm border">📥 เทมเพลต</button>
       </div>
       <div id="kpiPreview" class="mt-3 p-3 rounded-xl text-sm hidden"></div>
+      <div id="importPreview" class="mt-3 hidden p-3 bg-sky-50 rounded-xl border border-sky-200 text-xs"></div>
     </div>
 
     <div class="bg-white rounded-2xl shadow border border-sky-100 overflow-auto">
@@ -460,28 +445,203 @@ function exportCSV(){
   salesData.forEach(x=>{csv+=`${x.date},${x.k1_car},${x.k1_gas},${x.k1_sale},${x.k2_car},${x.k2_gas},${x.k2_sale},${x.k3_car},${x.k3_gas},${x.k3_sale},${x.n_car},${x.n_gas},${x.n_sale},${x.all_car},${x.all_gas},${x.all_sale},${x.tip_morning},${x.tip_night},"${(x.note||'').replace(/"/g,'""')}"\n`;});
   const blob=new Blob([csv],{type:'text/csv'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='ngv_sales_blue.csv';a.click();
 }
+function downloadTemplate(){
+  const wb=XLSX.utils.book_new();
+  const salesHeader=['date','k1_car','k1_gas','k1_sale','k2_car','k2_gas','k2_sale','k3_car','k3_gas','k3_sale','tip_morning','tip_night','note'];
+  const salesSample=[salesHeader,['2025-06-01',650,8500.5,145000,200,3000,50000,180,2800,45000,100,80,'ตัวอย่าง ปิดหัวจ่าย 2'],['2025-06-02',700,9200,155000,220,3200,52000,190,3000,48000,120,90,'']];
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(salesSample), 'Data base');
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet([['date','m_work','m_abs','n_work','n_abs','names','note'],['2025-06-01',7,1,3,0,'เป้ หยุด','']]), 'ขาดลามาสาย');
+  XLSX.writeFile(wb, 'NGV_Template_BlueEco.xlsx');
+  showToast('โหลดเทมเพลตแล้ว');
+}
+function importExcel(event){
+  const file=event.target.files[0]; if(!file) return;
+  const reader=new FileReader();
+  reader.onload=function(e){
+    try{
+      const data=new Uint8Array(e.target.result);
+      const wb=XLSX.read(data,{type:'array'});
+      let sheetName=wb.SheetNames.find(n=> n.toLowerCase().includes('data') || n.toLowerCase().includes('sales') || n.includes('base')) || wb.SheetNames[0];
+      const ws=wb.Sheets[sheetName];
+      const json=XLSX.utils.sheet_to_json(ws,{defval:''});
+      let newSales=[];
+      json.forEach(row=>{
+        const lower={}; Object.keys(row).forEach(k=> lower[k.toString().trim().toLowerCase()]=row[k]);
+        let dateStr= lower['date'] || lower['วันที่'] || ''; if(!dateStr) return;
+        let dateObj=new Date(dateStr); if(isNaN(dateObj) && typeof dateStr==='number'){ dateObj=new Date((dateStr-25569)*86400*1000); } if(isNaN(dateObj)) return;
+        const date=dateObj.toISOString().slice(0,10);
+        const getVal=(...keys)=>{ for(let k of keys){ const v=lower[k.toLowerCase()]; if(v!=='' && v!==undefined) return v; } return 0; };
+        const obj={
+          date,
+          k1_car: parseInt(getVal('k1_car','รถ'))||0,
+          k1_gas: parseFloat(getVal('k1_gas','จำนวนก๊าซ','ก๊าซ'))||0,
+          k1_sale: parseFloat(getVal('k1_sale','ยอดขาย'))||0,
+          k2_car: parseInt(getVal('k2_car','รถ.1'))||0,
+          k2_gas: parseFloat(getVal('k2_gas','จำนวนก๊าซ.1'))||0,
+          k2_sale: parseFloat(getVal('k2_sale','ยอดขาย.1'))||0,
+          k3_car: parseInt(getVal('k3_car','รถ.2'))||0,
+          k3_gas: parseFloat(getVal('k3_gas','จำนวนก๊าซ.2'))||0,
+          k3_sale: parseFloat(getVal('k3_sale','ยอดขาย.2'))||0,
+          tip_morning: parseFloat(getVal('tip_morning','ทิปเช้า'))||0,
+          tip_night: parseFloat(getVal('tip_night','ทิปกดึก'))||0,
+          note: (getVal('note','หมายเหตุ','ซ่อม')||'').toString(),
+        };
+        obj.n_car=obj.k2_car+obj.k3_car; obj.n_gas=obj.k2_gas+obj.k3_gas; obj.n_sale=obj.k2_sale+obj.k3_sale;
+        obj.all_car=obj.k1_car+obj.k2_car+obj.k3_car; obj.all_gas=obj.k1_gas+obj.k2_gas+obj.k3_gas; obj.all_sale=obj.k1_sale+obj.k2_sale+obj.k3_sale;
+        newSales.push(obj);
+      });
+      if(newSales.length>0){
+        salesData=dedup([...salesData, ...newSales]);
+        localStorage.setItem('ngv_sales_final', JSON.stringify(salesData));
+        if(supa){ newSales.forEach(r=> supa.from('ngv_sales').upsert(r,{onConflict:'date'}).then(()=>{})); }
+      }
+      renderTable(); renderCharts(); updateSummary();
+      const preview=document.getElementById('importPreview');
+      if(preview){ preview.classList.remove('hidden'); preview.innerHTML=`✅ Import ${newSales.length} แถว | ซ้ำทับอัตโนมัติ`; }
+      showToast(`Import ${newSales.length} แถว สำเร็จ`);
+    }catch(err){ showToast('Import ล้มเหลว: '+err.message); }
+    event.target.value='';
+  };
+  reader.readAsArrayBuffer(file);
+}
+let realtimeChannel=null;
+let pollInterval=null;
+
 async function initSupabase(){
-  document.getElementById('supaUrl').value=SUPABASE_URL; document.getElementById('supaKey').value=SUPABASE_KEY;
+  document.getElementById('supaUrl').value=SUPABASE_URL; 
+  document.getElementById('supaKey').value=SUPABASE_KEY;
   try{
-    supa=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
-    const {error}=await supa.from('ngv_sales').select('*').limit(1); if(error) throw error;
-    document.getElementById('supaStatus').textContent='Supabase: Connected 🌊'; document.getElementById('supaStatus').className='px-3 py-1 rounded-full text-xs bg-emerald-500 text-white font-medium';
-    document.getElementById('supaTestResult').textContent='เชื่อมต่อสำเร็จ!';
-    const {data:sales}=await supa.from('ngv_sales').select('*'); if(sales&&sales.length>0){salesData=dedup([...salesData,...sales]);localStorage.setItem('ngv_sales_final',JSON.stringify(salesData));}
-    const {data:atts}=await supa.from('ngv_attendance').select('*'); if(atts&&atts.length>0){attData=dedup([...attData,...atts]);localStorage.setItem('ngv_att_final',JSON.stringify(attData));}
-    renderTable();renderAttTable();renderCharts();renderAttChart();updateSummary();
-    supa.channel('ngv-blue').on('postgres_changes',{event:'*',schema:'public',table:'ngv_sales'},p=>{
-      if(p.eventType==='INSERT'||p.eventType==='UPDATE'){const i=salesData.findIndex(x=>x.date===p.new.date); if(i>=0) salesData[i]=p.new; else salesData.push(p.new); salesData=dedup(salesData); localStorage.setItem('ngv_sales_final',JSON.stringify(salesData)); renderTable();renderCharts();updateSummary();}
-      if(p.eventType==='DELETE'){salesData=salesData.filter(x=>x.date!==p.old.date); localStorage.setItem('ngv_sales_final',JSON.stringify(salesData)); renderTable();renderCharts();}
-    }).on('postgres_changes',{event:'*',schema:'public',table:'ngv_attendance'},p=>{
-      if(p.eventType==='INSERT'||p.eventType==='UPDATE'){const i=attData.findIndex(x=>x.date===p.new.date); if(i>=0) attData[i]=p.new; else attData.push(p.new); attData=dedup(attData); localStorage.setItem('ngv_att_final',JSON.stringify(attData)); renderAttTable();renderAttChart();}
-    }).subscribe();
+    // สำคัญ: สำหรับ GitHub Pages / Render ต้องใช้ anon key + เปิด RLS
+    supa=supabase.createClient(SUPABASE_URL,SUPABASE_KEY, {
+      realtime: { params: { eventsPerSecond: 10 } },
+      auth: { persistSession: false }
+    });
+    
+    // Test connection
+    const {data:testData, error:testError}=await supa.from('ngv_sales').select('date').limit(1);
+    if(testError) throw testError;
+    
+    document.getElementById('supaStatus').textContent='Supabase: Connected 🌊 Realtime ON'; 
+    document.getElementById('supaStatus').className='px-3 py-1 rounded-full text-xs bg-emerald-500 text-white font-medium';
+    document.getElementById('supaTestResult').innerHTML='✅ เชื่อมต่อสำเร็จ!<br><span class="text-emerald-600">Realtime พร้อม - แก้เครื่องไหน อีกเครื่องเห็นทันที</span>';
+    
+    // ดึงข้อมูลทั้งหมดครั้งแรก
+    await fetchAllData();
+    
+    // เปิด Realtime Channel แบบ robust
+    setupRealtime();
+
+    // Polling fallback ทุก 15 วิ สำหรับกรณี WebSocket โดนบล็อกบน GitHub Pages
+    if(pollInterval) clearInterval(pollInterval);
+    pollInterval=setInterval(async ()=>{
+      console.log('Polling fallback check...');
+      await fetchAllData(true);
+    }, 15000);
+
   }catch(err){
-    document.getElementById('supaStatus').textContent='Offline'; document.getElementById('supaStatus').className='px-3 py-1 rounded-full text-xs bg-red-500 text-white';
-    document.getElementById('supaTestResult').textContent='Offline: '+err.message; setTimeout(initSupabase,30000);
+    console.error('Supa error', err);
+    document.getElementById('supaStatus').textContent='Offline: '+err.message.slice(0,30); 
+    document.getElementById('supaStatus').className='px-3 py-1 rounded-full text-xs bg-red-500 text-white';
+    document.getElementById('supaTestResult').innerHTML=`❌ Offline: ${err.message}<br><br>
+      <b>วิธีแก้สำหรับ GitHub Pages / Render:</b><br>
+      1. ไป Supabase Dashboard > Database > Tables > ngv_sales > Enable Realtime<br>
+      2. ไป Authentication > Policies > สร้าง Policy ให้ anon อ่าน/เขียนได้<br>
+      3. รัน SQL:<br>
+      <code class="bg-gray-100 p-1 text-[10px]">alter publication supabase_realtime add table ngv_sales;<br>alter publication supabase_realtime add table ngv_attendance;<br>create policy "Allow anon all" on ngv_sales for all using (true) with check (true);<br>create policy "Allow anon all" on ngv_attendance for all using (true) with check (true);</code>`;
+    setTimeout(initSupabase,30000);
   }
 }
-async function testSupa(){showToast('ทดสอบ...');await initSupabase();}
+
+async function fetchAllData(isPolling=false){
+  try{
+    const {data:sales}=await supa.from('ngv_sales').select('*').order('date',{ascending:true});
+    if(sales && sales.length>0){
+      const merged=dedup([...salesData, ...sales]);
+      const changed=JSON.stringify(merged)!==JSON.stringify(salesData);
+      if(changed || !isPolling){
+        salesData=merged;
+        localStorage.setItem('ngv_sales_final',JSON.stringify(salesData));
+        renderTable();renderCharts();updateSummary();
+        if(isPolling && changed) showToast('🔄 Sync ข้อมูลใหม่จาก Supabase');
+      }
+    }
+    const {data:atts}=await supa.from('ngv_attendance').select('*').order('date',{ascending:true});
+    if(atts && atts.length>0){
+      const merged=dedup([...attData, ...atts]);
+      if(JSON.stringify(merged)!==JSON.stringify(attData) || !isPolling){
+        attData=merged;
+        localStorage.setItem('ngv_att_final',JSON.stringify(attData));
+        renderAttTable();renderAttChart();
+      }
+    }
+  }catch(e){ console.log('fetch error',e); }
+}
+
+function setupRealtime(){
+  if(realtimeChannel){ try{ supa.removeChannel(realtimeChannel); }catch(e){} }
+  
+  console.log('Setting up Realtime channel...');
+  realtimeChannel=supa.channel('ngv-blue-realtime-'+Date.now(), { config: { broadcast: { self: true } } })
+    .on('postgres_changes',{event:'*', schema:'public', table:'ngv_sales'}, (payload)=>{
+      console.log('Realtime ngv_sales:', payload);
+      showToast('⚡ Realtime: มีการอัปเดตยอดขาย');
+      if(payload.eventType==='INSERT' || payload.eventType==='UPDATE'){
+        const i=salesData.findIndex(x=>x.date===payload.new.date);
+        if(i>=0) salesData[i]=payload.new; else salesData.push(payload.new);
+        salesData=dedup(salesData);
+        localStorage.setItem('ngv_sales_final',JSON.stringify(salesData));
+        renderTable();renderCharts();updateSummary();
+      }
+      if(payload.eventType==='DELETE'){
+        salesData=salesData.filter(x=>x.date!==payload.old.date);
+        localStorage.setItem('ngv_sales_final',JSON.stringify(salesData));
+        renderTable();renderCharts();updateSummary();
+      }
+    })
+    .on('postgres_changes',{event:'*', schema:'public', table:'ngv_attendance'}, (payload)=>{
+      console.log('Realtime attendance:', payload);
+      showToast('⚡ Realtime: อัปเดตพนักงาน');
+      if(payload.eventType==='INSERT' || payload.eventType==='UPDATE'){
+        const i=attData.findIndex(x=>x.date===payload.new.date);
+        if(i>=0) attData[i]=payload.new; else attData.push(payload.new);
+        attData=dedup(attData);
+        localStorage.setItem('ngv_att_final',JSON.stringify(attData));
+        renderAttTable();renderAttChart();
+      }
+      if(payload.eventType==='DELETE'){
+        attData=attData.filter(x=>x.date!==payload.old.date);
+        localStorage.setItem('ngv_att_final',JSON.stringify(attData));
+        renderAttTable();renderAttChart();
+      }
+    })
+    .subscribe((status, err)=>{
+      console.log('Realtime status:', status, err);
+      if(status==='SUBSCRIBED'){
+        document.getElementById('supaStatus').textContent='Supabase: Realtime ✅';
+        document.getElementById('supaStatus').className='px-3 py-1 rounded-full text-xs bg-emerald-600 text-white font-medium animate-pulse';
+        showToast('✅ Realtime เชื่อมต่อแล้ว - แก้เครื่องไหนเห็นทันที');
+      }
+      if(status==='CHANNEL_ERROR' || status==='TIMED_OUT'){
+        console.error('Realtime error, retrying...', err);
+        document.getElementById('supaStatus').textContent='Realtime ลองใหม่...';
+        setTimeout(setupRealtime, 5000);
+      }
+    });
+}
+
+async function testSupa(){
+  showToast('ทดสอบ Realtime...');
+  await initSupabase();
+  // ทดสอบเขียนแล้วลบ
+  if(supa){
+    const testDate='2000-01-01';
+    await supa.from('ngv_sales').upsert({date:testDate, k1_car:0, note:'test realtime'}, {onConflict:'date'});
+    setTimeout(async ()=>{
+      await supa.from('ngv_sales').delete().eq('date', testDate);
+      showToast('ทดสอบ Realtime สำเร็จ ถ้าเห็น toast 2 ครั้ง = ผ่าน');
+    }, 1000);
+  }
+}
 window.onload=()=>{
   salesData=dedup(salesData); attData=dedup(attData);
   localStorage.setItem('ngv_sales_final',JSON.stringify(salesData)); localStorage.setItem('ngv_att_final',JSON.stringify(attData));
@@ -490,5 +650,5 @@ window.onload=()=>{
   initSupabase();
 };
 </script>
-<script>(function(){var loc=location.href.replace(/#.*$/,"");var ATTR_NAMES=["data-product-id","data-productid","data-product_id","product-id","productid","product_id","data-source-entity-id","source-entity-id","source_entity_id","data-product","data-metadata","data-meta"];var DATASET_KEYS=["productId","productid","product_id","sourceEntityId","sourceentityid","source_entity_id","product","metadata","meta"];function readProductId(value){if(typeof value!=="string"||value.length===0)return null;if(/^[0-9]{6,}$/.test(value))return value;var match=value.match(/(?:product(?:_|-)?id|source(?:_|-)?entity(?:_|-)?id)["'=:\s]+([0-9]{6,})/i);return match?match[1]:null}function extractProductId(start){for(var node=start;node&&node!==document.body;node=node.parentElement){for(var i=0;i<ATTR_NAMES.length;i++){var attrValue=node.getAttribute&&node.getAttribute(ATTR_NAMES[i]);var attrProductId=readProductId(attrValue);if(attrProductId)return attrProductId}var dataset=node.dataset||null;if(dataset){for(var j=0;j<DATASET_KEYS.length;j++){var dataValue=dataset[DATASET_KEYS[j]];var dataProductId=readProductId(dataValue);if(dataProductId)return dataProductId}}}return null}function isInlineMediaSlotElement(node){return !!(node&&node.getAttribute&&node.getAttribute("data-clippy-inline-media-slot")!==null)}function findInlineMediaSlot(start){for(var node=start;node&&node!==document.body;node=node.parentElement){if(isInlineMediaSlotElement(node))return node}return null}function readInlineMediaUrl(node){if(!node)return null;return node.getAttribute&&((node.getAttribute("data-clippy-inline-media-url")||node.getAttribute("data-url")||node.getAttribute("data_url")))||node.href||null}function stripHash(url){return String(url).replace(/#.*$/,"")}function urlsMatch(a,b){if(!a||!b)return false;try{return stripHash(new URL(a,loc).href)===stripHash(new URL(b,loc).href)}catch(_){return stripHash(a)===stripHash(b)}}function isFirstPartyReelUrl(value){try{var url=new URL(value,loc);if(url.protocol!=="https:")return false;var host=url.hostname.toLowerCase();var supported=host==="instagram.com"||host.endsWith(".instagram.com")||host==="facebook.com"||host.endsWith(".facebook.com");return supported&&/\/reels?\//i.test(url.pathname)}catch(_){return false}}function isInlineMediaUrlClick(node,href){var slot=findInlineMediaSlot(node);if(!slot)return false;var slotUrl=readInlineMediaUrl(slot);if(slotUrl)return urlsMatch(href,slotUrl);return isFirstPartyReelUrl(href)}function findDataHref(start){for(var node=start;node&&node!==document.body;node=node.parentElement){if(node.getAttribute){var href=node.getAttribute("data-href")||node.getAttribute("data-url");if(href)return{href:href,node:node}}}return null}var nativeOpen=window.open;window.open=function(url){if(parent!==window&&typeof url==="string"&&/^https?:\/\//.test(url)){parent.postMessage({type:"ecto:usercontent-link-click",href:url},"*");return null}return nativeOpen?nativeOpen.apply(window,arguments):null};document.addEventListener("click",function(e){var target=e.target instanceof Element?e.target:null;if(!target)return;if(parent===window)return;var a=target.closest?target.closest("a[href]"):null;if(a&&a.href&&/^https?:\/\//.test(a.href)&&a.href.replace(/#.*$/,"")!==loc){if(isInlineMediaUrlClick(a,a.href))return;var productId=extractProductId(target)||extractProductId(a);if(productId){e.preventDefault();parent.postMessage({type:"ecto-artifact-link-click",productId:productId},"*");return}e.preventDefault();parent.postMessage({type:"ecto:usercontent-link-click",href:a.href},"*");return}var dataHref=findDataHref(target);if(dataHref&&/^https?:\/\//.test(dataHref.href)&&dataHref.href.replace(/#.*$/,"")!==loc){if(isInlineMediaUrlClick(dataHref.node,dataHref.href))return;e.preventDefault();parent.postMessage({type:"ecto:usercontent-link-click",href:dataHref.href},"*")}},true)})();</script><script>(function(){var FOCUS_TYPE="ecto:artifact-focus-request";var CLOSE_TYPE="ecto:artifact-close-request";function focusArtifactDocument(){var body=document.body;if(!body)return;try{window.focus();}catch(e){}if(!body.hasAttribute("tabindex"))body.setAttribute("tabindex","-1");try{body.focus({preventScroll:true});}catch(e){try{body.focus();}catch(e2){}}}window.addEventListener("message",function(event){if(event.source!==window.parent)return;var data=event.data;if(!data||typeof data!=="object"||data.type!==FOCUS_TYPE)return;if(document.readyState==="loading"){document.addEventListener("DOMContentLoaded",focusArtifactDocument,{once:true});return;}focusArtifactDocument();});window.addEventListener("keydown",function(event){if(event.key!=="Escape")return;window.setTimeout(function(){if(event.defaultPrevented)return;window.parent.postMessage({type:CLOSE_TYPE},"*");},0);});})();</script></body>
+</body>
 </html>
