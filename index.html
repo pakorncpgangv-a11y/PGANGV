@@ -131,7 +131,7 @@ body{font-family:'Prompt',sans-serif}
 
     <div class="bg-white rounded-2xl shadow border border-sky-100 overflow-auto">
       <div class="p-4 flex justify-between items-center"><h3 class="font-semibold text-[#0369a1]">ประวัติยอดขาย (สีตาม KPI 16,000)</h3>
-        <select id="yearFilter" onchange="renderTable()" class="border border-sky-200 rounded-lg px-3 py-1.5 text-sm bg-sky-50"><option value="all">ทั้งหมด</option><option value="2025" selected>ปี 2568</option><option value="2026">ปี 2569</option></select>
+        <select id="yearFilter" onchange="renderTable()" class="border border-sky-200 rounded-lg px-3 py-1.5 text-sm bg-sky-50"><option value="all">ทั้งหมด</option></select>
       </div>
       <table class="w-full text-xs">
         <thead class="bg-[#e0f2fe] text-[#0369a1]"><tr><th class="p-3 text-left">วันที่</th><th>กะเช้า</th><th>รวมกะดึก</th><th>ปิดวัน (KPI)</th><th>ทิป</th><th>หมายเหตุ</th><th>จัดการ</th></tr></thead>
@@ -645,10 +645,49 @@ async function testSupa(){
 window.onload=()=>{
   salesData=dedup(salesData); attData=dedup(attData);
   localStorage.setItem('ngv_sales_final',JSON.stringify(salesData)); localStorage.setItem('ngv_att_final',JSON.stringify(attData));
+  initYearFilter(); // ตั้งปีปัจจุบันเป็น default
   renderTable();renderAttTable();updateSummary();
   setTimeout(()=>{renderCharts();renderAttChart();},600);
   initSupabase();
 };
+
+function initYearFilter(){
+  const now = new Date();
+  const currentYear = now.getFullYear(); // 2026
+  const select = document.getElementById('yearFilter');
+  if(!select) return;
+  
+  // เก็บปีที่มีในข้อมูล
+  const yearsInData = new Set(salesData.map(x=> parseInt(x.date?.substring(0,4))).filter(y=>!isNaN(y)));
+  // เพิ่มปีปัจจุบันและย้อนหลัง 2 ปี + อนาคต 1 ปี
+  for(let y=currentYear-2; y<=currentYear+1; y++) yearsInData.add(y);
+  
+  const sortedYears = Array.from(yearsInData).sort((a,b)=>b-a); // เรียงมากไปน้อย
+  
+  // ล้างแล้วสร้างใหม่
+  select.innerHTML = '<option value="all">ทั้งหมด</option>';
+  sortedYears.forEach(y=>{
+    const opt = document.createElement('option');
+    opt.value = y.toString();
+    opt.textContent = `ปี ${y+543} (${y})`;
+    if(y===currentYear) opt.selected = true; // default เป็นปีปัจจุบัน
+    select.appendChild(opt);
+  });
+  
+  // ถ้าไม่มีข้อมูลปีปัจจุบันเลย ให้เลือก "ทั้งหมด" แทนเพื่อไม่ให้ตารางว่าง
+  const hasCurrentYearData = salesData.some(x=> x.date?.startsWith(currentYear.toString()));
+  if(!hasCurrentYearData && salesData.length>0){
+    // ถ้าปีปัจจุบันยังไม่มีข้อมูล ให้ default เป็น "ทั้งหมด" จะได้เห็นข้อมูลเก่า
+    select.value = 'all';
+  }
+  
+  // อัพเดท timeRange ให้ default เป็นเดือนนี้ถ้าอยู่ปีปัจจุบัน
+  const timeRange = document.getElementById('timeRange');
+  if(timeRange && hasCurrentYearData){
+    // ถ้ามีข้อมูลปีปัจจุบัน ให้กราฟ default เป็นเดือนนี้แทน 30 วัน จะได้เห็นปีปัจจุบันชัด
+    timeRange.value = 'thisMonth';
+  }
+}
 </script>
 </body>
 </html>
