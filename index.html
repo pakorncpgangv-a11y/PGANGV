@@ -574,7 +574,7 @@ alter publication supabase_realtime add table ngv_attendance;</pre></div>
       <div class="overflow-x-auto"><table class="w-full text-xs border min-w-[520px]"><thead class="bg-sky-100"><tr><th class="border p-2 text-left">ผู้ใช้</th><th class="border p-2 text-left">หน้าที่</th><th class="border p-2 text-left">เห็นแท็บ</th><th class="border p-2 text-left">ทำอะไรได้</th></tr></thead><tbody>
         <tr><td class="border p-2 font-medium">orada</td><td class="border p-2">บันทึกยอดขายปั๊มประจำวัน</td><td class="border p-2">ทุกแท็บ</td><td class="border p-2">กรอก/แก้/ลบ ยอดขาย &amp; ขาดลามาสาย, Import Excel — ดูกระทบยอดได้อย่างเดียว</td></tr>
         <tr><td class="border p-2 font-medium">leader</td><td class="border p-2">บันทึกรายงานกระทบยอดเงินสด + ยอดค้างตู้</td><td class="border p-2">กระทบยอดเงินสด, คู่มือ</td><td class="border p-2">บันทึกร่าง / ส่งให้ผู้จัดการ — <b>กดยืนยันเองไม่ได้</b></td></tr>
-        <tr><td class="border p-2 font-medium">manager</td><td class="border p-2">ตรวจและยืนยันรายงาน</td><td class="border p-2">ทุกแท็บ</td><td class="border p-2">กรอก/แก้/ลบ <b>ขาดลามาสาย</b> (ยอดขายดูอย่างเดียว) / ยืนยัน (ต้องใส่รหัสผ่านซ้ำ) / ตีกลับ / ยกเลิกการยืนยัน / <b>พิมพ์ PDF และบันทึกรูป (เฉพาะผู้จัดการ)</b></td></tr>
+        <tr><td class="border p-2 font-medium">manager</td><td class="border p-2">ตรวจและยืนยันรายงาน</td><td class="border p-2">ทุกแท็บ</td><td class="border p-2">กรอก/แก้/ลบ <b>ยอดขาย &amp; ขาดลามาสาย</b> / ยืนยัน (ต้องใส่รหัสผ่านซ้ำ) / ตีกลับ / ยกเลิกการยืนยัน / <b>พิมพ์ PDF และบันทึกรูป (เฉพาะผู้จัดการ)</b></td></tr>
       </tbody></table></div>
       <p class="text-xs text-gray-600 mt-2">ปรับสิทธิ์ได้ที่ตัวแปร <code>ROLE_INFO</code> ในโค้ด • เปลี่ยนรหัสผ่านแก้ใน SQL แล้วรันใหม่ (ข้อ 11)</p>
     </div>
@@ -750,8 +750,8 @@ end $$;
         <li>ติ๊กวันที่ยังไม่ถึงไม่ได้ (ปิดล็อกไว้ที่ค่า <code>EV_FUTURE_LOCK</code> ในโค้ด)</li>
         <li>ถ้าวันไหน <b>ติ๊กถูกครบทุก 29 ข้อ</b> ลายเซ็นจะขึ้นในแถว "ผู้ตรวจประจำวัน" (หมุนขวา 90° ให้พอดีช่อง) ถ้ามี ✕ หรือยังไม่ติ๊กครบ ลายเซ็นไม่ขึ้น</li>
         <li>ช่อง "หมายเลขแจ้งซ่อม" ใส่ได้รายข้อ • ข้อ 2.1 และ 3.1 มีช่องกรอกจำนวนคนต่อเดือน</li>
-        <li><b>พิมพ์ (เฉพาะผู้จัดการ)</b>: กด "พิมพ์ / PDF" → เลือก <b>วันที่ผู้บริหารสถานีลงนาม</b> (หรือเว้นว่างไว้เขียนมือ) → ตัวอย่างอัปเดตทันที → กดพิมพ์ ระบบตั้ง A4 แนวนอน ย่อให้พอดี 1 หน้า จุดเขียวจะพิมพ์เป็นเครื่องหมาย ✓</li>
-        <li>ผู้ใช้อื่น (Orada) ดูได้อย่างเดียว • Leader ไม่เห็นแท็บนี้</li>
+        <li><b>พิมพ์ (ผู้จัดการและ acc)</b>: กด "พิมพ์ / PDF" → เลือก <b>วันที่ผู้บริหารสถานีลงนาม</b> (หรือเว้นว่างไว้เขียนมือ) → ตัวอย่างอัปเดตทันที → กดพิมพ์ ระบบตั้ง A4 แนวนอน ย่อให้พอดี 1 หน้า จุดเขียวจะพิมพ์เป็นเครื่องหมาย ✓</li>
+        <li>Orada ดูได้อย่างเดียว • <b>acc ดูและพิมพ์ได้</b> (ติ๊กประเมินไม่ได้) • Leader ไม่เห็นแท็บนี้</li>
       </ul>
       <p class="font-medium text-sm mt-3">SQL สำหรับ Supabase (รันครั้งเดียว — ไฟล์ <code>ngv_eval_setup.sql</code>):</p>
       <pre class="bg-gray-900 text-green-400 p-3 rounded-xl text-[11px] overflow-auto max-h-80 mt-1">-- ============================================================
@@ -787,7 +787,7 @@ end $$;
     <div class="bg-white p-6 rounded-2xl shadow border border-sky-100">
       <h3 class="font-bold text-lg text-[#0369a1] mb-3">1️⃣3️⃣ แท็บ ใบแจ้งหนี้ ปตท. (v1.3.0) — เฉพาะผู้ใช้ acc</h3>
       <ul class="list-disc ml-6 text-sm space-y-1.5">
-        <li>เห็นเฉพาะผู้ใช้ <b>acc</b> (ฝ่ายบัญชี) ผู้ใช้อื่นไม่มีแท็บนี้ • ผู้ใช้ acc เห็นแท็บนี้กับคู่มือเท่านั้น</li>
+        <li>เห็นเฉพาะผู้ใช้ <b>acc</b> (ฝ่ายบัญชี) ผู้ใช้อื่นไม่มีแท็บนี้ • ผู้ใช้ acc เห็นแท็บใบแจ้งหนี้, ประเมินรายวัน (ดู + พิมพ์) และคู่มือ</li>
         <li>ใช้งานเหมือนเดิม: นำเข้า Report7 (Excel) → ระบบคิดค่าตอบแทนใช้ที่ดิน/ค่าบริหาร/VAT และเลขที่ใบแจ้งหนี้ให้อัตโนมัติ → พิมพ์ / ส่งออก PDF</li>
         <li><b>ข้อมูลเก็บในเครื่อง/เบราว์เซอร์ที่ใช้เท่านั้น (ไม่ขึ้น Supabase)</b> — กดปุ่มสำรองไฟล์ (เข้ารหัส) เป็นระยะ และใช้ปุ่มเปิดไฟล์สำรองเมื่อเปลี่ยนเครื่อง</li>
         <li>ถ้ามีข้อมูลเดิมจากอาร์ติแฟกต์ใบแจ้งหนี้: กดสำรองไฟล์ในอาร์ติแฟกต์เดิม แล้วเปิดไฟล์นั้นในแท็บนี้</li>
@@ -858,7 +858,7 @@ end $$;
     <div class="modal-pad p-3 overflow-x-auto"><div id="evSheetWrap" style="min-width:283mm"></div></div>
   </div>
 </div>
-<div id="printBlock">การพิมพ์หน้านี้ทำได้เฉพาะผู้จัดการ ผ่านปุ่ม "พิมพ์ / PDF" ในแท็บกระทบยอดเงินสด (หลังยืนยัน) หรือแท็บประเมินรายวัน</div>
+<div id="printBlock">การพิมพ์หน้านี้ทำได้ผ่านปุ่ม "พิมพ์ / PDF" ในแท็บกระทบยอดเงินสด (ผู้จัดการ หลังยืนยัน) หรือแท็บประเมินรายวัน (ผู้จัดการ/acc)</div>
 <div id="toast" class="fixed bottom-4 right-4 bg-[#0369a1] text-white px-5 py-3 rounded-xl text-sm hidden shadow-lg z-[120] max-w-[90vw]"></div>
 
 <script>
@@ -1307,8 +1307,8 @@ const SAFE_TOL=1;   // ผลต่างยอดตู้เซฟที่ย
 const ROLE_INFO={
   sales:  {label:'ผู้บันทึกยอดขาย', tabs:[1,2,4,5,3], home:1, editSales:true,  editAtt:true,  editRecon:false, editEval:false, confirm:false, print:false, setting:true},
   leader: {label:'หัวหน้างาน',      tabs:[4,3],     home:4, editSales:false, editAtt:false, editRecon:true,  editEval:false,  confirm:false, print:false, setting:false},
-  acc:    {label:'ฝ่ายบัญชี',        tabs:[6,3],     home:6, editSales:false, editAtt:false, editRecon:false, editEval:false, confirm:false, print:false, setting:false},
-  manager:{label:'ผู้จัดการ',       tabs:[4,1,2,5,3], home:4, editSales:false, editAtt:true,  editRecon:false, editEval:true, confirm:true,  print:true,  setting:true}
+  acc:    {label:'ฝ่ายบัญชี',        tabs:[6,5,3],   home:6, editSales:false, editAtt:false, editRecon:false, editEval:false, confirm:false, print:true,  setting:false},
+  manager:{label:'ผู้จัดการ',       tabs:[4,1,2,5,3], home:4, editSales:true,  editAtt:true,  editRecon:false, editEval:true, confirm:true,  print:true,  setting:true}
 };
 /* รหัสผ่านสำรอง (ใช้เมื่อยังไม่ได้รัน SQL หรือออฟไลน์) เก็บเป็น SHA-256 ของ "ngv|user|pass" */
 const LOCAL_USERS=[
@@ -1955,6 +1955,7 @@ function evGet(m){return evData[m]||{month:m,marks:{},repair:{},meta:{},updated_
 function evSt(rec,id,d){const s=rec.marks[id]||'';return (s.charCodeAt(d-1)-48)||0;}
 function evDayComplete(rec,d){return EV_IDS.every(id=>evSt(rec,id,d)===1);}
 function evCanEdit(){return !!(SESSION&&SESSION.role==='manager');}
+function evCanPrint(){return !!(SESSION&&(SESSION.role==='manager'||SESSION.role==='acc'));}
 function evDayLocked(d){
   if(!EV_FUTURE_LOCK)return false;
   const t=todayStr(0),[y,m]=evMonth.split('-');
@@ -2005,7 +2006,7 @@ function evRender(resetScroll){
   sel.innerHTML=Array.from({length:nd},(_,i)=>`<option value="${i+1}">${i+1}</option>`).join('');
   sel.value=(keep&&keep<=nd&&!resetScroll)?keep:evDefaultDay();
   el('ev_edit_tools').classList.toggle('hidden',!evCanEdit());
-  el('ev_print_btn').classList.toggle('hidden',!(SESSION&&SESSION.role==='manager'));
+  el('ev_print_btn').classList.toggle('hidden',!evCanPrint());
   el('ev_ro_note').classList.toggle('hidden',evCanEdit());
   evUpdSync();evRenderGrid();
   if(resetScroll||!evRender._done){
@@ -2131,7 +2132,7 @@ function buildEvSheet(rec,signDate){
   return h;
 }
 function evOpenPrint(){
-  if(!(SESSION&&SESSION.role==='manager')){showToast('พิมพ์ได้เฉพาะผู้จัดการ');return;}
+  if(!evCanPrint()){showToast('พิมพ์ได้เฉพาะผู้จัดการหรือฝ่ายบัญชี (acc)');return;}
   const t=todayStr(0);
   el('ev_signdate').value=t.slice(0,7)===evMonth?t:evMonth+'-'+String(evDaysIn(evMonth)).padStart(2,'0');
   el('ev_nodate').checked=false;
@@ -2145,7 +2146,7 @@ function evPreview(){
 }
 function evClosePrint(){el('evModal').classList.add('hidden');}
 function evPrint(){
-  if(!(SESSION&&SESSION.role==='manager')){showToast('พิมพ์ได้เฉพาะผู้จัดการ');return;}
+  if(!evCanPrint()){showToast('พิมพ์ได้เฉพาะผู้จัดการหรือฝ่ายบัญชี (acc)');return;}
   evPreview();
   const sh=el('evSheet');
   const st=document.createElement('style');st.id='evPageStyle';st.textContent='@page{size:A4 landscape;margin:7mm}';document.head.appendChild(st);
