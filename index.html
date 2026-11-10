@@ -361,8 +361,8 @@ body.role-acc .no-acc{display:none!important}
           <table class="w-full text-sm min-w-[420px]">
             <thead><tr class="text-xs text-sky-700"><th class="text-left p-1.5 font-medium"></th><th class="text-right p-1.5 font-medium">ปตท.</th><th class="text-right p-1.5 font-medium">นับจริง</th><th class="text-right p-1.5 font-medium">ผลต่าง</th></tr></thead>
             <tbody class="tabular-nums">
-              <tr class="border-t"><td class="p-1.5">กะเช้า <span class="text-xs text-gray-500">(00:00–20:00)</span></td><td id="rc_s_m_sys" class="p-1.5 text-right">–</td><td id="rc_s_m_act" class="p-1.5 text-right">–</td><td id="rc_s_m_d" class="p-1.5 text-right">–</td></tr>
-              <tr class="border-t"><td class="p-1.5">กะกลางคืน <span class="text-xs text-gray-500">(20:00–24:00)</span></td><td id="rc_s_n_sys" class="p-1.5 text-right">–</td><td id="rc_s_n_act" class="p-1.5 text-right">–</td><td id="rc_s_n_d" class="p-1.5 text-right">–</td></tr>
+              <tr class="border-t"><td class="p-1.5">กะเช้า <span class="text-xs text-gray-500">(08:00–20:00)</span></td><td id="rc_s_m_sys" class="p-1.5 text-right">–</td><td id="rc_s_m_act" class="p-1.5 text-right">–</td><td id="rc_s_m_d" class="p-1.5 text-right">–</td></tr>
+              <tr class="border-t"><td class="p-1.5">กะกลางคืน <span class="text-xs text-gray-500">(00:00–08:00 และ 20:00–24:00)</span></td><td id="rc_s_n_sys" class="p-1.5 text-right">–</td><td id="rc_s_n_act" class="p-1.5 text-right">–</td><td id="rc_s_n_d" class="p-1.5 text-right">–</td></tr>
               <tr class="border-t-2 border-sky-300 font-bold bg-sky-50"><td class="p-1.5">รวมทั้งวัน</td><td id="rc_s_t_sys" class="p-1.5 text-right">–</td><td id="rc_s_t_act" class="p-1.5 text-right">–</td><td id="rc_s_t_d" class="p-1.5 text-right">–</td></tr>
             </tbody>
           </table>
@@ -1543,10 +1543,11 @@ function reconCalc(){
     setC('rc_d_'+k,'rc-diff '+TXT[s.k]);
     setH('rc_pb_'+k,badge(s));
   });
-  const mS=r2(gv(cur.sys_a)+gv(cur.sys_b)),mA=r2(gv(cur.act_a)+gv(cur.act_b)),nS=gv(cur.sys_c),nA=gv(cur.act_c);
+  // กะเช้า = 08:00–20:00 (ช่วง b) • กะกลางคืน = 00:00–08:00 (ช่วง a) + 20:00–24:00 (ช่วง c)
+  const mS=r2(gv(cur.sys_b)),mA=r2(gv(cur.act_b)),nS=r2(gv(cur.sys_a)+gv(cur.sys_c)),nA=r2(gv(cur.act_a)+gv(cur.act_c));
   const sumRow=(p,sy,ac,ready)=>{setT('rc_s_'+p+'_sys',fmt(sy));setT('rc_s_'+p+'_act',fmt(ac));const d=r2(ac-sy);setT('rc_s_'+p+'_d',ready?sgn(d):'–');};
-  sumRow('m',mS,mA,cur.act_a!=null&&cur.act_b!=null&&cur.sys_a!=null&&cur.sys_b!=null);
-  sumRow('n',nS,nA,cur.act_c!=null&&cur.sys_c!=null);
+  sumRow('m',mS,mA,cur.act_b!=null&&cur.sys_b!=null);
+  sumRow('n',nS,nA,cur.act_a!=null&&cur.sys_a!=null&&cur.act_c!=null&&cur.sys_c!=null);
   sumRow('t',cur.total_sys,cur.total_act,['sys_a','act_a','sys_b','act_b','sys_c','act_c'].every(k=>cur[k]!=null));
   // ยอดตู้
   setT('rc_l_open',fmt(cur.opening));setT('rc_l_act','+ '+fmt(cur.total_act));setT('rc_l_dep','− '+fmt(cur.deposit));
@@ -1858,7 +1859,7 @@ function rcImportXlsx(ev){
 function buildSheet(r){
   const rr=clone(r);derive(rr);
   const rows=PERIODS.map(([k,l])=>{const s=pst(rr['sys_'+k],rr['act_'+k]);return `<tr><td>${l}</td><td class="n">${fmt(rr['sys_'+k])}</td><td class="n">${fmt(rr['act_'+k])}</td><td class="n ${s.k}">${s.d==null?'–':sgn(s.d)}</td><td class="c ${s.k}">${s.t}</td></tr>`;}).join('');
-  const mS=r2(gv(rr.sys_a)+gv(rr.sys_b)),mA=r2(gv(rr.act_a)+gv(rr.act_b)),nS=gv(rr.sys_c),nA=gv(rr.act_c);
+  const mS=r2(gv(rr.sys_b)),mA=r2(gv(rr.act_b)),nS=r2(gv(rr.sys_a)+gv(rr.sys_c)),nA=r2(gv(rr.act_a)+gv(rr.act_c));
   const sub=(l,s,a,cls)=>`<tr class="${cls}"><td>${l}</td><td class="n">${fmt(s)}</td><td class="n">${fmt(a)}</td><td class="n">${sgn(r2(a-s))}</td><td></td></tr>`;
   const sd=sst(rr.safe_diff);
   const nrows=DEN_N.map(([k,d])=>`<tr><td>${fmt0(d)}</td><td class="n">${fmt0(gv(rr[k]))}</td><td class="n">${fmt0(gv(rr[k])*d)}</td></tr>`).join('');
@@ -1872,8 +1873,8 @@ function buildSheet(r){
   <div class="sh-h">1. ยอดขาย ปตท. (ระบบ) เทียบเงินสดนับจริง (บาท)</div>
   <table class="sh-t"><thead><tr><th style="width:30%">ช่วงเวลา</th><th>ปตท. (ระบบ)</th><th>นับจริง</th><th>ผลต่าง</th><th style="width:12%">สถานะ</th></tr></thead><tbody>
     ${rows}
-    ${sub('กะเช้า (00:00 – 20:00 น.)',mS,mA,'sub')}
-    ${sub('กะกลางคืน (20:00 – 24:00 น.)',nS,nA,'sub')}
+    ${sub('กะเช้า (08:00 – 20:00 น.)',mS,mA,'sub')}
+    ${sub('กะกลางคืน (00:00 – 08:00 และ 20:00 – 24:00 น.)',nS,nA,'sub')}
     ${sub('รวมทั้งวัน',rr.total_sys,rr.total_act,'tot')}
   </tbody></table>
   <div class="sh-h">2. เงินเข้าธนาคารและยอดเงินในตู้เซฟ (บาท)</div>
