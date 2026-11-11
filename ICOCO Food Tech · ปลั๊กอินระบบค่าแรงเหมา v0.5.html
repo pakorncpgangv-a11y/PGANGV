@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ICOCO Food Tech · ปลั๊กอินระบบค่าแรงเหมา v0.5</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+Thai:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Noto+Sans+Myanmar:wght@400;700&family=Noto+Sans+Khmer:wght@400;700&family=Noto+Sans+SC:wght@400;700&display=swap" rel="stylesheet">
+<style>/* ===== Emerald-Teal Premium · Tropical Fresh ===== */
+:root{
+  --e600:#059669; --t700:#0F766E; --s900:#0F172A; --e900:#064E3B; --mint:#A7F3D0; --mint2:#5EEAD4;
+  --grad:linear-gradient(135deg,#059669 0%,#0D9488 55%,#0F766E 100%);
+  --dark:linear-gradient(135deg,#0F172A 0%,#0B2A2C 50%,#064E3B 100%);
+  --bg:#F3F8F6; --card:#FFFFFF; --line:#DCEAE4; --line2:#EEF6F2; --ink:#0F172A; --ink2:#5B6B7C; --link:#0F766E;
+  --ok:#047857; --okbg:#E6F6EF; --warn:#B45309; --warnbg:#FEF3E2; --bad:#BE123C; --badbg:#FDEBEF; --grey:#475569; --greybg:#EEF2F5;
+  --pri:#0F766E; --prifg:#FFFFFF; --focus:#14B8A6;
+  --c1:#059669; --c2:#5EEAD4; --c3:#0F766E; --c4:#D97706;
+  --r:14px; --sh:0 1px 2px rgba(6,78,59,.06),0 8px 24px -12px rgba(6,78,59,.18);
+  --sans:"Inter","Noto Sans Thai",system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0B1220; --card:#111C24; --line:#1F3A36; --line2:#15262A; --ink:#E6F2EE; --ink2:#9DB4AE; --link:#5EEAD4;
+  --ok:#34D399; --okbg:#0F2E25; --warn:#FBBF24; --warnbg:#33260F; --bad:#FB7185; --badbg:#3A1520; --grey:#B6C4C1; --greybg:#1B2A2E;
+  --pri:#14B8A6; --sh:0 1px 2px rgba(0,0,0,.4),0 10px 30px -14px rgba(0,0,0,.7); color-scheme:dark;}}
+:root[data-theme="dark"]{--bg:#0B1220; --card:#111C24; --line:#1F3A36; --line2:#15262A; --ink:#E6F2EE; --ink2:#9DB4AE; --link:#5EEAD4;
+  --ok:#34D399; --okbg:#0F2E25; --warn:#FBBF24; --warnbg:#33260F; --bad:#FB7185; --badbg:#3A1520; --grey:#B6C4C1; --greybg:#1B2A2E; --pri:#14B8A6; color-scheme:dark;}
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:inherit}
+html,body{margin:0}
+body{font-family:var(--sans);font-size:15px;line-height:1.55;color:var(--ink);background:var(--bg);background-image:radial-gradient(1200px 400px at 100% -10%,rgba(94,234,212,.12),transparent 60%),radial-gradient(900px 380px at -10% 0%,rgba(5,150,105,.08),transparent 60%);background-attachment:fixed}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) body{background-image:var(--dark);}}
+button,input,select,textarea{font:inherit;color:inherit}
+a{color:var(--link)}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+.mono{font-family:var(--mono);font-size:.92em;letter-spacing:-.01em}
+.num{font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
+.muted{color:var(--ink2)} .small{font-size:13px} .tiny{font-size:12px}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap} .sp{flex:1}
+.grid{display:grid;gap:16px} .grid>*{min-width:0} .f input,.f select{min-width:0} .g2{grid-template-columns:repeat(2,minmax(0,1fr))} .g3{grid-template-columns:repeat(3,minmax(0,1fr))} .g4{grid-template-columns:repeat(4,minmax(0,1fr))}
+
+/* header + tabs: dark emerald */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--dark);color:#E6F2EE;box-shadow:0 10px 30px -18px rgba(6,78,59,.9);overflow:hidden}
+.top::before{content:"";position:absolute;inset:0;background:radial-gradient(420px 160px at 88% -30%,rgba(94,234,212,.28),transparent 70%),radial-gradient(360px 140px at 12% 130%,rgba(16,185,129,.22),transparent 70%);pointer-events:none}
+.bar{position:relative;display:flex;align-items:center;gap:12px;padding:12px 24px 8px;max-width:1440px;margin:0 auto}
+.brand{font-weight:800;font-size:17px;white-space:nowrap;letter-spacing:-.01em;display:flex;align-items:center;gap:10px}
+.brand::before{content:"";width:26px;height:26px;border-radius:8px 14px 8px 14px;background:var(--grad);box-shadow:0 0 0 1px rgba(167,243,208,.35),0 6px 16px -6px rgba(20,184,166,.8)}
+.brand span{font-weight:500;color:#A7C9BF}
+.demo{font-size:12px;background:rgba(167,243,208,.14);color:#A7F3D0;border:1px solid rgba(167,243,208,.3);border-radius:999px;padding:2px 10px;font-weight:600;white-space:nowrap}
+.who{display:flex;gap:6px;align-items:center;font-size:13px;color:#A7C9BF}
+.who select,.clock select{border:1px solid rgba(167,243,208,.28)!important;border-radius:10px!important;padding:6px 10px!important;background:rgba(15,23,42,.55)!important;color:#E6F2EE;max-width:240px}
+.clock{font-size:12.5px;color:#A7C9BF;white-space:nowrap}
+.top .btn{background:rgba(255,255,255,.06);border-color:rgba(167,243,208,.28);color:#E6F2EE}
+.tabs{position:relative;display:flex;gap:4px;padding:4px 24px 0;max-width:1440px;margin:0 auto;overflow-x:auto;scrollbar-width:none}
+.tabs a{padding:10px 16px 12px;text-decoration:none;color:#A7C9BF;white-space:nowrap;font-weight:500;border-radius:10px 10px 0 0;position:relative}
+.tabs a:hover{color:#fff}
+.tabs a.on{color:#fff;font-weight:700}
+.tabs a.on::after{content:"";position:absolute;left:14px;right:14px;bottom:0;height:3px;border-radius:3px 3px 0 0;background:linear-gradient(90deg,#34D399,#5EEAD4)}
+.tabs a .n{display:inline-block;min-width:18px;padding:0 6px;margin-left:6px;border-radius:9px;background:#FB7185;color:#fff;font-size:11px;line-height:18px;text-align:center}
+main{max-width:1440px;margin:0 auto;padding:24px 24px 90px}
+.sub{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 18px}
+.sub a{padding:7px 14px;border:1px solid var(--line);border-radius:999px;text-decoration:none;color:var(--ink2);font-size:14px;background:var(--card);font-weight:500}
+.sub a:hover{border-color:var(--mint2);color:var(--ink)}
+.sub a.on{background:var(--grad);border-color:transparent;color:#fff;box-shadow:0 6px 16px -8px rgba(5,150,105,.8)}
+h1{font-size:24px;margin:0 0 4px;line-height:1.25;letter-spacing:-.015em;font-weight:800} h2{font-size:17px;margin:0 0 10px;font-weight:700;letter-spacing:-.005em} h3{font-size:15px;margin:0 0 8px;font-weight:700}
+.lead{color:var(--ink2);margin:0 0 16px;max-width:860px}
+
+/* surfaces */
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:18px;box-shadow:var(--sh)}
+.card+.card{margin-top:16px} .grid>.card+.card{margin-top:0}
+.kpi{position:relative;overflow:hidden}
+.kpi::after{content:"";position:absolute;right:-30px;top:-30px;width:110px;height:110px;border-radius:50%;background:radial-gradient(circle,rgba(94,234,212,.22),transparent 70%)}
+.kpi .v{font-size:26px;font-weight:800;font-variant-numeric:tabular-nums;line-height:1.2;letter-spacing:-.02em;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .kpi .v{background:linear-gradient(135deg,#6EE7B7,#5EEAD4);-webkit-background-clip:text;background-clip:text}}
+.kpi .l{font-size:13px;color:var(--ink2);font-weight:500}
+.kpi .s{font-size:12.5px;color:var(--ink2);margin-top:4px}
+hr{border:0;border-top:1px solid var(--line2);margin:12px 0}
+
+/* status */
+.st{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;white-space:nowrap}
+.st::before{content:"";width:8px;height:8px;border-radius:50%;background:currentColor;flex:none;box-shadow:0 0 0 3px color-mix(in srgb,currentColor 18%,transparent)}
+.st.ok{color:var(--ok)} .st.warn{color:var(--warn)} .st.bad{color:var(--bad)} .st.grey{color:var(--grey)}
+.tag{display:inline-block;font-size:12px;padding:1px 9px;border-radius:999px;border:1px solid var(--line);color:var(--ink2);white-space:nowrap;background:var(--card)}
+.tag.legal{border-color:color-mix(in srgb,var(--warn) 50%,transparent);color:var(--warn);background:var(--warnbg)} .tag.okl{border-color:color-mix(in srgb,var(--ok) 45%,transparent);color:var(--ok);background:var(--okbg)} .tag.ph{border-style:dashed}
+.ph{color:var(--ink2);font-family:var(--mono);border:1px dashed color-mix(in srgb,var(--t700) 40%,var(--line));border-radius:6px;padding:0 6px;background:var(--line2)}
+
+/* buttons + forms */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:44px;padding:8px 18px;border-radius:12px;border:1px solid var(--line);background:var(--card);cursor:pointer;font-weight:600;text-decoration:none;color:var(--ink);transition:box-shadow .15s,transform .15s,border-color .15s}
+.btn:hover{border-color:var(--mint2);box-shadow:0 6px 18px -10px rgba(15,118,110,.6)}
+.btn.pri{background:var(--grad);color:#fff;border-color:transparent;box-shadow:0 8px 20px -10px rgba(5,150,105,.9),inset 0 1px 0 rgba(255,255,255,.18)}
+.btn.pri:hover{transform:translateY(-1px);box-shadow:0 12px 26px -12px rgba(5,150,105,1)}
+.btn.danger{color:var(--bad);border-color:color-mix(in srgb,var(--bad) 45%,transparent)}
+.btn.sm{min-height:34px;padding:4px 12px;font-size:13.5px;border-radius:10px}
+.btn[disabled]{opacity:.42;cursor:not-allowed;transform:none;box-shadow:none}
+.f{display:flex;flex-direction:column;gap:5px;margin-bottom:12px;min-width:0}
+.f label,.f .lb{font-size:13.5px;font-weight:600}
+.f .req::after{content:" *";color:var(--bad)}
+.f input,.f select,.f textarea{border:1px solid var(--line);border-radius:12px;padding:9px 12px;background:var(--card);min-height:44px;width:100%;font-size:16px;transition:border-color .15s,box-shadow .15s}
+.f input:focus,.f select:focus,.f textarea:focus{border-color:#14B8A6;box-shadow:0 0 0 4px rgba(20,184,166,.15);outline:none}
+.f textarea{min-height:72px;resize:vertical}
+.f .hint{font-size:12.5px;color:var(--ink2)}
+.f.bad input,.f.bad select,.f.bad textarea{border-color:var(--bad)}
+.ck{display:flex;gap:8px;align-items:flex-start;font-size:14px;cursor:pointer}
+.ck input{width:20px;height:20px;margin-top:2px;accent-color:#0F766E}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--card);padding:3px;gap:2px}
+.seg button{border:0;background:transparent;padding:6px 12px;cursor:pointer;min-height:34px;border-radius:9px;font-weight:500}
+.seg button.on{background:var(--grad);color:#fff;box-shadow:0 4px 12px -6px rgba(5,150,105,.9)}
+
+/* tables */
+.tw{overflow-x:auto;border:1px solid var(--line);border-radius:var(--r);background:var(--card);box-shadow:var(--sh)}
+table.t{border-collapse:collapse;width:100%;font-size:14px}
+.t th{text-align:left;font-weight:700;font-size:12.5px;color:var(--t700);padding:10px 12px;border-bottom:1px solid var(--line);background:linear-gradient(180deg,#F4FBF8,#EDF7F3);white-space:nowrap;position:sticky;top:0}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .t th{background:#13232A;color:#5EEAD4}}
+.t td{padding:10px 12px;border-bottom:1px solid var(--line2);vertical-align:top}
+.t tr:last-child td{border-bottom:0}
+.t tr.click{cursor:pointer} .t tr.click:hover td{background:color-mix(in srgb,#5EEAD4 10%,transparent)}
+.t tfoot td{font-weight:700;border-top:1px solid var(--line);background:var(--line2)}
+.t td.x{background:var(--badbg)} .t td.w{background:var(--warnbg)}
+.t input,.t select{border:1px solid var(--line);border-radius:10px;padding:6px 8px;background:var(--card);min-height:40px;font-size:15px;width:100%}
+
+/* checks list */
+.checks{display:flex;flex-direction:column;gap:6px}
+.chk{display:flex;gap:10px;padding:9px 12px;border-radius:12px;font-size:14px;align-items:flex-start}
+.chk.bad{background:var(--badbg);color:var(--bad)} .chk.warn{background:var(--warnbg);color:var(--warn)} .chk.ok{background:var(--okbg);color:var(--ok)}
+.chk b{white-space:nowrap}
+.note{border-left:3px solid var(--mint2);padding:8px 14px;color:var(--ink2);font-size:14px;margin:8px 0;background:color-mix(in srgb,#5EEAD4 8%,transparent);border-radius:0 10px 10px 0}
+.note.warn{border-color:var(--warn);color:var(--warn);background:var(--warnbg)} .note.bad{border-color:var(--bad);color:var(--bad);background:var(--badbg)} .note.ok{border-color:var(--ok);color:var(--ok);background:var(--okbg)}
+
+/* signature: pay-period strip as dark emerald hero */
+.hero{background:var(--dark)!important;color:#E6F2EE;border-color:transparent!important;position:relative;overflow:hidden}
+.hero::before{content:"";position:absolute;inset:0;background:radial-gradient(500px 200px at 95% 0%,rgba(94,234,212,.25),transparent 70%),radial-gradient(400px 180px at 0% 120%,rgba(16,185,129,.25),transparent 70%);pointer-events:none}
+.hero>*{position:relative}
+.hero h2{color:#fff}
+.hero .muted,.hero .small{color:#A7C9BF}
+.hero .st.grey{color:#CBE7DF} .hero .st.ok{color:#6EE7B7} .hero .st.warn{color:#FCD34D}
+.strip{position:relative;padding:22px 6px 6px}
+.strip .track{position:absolute;left:6px;right:6px;top:34px;height:6px;background:rgba(167,243,208,.16);border-radius:4px}
+.strip .fill{position:absolute;left:6px;top:34px;height:6px;background:linear-gradient(90deg,#10B981,#2DD4BF);border-radius:4px;box-shadow:0 0 14px rgba(45,212,191,.7)}
+.strip .now{position:absolute;top:16px;width:2px;height:42px;background:#FDE68A;box-shadow:0 0 10px rgba(253,230,138,.8)}
+.strip .now span{position:absolute;top:-18px;left:50%;transform:translateX(-50%);font-size:11.5px;color:#FDE68A;font-weight:700;white-space:nowrap}
+.strip .ms{display:flex;justify-content:space-between;position:relative}
+.strip .m{display:flex;flex-direction:column;align-items:center;gap:6px;width:25%;text-align:center}
+.strip .m i{width:16px;height:16px;border-radius:50%;background:#0F172A;border:3px solid rgba(167,243,208,.35);margin-top:5px}
+.strip .m.done i{border-color:#34D399;background:#34D399;box-shadow:0 0 0 4px rgba(52,211,153,.2)} .strip .m.cur i{border-color:#FDE68A}
+.strip .m b{font-size:13.5px;color:#fff} .strip .m span{font-size:12.5px;color:#A7C9BF}
+
+/* mobile worksheet */
+.wsrow{border:1px solid var(--line);border-radius:var(--r);padding:14px;background:var(--card);margin-bottom:10px;box-shadow:var(--sh)}
+.wsrow.bad{border-color:var(--bad);box-shadow:0 0 0 3px color-mix(in srgb,var(--bad) 12%,transparent)}
+.jobinfo{background:linear-gradient(135deg,rgba(5,150,105,.08),rgba(15,118,110,.08));border:1px solid color-mix(in srgb,#14B8A6 30%,transparent);border-radius:12px;padding:12px 14px;font-size:14px}
+
+/* modal + toast */
+.mbg{position:fixed;inset:0;background:rgba(6,20,24,.55);backdrop-filter:blur(3px);z-index:60;display:grid;place-items:center;padding:16px}
+.modal{background:var(--card);border-radius:18px;width:min(640px,100%);max-height:calc(100vh - 32px);overflow:auto;padding:22px;box-shadow:0 30px 80px -30px rgba(6,78,59,.6);border-top:4px solid transparent;border-image:var(--grad) 1;border-image-slice:1 0 0 0}
+.modal.wide{width:min(1100px,100%)}
+.modal .foot{display:flex;gap:8px;justify-content:flex-end;margin-top:16px;flex-wrap:wrap}
+.toast{position:fixed;bottom:calc(22px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);background:var(--dark);color:#E6F2EE;padding:11px 20px;border-radius:999px;z-index:90;font-size:14px;max-width:92vw;text-align:center;box-shadow:0 14px 30px -12px rgba(6,78,59,.8);border:1px solid rgba(167,243,208,.25)}
+
+/* charts */
+.chart svg{width:100%;height:auto;display:block}
+.chart text{font-family:var(--sans);fill:var(--ink2)}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:13px;color:var(--ink2)}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+
+/* A4 document: print-safe black & white, thin emerald accent rule on screen */
+.paper{background:#fff;color:#000;width:210mm;max-width:100%;min-height:297mm;padding:14mm 12mm;margin:0 auto;box-shadow:var(--sh);border-radius:6px;font-size:12px;line-height:1.6;border-top:4px solid #059669}
+.paperwrap{overflow-x:auto;padding-bottom:8px}
+.paperwrap .paper{max-width:none}
+.paper.my,.paper.km{line-height:1.75}
+.paper h1{font-size:18px;color:#000;margin:0;background:none;-webkit-text-fill-color:#000}
+.paper .hd{display:flex;justify-content:space-between;gap:12px;border-bottom:1.5px solid #000;padding-bottom:6px;margin-bottom:10px}
+.paper table{border-collapse:collapse;width:100%;font-size:12px;margin:6px 0 12px}
+.paper th,.paper td{border:1px solid #000;padding:4px 6px;vertical-align:top;color:#000}
+.paper th{background:#fff;font-weight:700;text-align:left}
+.paper .box{display:inline-block;width:14px;height:14px;border:1px solid #000;vertical-align:middle}
+.paper .cat{font-size:14px;font-weight:700;margin:12px 0 2px}
+.paper .foot{border-top:1px solid #000;margin-top:10px;padding-top:8px;display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.paper .tr2{display:block;font-size:10.5px;font-weight:400}
+.fmy{font-family:"Noto Sans Myanmar","Noto Sans Thai",sans-serif} .fkm{font-family:"Noto Sans Khmer","Noto Sans Thai",sans-serif} .fzh{font-family:"Noto Sans SC","Noto Sans Thai",sans-serif}
+.pbreak{page-break-before:always;break-before:page}
+
+@media print{
+  @page{size:A4;margin:0}
+  body{background:#fff}
+  .top,.noprint,.sub,.toast,.mbg{display:none!important}
+  main{padding:0;max-width:none}
+  .paperwrap{overflow:visible}
+  .paper{box-shadow:none;margin:0;width:auto;min-height:auto;border-top:0;border-radius:0}
+}
+@media (max-width:900px){
+  .g3,.g4{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .bar{padding:10px 14px 6px;flex-wrap:wrap}
+  .tabs{padding:2px 8px 0}
+  main{padding:16px 12px 80px}
+}
+@media (max-width:600px){
+  .g2,.g3,.g4{grid-template-columns:1fr}
+  .kpis{grid-template-columns:1fr 1fr!important}
+  .clock{display:none}
+  h1{font-size:20px}
+  .strip .m span{display:none}
+  .who select{max-width:58vw}
+}
+
+/* แถบยอดรวมติดขอบล่างของใบงาน (มือถือใช้มือเดียวได้) */
+.stickybar{position:fixed;left:0;right:0;bottom:0;z-index:40;background:var(--dark);color:#E6F2EE;padding:10px 16px calc(10px + env(safe-area-inset-bottom,0px));box-shadow:0 -10px 30px -14px rgba(6,78,59,.8)}
+.stickybar .sb-in{max-width:880px;margin:0 auto;display:flex;gap:14px;align-items:center;flex-wrap:wrap;font-size:14px}
+.stickybar b{color:#6EE7B7;font-variant-numeric:tabular-nums}
+.stickybar .btn{min-height:44px} .stickybar .btn:not(.pri){background:rgba(255,255,255,.08);border-color:rgba(167,243,208,.3);color:#E6F2EE}
+@media print{.stickybar{display:none}}
+@media (max-width:600px){
+  .wsrow .g4,.wsrow .g2{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px}
+  .wsrow .f input{min-height:44px;padding:8px}
+  .wsrow{padding:12px}
+}
+.sortbtn{all:unset;cursor:pointer;font:inherit;color:inherit;white-space:nowrap}
+.sortbtn:focus-visible{outline:3px solid var(--focus);outline-offset:2px;border-radius:4px}
+.mangrid{display:grid;grid-template-columns:260px minmax(0,1fr);gap:16px;align-items:start}
+.mantoc{position:sticky;top:120px;padding:8px;display:flex;flex-direction:column;gap:2px}
+.mantoc a{display:flex;flex-direction:column;padding:10px 12px;border-radius:10px;text-decoration:none;color:var(--ink)}
+.mantoc a.on{background:var(--grad);color:#fff} .mantoc a.on .muted{color:#D1FAE5}
+.mantoc a:hover:not(.on){background:var(--line2)}
+.manbody{line-height:1.75;max-width:900px} .manbody ol,.manbody ul{padding-left:20px} .manbody li{margin:6px 0} .manbody table{margin:10px 0}
+@media (max-width:900px){.mangrid{grid-template-columns:1fr}.mantoc{position:static;flex-direction:row;overflow-x:auto}.mantoc a{min-width:160px}}
+.annbody{line-height:1.8} .annbody ul{padding-left:20px} .annbody li{margin:6px 0}
+[lang="zh"]{font-family:'Noto Sans SC','Noto Sans Thai',sans-serif} [lang="my"]{font-family:'Noto Sans Myanmar','Noto Sans Thai',sans-serif;line-height:2} [lang="km"]{font-family:'Noto Sans Khmer','Noto Sans Thai',sans-serif;line-height:2}
+.annpaper{font-size:14px;color:#000;background:#fff;font-family:'Noto Sans Thai','Noto Sans SC','Noto Sans Myanmar','Noto Sans Khmer',sans-serif} .annpaper table{border-collapse:collapse;width:100%} .annpaper td,.annpaper th{border:1px solid #000;padding:4px 6px;font-size:13px;color:#000;background:#fff}
+@media print{.annpaper{page-break-after:always}}
+.nbanner{display:flex;flex-wrap:wrap;gap:10px;align-items:center;background:var(--card);border:1px solid var(--line);border-left:4px solid var(--e600);border-radius:12px;padding:10px 14px;margin-bottom:14px}
+.nbanner a{text-decoration:none;color:var(--ink)} .nbanner a:hover b{text-decoration:underline}
+.nbody{padding-left:20px;line-height:1.8;margin:6px 0} .nbody li{margin:4px 0} .ntab{margin:8px 0}
+@media print{.paper .ntab th,.paper .ntab td{border:1px solid #000;padding:4px 6px;font-size:13px}}
+.todo{display:block;padding:10px 12px;border-radius:10px;border:1px solid var(--line);margin:6px 0;text-decoration:none;color:var(--ink);background:var(--card)}
+.todo.warn{border-left:4px solid var(--warn)} .todo.bad{border-left:4px solid var(--bad)} .todo.grey{border-left:4px solid var(--grey)}
+.todo:hover{border-color:var(--mint2)}
+.ws input[type=time]{min-height:36px;padding:4px 6px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink)}
+.ws input,.ws select{min-height:36px;padding:4px 6px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink);font:inherit}
+.ws td{vertical-align:top}
+tr.anrow td{background:color-mix(in srgb,var(--badbg) 55%,transparent)}
+.bar select{min-height:36px;border-radius:10px;padding:4px 8px;background:rgba(255,255,255,.06);color:#E6F2EE;border:1px solid rgba(167,243,208,.28)}
+.bar select option{color:#0F172A}
+@media print{.top,.noprint,#toast{display:none!important} main{padding:0!important;max-width:none!important} .card{box-shadow:none!important;break-inside:avoid;border:1px solid #999} body{background:#fff!important;color:#000} @page{size:A4;margin:12mm}}
+</style>
+</head>
+<body>
+<header class="top" id="top"></header>
+<main id="main"></main>
+<div id="modal"></div><div id="toast"></div>
+<script src="https://cdn.jsdelivr.net/npm/xlsx-js-style@1.2.0/dist/xlsx.bundle.js"></script>
+<script>/* ===== ICOCO Food Tech · ปลั๊กอินระบบค่าแรงเหมา (ต้นแบบ · ข้อมูลสมมติ) =====
+   แยกจากระบบหลัก ไม่แก้ระบบเดิม · เชื่อมผ่านไฟล์เชื่อมระบบหลัก (JSON) และไฟล์รูปแบบ 05/04 */
+const KEY = 'icoco-ft:v1';
+const TH_M = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'], TH_D = ['อา.','จ.','อ.','พ.','พฤ.','ศ.','ส.'];
+const D = s => new Date(s + 'T00:00:00');
+const iso = t => { const d = new Date(t); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); };
+const addDays = (s, n) => { const d = D(s); d.setDate(d.getDate() + n); return iso(d); };
+const fd = s => { const d = D(s); return `${d.getDate()} ${TH_M[d.getMonth()]} ${d.getFullYear()}`; };
+const fds = s => { const d = D(s); return `${d.getDate()} ${TH_M[d.getMonth()]}`; };
+const fdw = s => `${TH_D[D(s).getDay()]} ${fds(s)}`;
+const fdt = t => { const d = new Date(t); return `${d.getDate()} ${TH_M[d.getMonth()]} ${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`; };
+const r2 = x => Math.round((+x + Number.EPSILON) * 100) / 100;
+const fmt = (x, d = 2) => (+x || 0).toLocaleString('th-TH', {minimumFractionDigits:d, maximumFractionDigits:d});
+const fmt0 = x => (+x || 0).toLocaleString('th-TH', {maximumFractionDigits:0});
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;'}[c]));
+const toM = t => { if (!t) return null; const [h, m, s] = String(t).split(':').map(Number); return h * 60 + (m || 0) + (s || 0) / 60; };
+const hm = m => m == null ? '–' : `${String(Math.floor(((m % 1440) + 1440) % 1440 / 60)).padStart(2, '0')}:${String(Math.round(((m % 60) + 60) % 60) % 60).padStart(2, '0')}`;
+const nowTs = () => new Date(S.now).getTime();
+const today = () => S.now.slice(0, 10);
+
+/* ---------- ส่วนงานมาตรฐาน (ชื่อในรายชื่อสะกดต่างกัน จับคู่ให้) ---------- */
+const SECS = [
+  {id:'CUT', en:'CUT UP', th:'ผ่า', job:'FT-CUT', alias:['cut up','cutup','cut','ผ่า']},
+  {id:'TRIM', en:'TRIM', th:'คว้าน', job:'FT-TRIM', alias:['trim','คว้าน']},
+  {id:'TILL', en:'TILL', th:'ทิวส์', job:'FT-TILL', alias:['till','ทิวส์','ทิว']},
+  {id:'PACK', en:'Pack', th:'แพ็ค', alias:['pack','แพ็ค','แพค']},
+  {id:'REPACK', en:'RePack', th:'รีแพ็ค', alias:['repack','re pack','re-pack','รีแพ็ค']},
+  {id:'WATER', en:'Water', th:'น้ำมะพร้าว', alias:['water','น้ำ','น้ำมะพร้าว']},
+  {id:'BELLY', en:'ท้อง', th:'ท้อง', alias:['ท้อง','belly']},
+  {id:'RM', en:'RM', th:'วัตถุดิบ', alias:['rm','r m','วัตถุดิบ']},
+];
+const SEC = Object.fromEntries(SECS.map(s => [s.id, s]));
+const secName = id => SEC[id] ? `${SEC[id].en} (${SEC[id].th})` : (id || '–');
+function normSec(raw) { const k = String(raw || '').trim().toLowerCase().replace(/\s+/g, ' '); const hit = SECS.find(s => s.alias.includes(k) || s.en.toLowerCase() === k); return hit ? hit.id : null; }
+
+/* ---------- เรทและเงินจูงใจ ตามประกาศ 013–017/2568 (ยังไม่ขึ้นทะเบียนผ่านใบขอเรทของระบบหลัก) ---------- */
+const JOBS = {
+  'FT-CUT':  {name:'ผ่ามะพร้าว (สโนว์บอล)', sec:'CUT', vers:[
+               {notice:'013/2568', eff:'2025-10-09', to:'2026-11-04', tiers:[{min:1000, max:null, rate:0.60}, {min:1, max:999, rate:0.55}]},
+               {notice:'17/2569', eff:'2026-11-05', to:null, tiers:[{min:1000, max:null, rate:0.60}, {min:1, max:999, rate:0.55}]}],
+              inc:{notice:'014/2568', eff:'2025-10-09', to:'2026-11-04', tiers:[{min:1000, amt:90}, {min:900, amt:80}, {min:800, amt:70}, {min:700, amt:60}, {min:600, amt:50}]},
+              dept:{notice:'014/2568', eff:'2025-10-09', to:'2026-11-04', tiers:[{min:35000, amt:90}, {min:30000, amt:80}, {min:25000, amt:70}, {min:20000, amt:60}, {min:18000, amt:50}]}},
+  'FT-TRIM': {name:'คว้านมะพร้าว (สโนว์บอล)', sec:'TRIM', gapNote:'1–299 ลูก ไม่มีในประกาศ 016/2568 (ตั้งแต่ 5 พ.ย. 2569 จ่ายลูกละ 1 บาท)', vers:[
+               {notice:'016/2568', eff:'2025-10-25', to:'2026-11-04', tiers:[{min:900, max:null, rate:1.30}, {min:700, max:899, rate:1.20}, {min:500, max:699, rate:1.10}, {min:300, max:499, rate:1.00}]},
+               {notice:'17/2569', eff:'2026-11-05', to:null, gradeB:0.50, tiers:[{min:900, max:null, rate:1.30}, {min:700, max:899, rate:1.20}, {min:500, max:699, rate:1.10}, {min:300, max:499, rate:1.00}, {min:1, max:299, rate:1.00, note:'ผู้บริหารกำหนด 1–299 ลูก ลูกละ 1 บาท'}]}],
+              inc:{notice:'015/2568', eff:'2025-10-09', to:'2026-11-04', tiers:[{min:700, amt:90}, {min:600, amt:80}, {min:500, amt:70}, {min:400, amt:60}]},
+              dept:{notice:'015/2568', eff:'2025-10-09', to:'2026-11-04', tiers:[{min:16000, amt:90}, {min:13000, amt:80}, {min:10000, amt:70}, {min:8000, amt:60}]}},
+  'FT-TILL': {name:'ทิวส์มะพร้าว (สโนว์บอล)', sec:'TILL', vers:[
+               {notice:'017/2568', eff:'2025-10-30', to:'2026-11-04', tiers:[{min:451, max:null, rate:1.30}, {min:1, max:450, rate:1.20}]},
+               {notice:'17/2569', eff:'2026-11-05', to:null, gradeB:0.50, tiers:[{min:451, max:null, rate:1.30}, {min:1, max:450, rate:1.20}]}]},
+  'FT-WCUT': {name:'ผ่าน้ำมะพร้าว (รายวัน)', dayJob:true, vers:[{notice:'ผู้บริหารกำหนด', eff:'2025-01-01', to:null, dayRate:347}]},
+  'FT-PACK': {name:'แพ็คสโนว์บอล (ห้อง PACK)', sec:'PACK', pack:true, vers:[
+               {notice:'18/2569', eff:'2026-11-11', to:null, products:{p300:{label:'300G', tiers:[{min:10001, max:null, rate:0.85}, {min:1, max:10000, rate:0.75}]}, p454:{label:'454G, 520G', tiers:[{min:5001, max:null, rate:1.00}, {min:1, max:5000, rate:0.95}]}}}]},
+};
+const NOTICES_CANCELLED = [['013/2568','ผ่ามะพร้าว'],['014/2568','เงินจูงใจงานผ่า (รายคนและรวมแผนก)'],['015/2568','เงินจูงใจงานคว้าน (รายคนและรวมแผนก)'],['016/2568','คว้านมะพร้าว'],['017/2568','ทิวส์มะพร้าว']];
+const onDate = (x, d) => x && d >= x.eff && (!x.to || d <= x.to) ? x : null;
+const incOn = (jid, d) => onDate((JOBS[jid] || {}).inc, d), deptOn = (jid, d) => onDate((JOBS[jid] || {}).dept, d);
+const jv = (jid, d) => { const j = JOBS[jid]; return j ? j.vers.find(v => d >= v.eff && (!v.to || d <= v.to)) || null : null; };
+const jobsOn = d => Object.keys(JOBS).filter(k => jv(k, d));
+/* ค่าตั้งค่า (ข้อเสนอใน Brief · รอยืนยัน · HR แก้ได้ มีประวัติ) */
+const SET0 = {newDayRate:347, packBasis:'room', gradeBInTier:'no', dedupSec:120, cmpMin:15, defectPct:10, nearPct:2, tierBasis:'whole', qtyBasis:'good', deptBasis:'good', dayStartHour:5, otMult:1.5, normalH:8, otMaxH:6, netMaxH:14};
+const SET_LBL = {newDayRate:['อัตรารายวันพนักงาน Food Tech (คนใหม่ตั้งต้น)','บาท/วัน'], packBasis:['ห้อง PACK เทียบขั้นด้วย','room = ยอดรวมห้องต่อวัน แบ่งเงินตามชั่วโมง · person = ยอดรายคน'], gradeBInTier:['นับเกรด B รวมในยอดเทียบขั้น','no = ไม่นับ · yes = นับ'], dedupSec:['ตัดสแกนซ้ำภายใน','วินาที'], cmpMin:['เวลาจดกับสแกนต่างเกิน','นาที = ต้องใส่เหตุผล'], defectPct:['เงินจูงใจ: ของเสียต้องน้อยกว่า','%'], nearPct:['รายงานยอดใกล้เกณฑ์','± %'],
+  tierBasis:['เรทขั้นบันไดคิด','whole = ทั้งวัน · marginal = เฉพาะส่วนที่เกิน'], qtyBasis:['ยอดที่ใช้เทียบขั้น (รายคน)','good = ลูกดี · all = ลูกทั้งหมด'], deptBasis:['ยอดรวมแผนกนับ','good = ลูกดี · all = ลูกทั้งหมด'],
+  dayStartHour:['สแกนก่อนเวลานี้นับเป็นวันก่อนหน้า (กะข้ามเที่ยงคืน)','นาฬิกา'], otMult:['OT รายวัน','เท่า'], normalH:['ชั่วโมงปกติ','ชม./วัน'], otMaxH:['OT ไม่เกิน','ชม./วัน'], netMaxH:['ชั่วโมงรวมไม่เกิน','ชม./วัน']};
+const OPEN_Q = [
+  ['กลุ่มจ่าย B-Plus ของรหัส 7 หลัก','รอตัวเลขจากบัญชี · ยังไม่ระบุ = ไม่ออกในไฟล์ 04'],
+  ['ระยะเก็บข้อมูลสแกน','รอ DPO'],
+];
+
+
+const ROLES = [
+  {key:'hr', label:'HR ธุรการ'}, {key:'hrm', label:'ผู้จัดการ HR'},
+  {key:'ftlead', label:'หัวหน้า Food Tech'}, {key:'ftmgr', label:'ผู้จัดการ Food Tech'},
+  {key:'ceo', label:'CEO'}, {key:'dceo', label:'DCEO'}, {key:'acc', label:'ทีมบัญชี'},
+];
+const role = () => ROLES.find(r => r.key === S.role);
+const isHR = () => ['hr','hrm'].includes(S.role), isExec = () => ['ceo','dceo'].includes(S.role);
+
+/* ---------- งวด (ปฏิทินเดียวกับระบบหลัก) ---------- */
+function periodOf(d) { const x = D(d), y = x.getFullYear(), m = x.getMonth(), day = x.getDate(); let from, to;
+  if (day >= 11 && day <= 25) { from = iso(new Date(y, m, 11)); to = iso(new Date(y, m, 25)); }
+  else if (day >= 26) { from = iso(new Date(y, m, 26)); to = iso(new Date(y, m + 1, 10)); }
+  else { from = iso(new Date(y, m - 1, 26)); to = iso(new Date(y, m, 10)); }
+  return {id:'P' + from.replace(/-/g, '').slice(2), from, to}; }
+const curPeriod = () => periodOf(today());
+function periodsRecent(n = 4) { const L = []; let p = curPeriod(); for (let i = 0; i < n; i++) { L.push(p); p = periodOf(addDays(p.from, -1)); } return L; }
+
+/* ---------- ขั้นเรท / เงินจูงใจ ---------- */
+const tierOf = (tiers, q) => { const t = (tiers || []).find(x => q >= x.min && (x.max == null || q <= x.max)); return t ? t.rate : null; };
+function tierRate(jid, q, d = today()) { const v = jv(jid, d); return v && v.tiers ? tierOf(v.tiers, q) : null; }
+function piecePay(jid, good, all, d = today(), gb = 0) {
+  const v = jv(jid, d), q = (S.set.qtyBasis === 'all' ? all : good) + (S.set.gradeBInTier === 'yes' ? gb : 0); if (!v) return {rate:null, amt:0, ok:false, why:'noversion'};
+  let amt = 0, rate = null, ok = true;
+  if (good) { if (S.set.tierBasis === 'marginal') { const asc = v.tiers.slice().sort((a, b) => a.min - b.min); for (let u = 1; u <= good; ) { const t = asc.find(x => u >= x.min && (x.max == null || u <= x.max)); if (!t) { ok = false; break; } const end = t.max == null ? good : Math.min(good, t.max); amt += (end - u + 1) * t.rate; u = end + 1; } rate = ok ? r2(amt / good) : null; }
+    else { rate = tierOf(v.tiers, q); if (rate == null) ok = false; else amt = good * rate; } }
+  let bAmt = 0; if (gb) { if (v.gradeB == null) return {rate, amt:0, ok:false, why:'nogradeB'}; bAmt = gb * v.gradeB; }
+  return {rate, amt:ok ? r2(amt + bAmt) : 0, gAmt:ok ? r2(amt) : 0, bAmt:r2(bAmt), ok, v};
+}
+const tierAmt = (tiers, q) => { const t = (tiers || []).slice().sort((a, b) => b.min - a.min).find(x => q >= x.min); return t ? t.amt : 0; };
+const defectPct = (g, b, gb = 0) => (g + b + gb) ? b / (g + b + gb) * 100 : 0;
+
+/* ---------- ไฟล์สแกน .DAT ---------- */
+function parseDat(text) { const rows = [], bad = []; text.split(/\r?\n/).forEach((ln, i) => { if (!ln.trim()) return; const c = ln.split('\t'); if (c.length < 6) { bad.push(i + 1); return; } const uid = c[0].trim(), ts = c[1].trim(); if (!/^\d+$/.test(uid) || !/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}(:\d{2})?$/.test(ts)) { bad.push(i + 1); return; } rows.push({uid, ts}); }); return {rows, bad}; }
+async function sha256(text) { try { const b = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text)); return [...new Uint8Array(b)].map(x => x.toString(16).padStart(2, '0')).join(''); } catch (e) { let h = 0; for (let i = 0; i < text.length; i++) h = (h * 31 + text.charCodeAt(i)) | 0; return 'h' + (h >>> 0).toString(16); } }
+const serialOf = name => (String(name).match(/[A-Z0-9]{8,}/i) || [String(name).replace(/\.dat$/i, '')])[0];
+/* รหัสเครื่องที่ตรงกับคน Food Tech: ตรงช่องรหัสสแกน หรือเสนอจับคู่ (เท่ารหัสพนักงาน / ตัดเลข 0 หนึ่งตัวแล้วตรง) */
+function matchUid(uid) {
+  const byScan = S.emps.find(e => e.scanId === uid); if (byScan) return {emp:byScan.code, how:'scan'};
+  const free = S.emps.filter(e => !e.scanId);
+  const eq = free.find(e => e.code === uid); if (eq) return {emp:eq.code, how:'equal'};
+  for (let i = 0; i < uid.length; i++) if (uid[i] === '0') { const c = uid.slice(0, i) + uid.slice(i + 1), m = free.find(e => e.code === c); if (m) return {emp:m.code, how:'zero'}; }
+  return null;
+}
+function dayOfScan(ts) { const d = ts.slice(0, 10), h = +ts.slice(11, 13); return h < S.set.dayStartHour ? addDays(d, -1) : d; }
+/* สรุปต่อคนต่อวัน: ตัดซ้ำ ใช้ลำดับ (เครื่องไม่บอกเข้า/ออก) */
+function scanDay(code, d) {
+  const L = (S.scans[code + '|' + d] || []).slice().sort(); const out = []; L.forEach(ts => { const t = new Date(ts.replace(' ', 'T')).getTime(); if (!out.length || (t - out[out.length - 1].t) / 1000 > S.set.dedupSec) out.push({ts, t}); });
+  const n = out.length, mm = x => { const m = toM(x.ts.slice(11)); return x.ts.slice(0, 10) > d ? m + 1440 : m; };
+  const r = {n, raw:L.length, in:n ? mm(out[0]) : null, out:n > 1 ? mm(out[n - 1]) : null, bout:null, bin:null, ok:n === 2 || n === 4};
+  if (n === 4) { r.bout = mm(out[1]); r.bin = mm(out[2]); }
+  r.span = n > 1 ? (out[n - 1].t - out[0].t) / 3600e3 : 0; return r;
+}
+const covered = d => (S.imports || []).some(im => d >= im.from && d <= im.to);
+
+/* ---------- ใบงาน ---------- */
+const netH = r => { if (!r.in || !r.out) return 0; let a = toM(r.in), b = toM(r.out); if (b <= a) b += 1440; return Math.max(0, (b - a - (+r.brk || 0)) / 60); };
+const emp = c => S.emps.find(e => e.code === c);
+const empName = c => { const e = emp(c); return e ? `${e.title || ''} ${e.name}`.trim() : c; };
+const pres = s => s.rows.filter(r => r.present);
+function deptTotals(s) { const o = {}; pres(s).filter(r => r.mode === 'piece' && !(JOBS[r.job] || {}).pack && !(JOBS[r.job] || {}).dayJob).forEach(r => { const g = +r.good || 0, b = +r.bad || 0; const x = o[r.job] = o[r.job] || {good:0, bad:0}; x.good += g; x.bad += b; }); return o; }
+/* คำนวณทั้งใบ: ค่าแรงรายคน + เงินจูงใจรายคน + เงินจูงใจรวมแผนก */
+function calcSheet(s) {
+  const T = deptTotals(s), set = S.set, rows = {}, deptAmt = {};
+  Object.entries(T).forEach(([jid, x]) => { const dpt = deptOn(jid, s.date); if (!dpt) return; const q = set.deptBasis === 'all' ? x.good + x.bad : x.good, dp = defectPct(x.good, x.bad); deptAmt[jid] = {q, dp, amt:dp < set.defectPct ? tierAmt(dpt.tiers, q) : 0, fail:dp >= set.defectPct, notice:dpt.notice}; });
+  pres(s).forEach(r => { const e = emp(r.emp) || {}, h = netH(r), o = {h, wage:0, ot:0, inc:0, dept:0, rate:null, dp:0, err:null, lines:[]};
+    if (r.mode === 'piece' && JOBS[r.job] && JOBS[r.job].pack) { o.packRow = true; }
+    else if (r.mode === 'piece' && JOBS[r.job] && JOBS[r.job].dayJob) { const v = jv(r.job, s.date), dr = v ? v.dayRate : 0, ph = dr / set.normalH; if (!v) o.err = `ยังไม่มีอัตรา ${JOBS[r.job].name} ที่มีผลวันที่ ${fds(s.date)}`; o.rate = dr;
+      o.wage = r2(Math.min(h, set.normalH) * ph); o.ot = r2(Math.max(0, h - set.normalH) * ph * set.otMult); if (o.wage) o.lines.push({type:'day', job:r.job, qty:r2(Math.min(h, set.normalH)), rate:r2(ph), amt:o.wage}); if (o.ot) o.lines.push({type:'ot', job:r.job, qty:r2(h - set.normalH), rate:r2(ph * set.otMult), amt:o.ot}); }
+    else if (r.mode === 'piece') { const g = +r.good || 0, b = +r.bad || 0, gb = +r.gb || 0, P = piecePay(r.job, g, g + b, s.date, gb); o.rate = P.rate; o.wage = P.amt; o.dp = defectPct(g, b, gb);
+      if (!P.ok && (g || gb)) o.err = P.why === 'noversion' ? `ยังไม่มีเรท ${JOBS[r.job] ? JOBS[r.job].name : ''} ที่มีผลวันที่ ${fds(s.date)}` : P.why === 'nogradeB' ? `${JOBS[r.job].name} ไม่มีเรทเกรด B ในประกาศที่ใช้วันที่ ${fds(s.date)}` : `ไม่มีเรท ${JOBS[r.job].name} ที่ ${fmt0(set.qtyBasis === 'all' ? g + b : g)} ลูก (${JOBS[r.job].gapNote || 'ไม่อยู่ในขั้นใด'})`;
+      const inc = incOn(r.job, s.date); if (inc && o.dp < set.defectPct) o.inc = tierAmt(inc.tiers, set.qtyBasis === 'all' ? g + b : g);
+      if (g && P.ok) o.lines.push({type:'piece', job:r.job, qty:g, rate:o.rate, amt:P.gAmt, notice:P.v.notice}); if (gb && P.ok) o.lines.push({type:'piece_b', job:r.job, qty:gb, rate:P.v.gradeB, amt:P.bAmt, notice:P.v.notice}); if (o.inc) o.lines.push({type:'inc_ind', job:r.job, qty:1, rate:o.inc, amt:o.inc}); }
+    else { const dr = +e.dayRate || 0, ph = dr / set.normalH; if (!dr) o.err = 'ยังไม่มีอัตรารายวันของคนนี้ [ ]';
+      o.wage = r2(Math.min(h, set.normalH) * ph); o.ot = r2(Math.max(0, h - set.normalH) * ph * set.otMult); if (o.wage) o.lines.push({type:'day', qty:r2(Math.min(h, set.normalH)), rate:r2(ph), amt:o.wage}); if (o.ot) o.lines.push({type:'ot', qty:r2(h - set.normalH), rate:r2(ph * set.otMult), amt:o.ot}); }
+    const pool = e.deptPool || ''; Object.entries(deptAmt).forEach(([jid, x]) => { if (!x.amt) return; const pj = jid === 'FT-CUT' ? 'CUT' : jid === 'FT-TRIM' ? 'TRIM' : ''; if (pool === 'BOTH' || pool === pj) { o.dept += x.amt; o.lines.push({type:'inc_dept', job:jid, qty:1, rate:x.amt, amt:x.amt}); } });
+    o.total = r2(o.wage + o.ot + o.inc + o.dept); rows[r.emp] = o; });
+  /* ห้อง PACK (ประกาศ 18/2569): ยอดรวมห้องต่อวัน แบ่งเงินตามชั่วโมง หรือยอดรายคน ตามค่าตั้งค่า */
+  const pk = pres(s).filter(r => r.mode === 'piece' && JOBS[r.job] && JOBS[r.job].pack), pv = jv('FT-PACK', s.date), pack = {rows:pk.length, amt:0, prods:{}, err:null};
+  if (pk.length) { if (!pv) pack.err = `ยังไม่มีเรทห้อง PACK ที่มีผลวันที่ ${fds(s.date)}`;
+    else if (set.packBasis === 'person') pk.forEach(r => { const o = rows[r.emp]; let a = 0; Object.entries(pv.products).forEach(([k, p]) => { const q = +r[k] || 0; if (!q) return; const rt = tierOf(p.tiers, q); a += q * rt; o.lines.push({type:'piece', job:'FT-PACK', prod:p.label, qty:q, rate:rt, amt:r2(q * rt), notice:pv.notice}); }); o.wage = r2(a); o.total = r2(o.total + a); pack.amt += a; });
+    else { Object.entries(pv.products).forEach(([k, p]) => { const q = +((s.pack || {})[k]) || 0; if (!q) return; const rt = tierOf(p.tiers, q); pack.prods[k] = {label:p.label, q, rate:rt, amt:r2(q * rt)}; pack.amt += q * rt; });
+      const H = pk.map(r => netH(r)), HS = H.reduce((a, b) => a + b, 0), cents = Math.round(pack.amt * 100); let used = 0; const part = pk.map((r, i) => { const c = HS ? Math.floor(cents * H[i] / HS) : 0; used += c; return {r, c, rem:HS ? cents * H[i] / HS - c : 0}; });
+      part.slice().sort((a, b) => b.rem - a.rem).slice(0, cents - used).forEach(x => x.c++);
+      part.forEach(({r, c}) => { const o = rows[r.emp], a = c / 100; o.wage = r2(a); o.total = r2(o.total + a); if (a) o.lines.push({type:'group', job:'FT-PACK', qty:r2(netH(r)), rate:null, amt:r2(a), notice:pv.notice, note:'ส่วนแบ่งยอดห้อง PACK ตามชั่วโมง'}); }); } }
+  pack.amt = r2(pack.amt);
+  return {rows, T, deptAmt, pack, total:r2(Object.values(rows).reduce((a, x) => a + x.total, 0))};
+}
+/* ความผิดปกติเทียบสแกน (ต้องใส่เหตุผลก่อนส่ง) */
+function anomalies(s, r) {
+  if (!covered(s.date)) return []; const e = emp(r.emp); if (!e) return []; const sc = e.scanId ? scanDay(e.code, s.date) : {n:0}, A = [], cm = S.set.cmpMin;
+  if (r.present && !sc.n) A.push('noscan'); if (!r.present && sc.n) A.push('scanabsent');
+  if (r.present && sc.n && !sc.ok) A.push('incomplete');
+  if (r.present && sc.n) { const di = sc.in != null && r.in ? Math.abs(toM(r.in) - sc.in) : 0, out = r.out ? (toM(r.out) <= toM(r.in) ? toM(r.out) + 1440 : toM(r.out)) : null, dout = sc.out != null && out != null ? Math.abs(out - sc.out) : 0; if (di > cm || dout > cm) A.push('diff'); }
+  if (sc.n && sc.span > 14) A.push('span14');
+  return A;
+}
+const AN_LBL = {noscan:'จดว่ามา แต่ไม่มีสแกน', scanabsent:'มีสแกน แต่ไม่ได้ติ๊กมา', incomplete:'สแกนไม่ครบ (1, 3, 5, 6+ ครั้ง)', diff:'เวลาจดกับสแกนต่างเกินเกณฑ์', span14:'สแกนแรกถึงสุดท้ายเกิน 14 ชม.'};
+function checkSheet(s) {
+  const bad = [], warn = [], set = S.set;
+  if (!covered(s.date)) warn.push('ยังไม่มีไฟล์สแกนของวันนี้ ระบบยังเทียบเวลาไม่ได้');
+  const C = calcSheet(s);
+  s.rows.forEach((r, i) => { const e = emp(r.emp) || {}, lb = `แถว ${i + 1}: ${e.name || r.emp}`;
+    if (r.present) {
+      if (!r.in || !r.out) bad.push(`${lb} ใส่เวลาเข้า-ออก`); const h = netH(r);
+      if (h > set.netMaxH) bad.push(`${lb} ชั่วโมงรวม ${fmt(h, 1)} เกิน ${set.netMaxH} ชม.`); if (r.mode === 'day' && h - set.normalH > set.otMaxH) bad.push(`${lb} OT เกิน ${set.otMaxH} ชม.`);
+      if (r.mode === 'piece' && JOBS[r.job] && JOBS[r.job].dayJob) { if (h - set.normalH > set.otMaxH) bad.push(`${lb} OT เกิน ${set.otMaxH} ชม.`); if (e.payType === 'day') bad.push(`${lb} เป็นพนักงานรายวัน ใช้แบบจ่ายรายวันตามปกติ`); }
+      else if (r.mode === 'piece' && JOBS[r.job] && JOBS[r.job].pack) { if (set.packBasis === 'person' && !['p300','p454'].some(k => +r[k] > 0)) bad.push(`${lb} ใส่ยอดแพ็ค 300G หรือ 454/520G`); if (e.payType === 'day') bad.push(`${lb} เป็นพนักงานรายวัน ลงงานเหมาไม่ได้ (เปลี่ยนประเภทจ่ายในทะเบียน)`); }
+      else if (r.mode === 'piece') { if (!r.job) bad.push(`${lb} เลือกงาน`); if (r.good === '' || r.good == null || !Number.isInteger(+r.good) || +r.good < 0) bad.push(`${lb} ใส่ลูกดีเป็นจำนวนเต็ม`); if (r.gb !== '' && r.gb != null && (!Number.isInteger(+r.gb) || +r.gb < 0)) bad.push(`${lb} เกรด B ต้องเป็นจำนวนเต็ม`); if (r.bad !== '' && r.bad != null && (!Number.isInteger(+r.bad) || +r.bad < 0)) bad.push(`${lb} ลูกเสียต้องเป็นจำนวนเต็ม`); if (e.payType === 'day') bad.push(`${lb} เป็นพนักงานรายวัน ลงงานเหมาไม่ได้`); }
+      if (r.mode === 'day' && e.payType === 'piece') bad.push(`${lb} เป็นพนักงานเหมา จ่ายรายวันไม่ได้`);
+      if (r.mode === 'day' && e.payType === 'both') warn.push(`${lb} ทำได้ทั้งเหมาและรายวัน วันนี้จ่ายรายวัน (ตรวจสิทธิ์จ่ายรายวันจาก DCEO ในระบบหลักตอนเชื่อมระบบ)`);
+      const c = C.rows[r.emp]; if (c && c.err) bad.push(`${lb} ${c.err}`);
+    }
+    const A = anomalies(s, r); if (A.length && !(r.reason || '').trim()) bad.push(`${lb} ${A.map(a => AN_LBL[a]).join(' · ')} ต้องใส่เหตุผล`);
+  });
+  if (C.pack.rows) { if (C.pack.err) bad.push(C.pack.err); else if (set.packBasis === 'room' && !Object.keys(C.pack.prods).length) bad.push('ห้อง PACK: ใส่ยอดแพ็ครวมของห้อง (300G หรือ 454/520G)'); }
+  return {bad, warn, C};
+}
+function nearList(s) {
+  const p = S.set.nearPct / 100, L = [], C = calcSheet(s);
+  pres(s).filter(r => r.mode === 'piece' && JOBS[r.job] && !JOBS[r.job].pack && !JOBS[r.job].dayJob && jv(r.job, s.date)).forEach(r => { const g = +r.good || 0, j = JOBS[r.job];
+    jv(r.job, s.date).tiers.concat((incOn(r.job, s.date) || {}).tiers || []).map(t => t.min).filter(m => m > 1).forEach(m => { if (g >= m * (1 - p) && g <= m * (1 + p)) L.push({who:r.emp, what:`${j.name} ${fmt0(g)} ลูก`, th:m, side:g >= m ? 'ถึงเกณฑ์พอดี' : 'ต่ำกว่าเกณฑ์เล็กน้อย'}); }); });
+  Object.entries(C.deptAmt).forEach(([jid, x]) => deptOn(jid, s.date).tiers.forEach(t => { if (x.q >= t.min * (1 - p) && x.q <= t.min * (1 + p)) L.push({who:'', what:`ยอดรวมแผนก ${JOBS[jid].name} ${fmt0(x.q)} ลูก`, th:t.min, side:x.q >= t.min ? 'ถึงเกณฑ์พอดี' : 'ต่ำกว่าเกณฑ์เล็กน้อย'}); }));
+  return L;
+}
+function audit(what, ref, note) { S.audit.push({at:nowTs(), who:role().label, what, ref:ref || '', note:note || ''}); }
+
+/* ---------- ข้อมูลสมมติ ---------- */
+function seed() {
+  let x = 7; const R = () => (x = (x * 9301 + 49297) % 233280) / 233280;
+  const S0 = {v:3, now:'2026-11-02T10:00', role:'hr', emps:[], scans:{}, imports:[], sheets:[], audit:[], set:Object.assign({}, SET0)};
+  const MM = ['AUNG','KYAW','MYA','THIN','ZAW','HLA','SU','EI','NAN','MIN','PHYO','THET','WIN','KHIN','NAING','SANDA','YE','MOE','NILAR','TUN'], TH = ['สมศรี','บุญมา','จันทร์เพ็ญ','สายใจ','ประนอม','วันดี','ทองใบ','ลำดวน'];
+  const plan = [['CUT',12,'piece'],['TRIM',12,'piece'],['TILL',8,'piece'],['PACK',5,'day'],['REPACK',3,'day'],['WATER',3,'day'],['BELLY',2,'day'],['RM',3,'day']];
+  let n5 = 401, n7 = 1;
+  plan.forEach(([sec, cnt, pay]) => { for (let i = 0; i < cnt; i++) {
+    const seven = R() < 0.6, code = seven ? '6806' + String(n7++).padStart(3, '0') : '68' + String(n5++).padStart(3, '0'), mm = R() < 0.8;
+    const name = mm ? `${MM[Math.floor(R() * MM.length)]} ${MM[Math.floor(R() * MM.length)]}` : `${TH[Math.floor(R() * TH.length)]} ${['ใจดี','มีสุข','ศรีงาม','ทองคำ'][Math.floor(R() * 4)]}`;
+    const both = pay === 'piece' && i === cnt - 1;
+    S0.emps.push({code, title:mm ? (R() < 0.5 ? 'MR.' : 'MS.') : 'นาง', name, sec, payType:both || sec === 'PACK' ? 'both' : pay, scanId:seven ? (R() < 0.85 ? code.slice(0, 4) + '0' + code.slice(4) : '') : code, dayRate:pay === 'day' || both || sec === 'PACK' ? 347 : '', deptPool:pay === 'day' ? (['PACK','REPACK','RM'].includes(sec) ? 'BOTH' : '') : '', group:seven ? '' : 'bplus', start:'2026-03-01', active:true, hist:[]});
+  } });
+  // 3 คนรหัสสแกนยังว่าง (ให้ระบบเสนอจับคู่ตอนนำเข้า)
+  S0.emps.filter(e => e.code.length === 7).slice(0, 3).forEach(e => { e.scanId = ''; });
+  // ใบงาน 26 ต.ค.–31 ต.ค. (ไม่ทำวันอาทิตย์)
+  for (let d = '2026-10-26'; d <= '2026-10-31'; d = addDays(d, 1)) {
+    const rows = S0.emps.map(e => { const present = R() > 0.08, piece = e.payType === 'piece' || (e.payType === 'both' && e.sec !== 'PACK' && R() < 0.7);
+      const inM = 7 * 60 + 30 + Math.floor(R() * 30), outM = 16 * 60 + 45 + Math.floor(R() * 40);
+      const g = e.sec === 'CUT' ? 600 + Math.floor(R() * 650) : e.sec === 'TRIM' ? 320 + Math.floor(R() * 650) : 300 + Math.floor(R() * 300);
+      return {emp:e.code, present, mode:piece ? 'piece' : 'day', job:piece ? (SEC[e.sec].job || 'FT-TILL') : '', in:hm(inM), out:hm(outM), brk:60, good:piece ? g : '', bad:piece ? Math.floor(g * (R() < 0.15 ? 0.12 : 0.04 * R())) : '', reason:'', note:''}; });
+    S0.sheets.push({id:'FT' + d.replace(/-/g, ''), no:'FT-' + d.replace(/-/g, '').slice(2), date:d, rows, status:d <= '2026-10-30' ? 'approved' : 'submitted', note:'', by:'หัวหน้า Food Tech', at:D(d).getTime() + 18 * 3600e3, appr:d <= '2026-10-30' ? {by:'ผู้จัดการ Food Tech', at:D(d).getTime() + 30 * 3600e3} : null, hist:[]});
+  }
+  return S0;
+}
+/* ไฟล์สแกนตัวอย่าง (สมมติ) 2 เครื่อง ตรงกับใบงานตัวอย่าง + คนแผนกอื่นปน + ความผิดปกติบางส่วน */
+function demoDat() {
+  let x = 11; const R = () => (x = (x * 9301 + 49297) % 233280) / 233280; const A = [], B = [];
+  const pad = n => String(n).padStart(2, '0'), ts = (d, m) => `${d} ${pad(Math.floor(m / 60))}:${pad(Math.floor(m % 60))}:${pad(Math.floor(R() * 60))}`;
+  S.sheets.forEach(s => s.rows.forEach(r => { const e = emp(r.emp); const uid = e.scanId || (e.code.length === 7 ? e.code.slice(0, 4) + '0' + e.code.slice(4) : e.code); if (!r.present) { if (R() < 0.05) (R() < 0.5 ? A : B).push(`${uid}\t${ts(s.date, 7 * 60 + 50)}\t1\t0\t15\t0`); return; }
+    const k = R(); if (k < 0.03) return; const i0 = toM(r.in) + Math.floor(R() * 8) - 3, o0 = toM(r.out) + Math.floor(R() * 8) - 3 + (k > 0.96 ? 25 : 0), dev = R() < 0.5 ? A : B;
+    const L = k < 0.75 ? [i0, 12 * 60 + Math.floor(R() * 10), 12 * 60 + 35 + Math.floor(R() * 15), o0] : k < 0.86 ? [i0, o0] : k < 0.92 ? [i0, 12 * 60 + 3, o0] : [i0];
+    L.forEach(m => dev.push(`${uid}\t${ts(s.date, m)}\t1\t0\t${R() < 0.03 ? 1 : 15}\t0`)); if (R() < 0.04) dev.push(`${uid}\t${ts(s.date, L[0] + 1)}\t1\t0\t15\t0`); }));
+  const days = [...new Set(S.sheets.map(s => s.date))];
+  for (let k = 0; k < 40; k++) { const uid = String(52000 + Math.floor(R() * 900)), d = days[Math.floor(R() * days.length)]; (R() < 0.5 ? A : B).push(`${uid}\t${ts(d, 8 * 60 + Math.floor(R() * 60))}\t1\t0\t15\t0`, `${uid}\t${ts(d, 17 * 60 + Math.floor(R() * 30))}\t1\t0\t15\t0`); }
+  A.push(`1\t${ts(days[0], 9 * 60)}\t1\t0\t15\t0`); B.push(`  ${'5'}\t${ts(days[1], 9 * 60)}\t1\t0\t15\t0`);
+  return [{name:'CJDE200460034_attlog.dat', text:A.sort().join('\n')}, {name:'CJDE200460071_attlog.dat', text:B.sort().join('\n')}];
+}
+let S;
+function load() { try { const v = JSON.parse(localStorage.getItem(KEY) || 'null'); if (v && v.v === 3) return v; } catch (e) {} return seed(); }
+function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
+
+/* ---------- หน้าจอ ---------- */
+let UI = {}, ROUTE = 'home';
+const APP_VER = 'v0.5 (ร่าง)';
+const CLOCKS = [['2026-11-02T10:00','2 พ.ย. 2569 · ก่อนประกาศใหม่'],['2026-11-06T10:00','6 พ.ย. 2569 · ประกาศ 17/2569 มีผล'],['2026-11-12T10:00','12 พ.ย. 2569 · ประกาศ 18/2569 (PACK) มีผล']];
+const TABS = [['home','ภาพรวม'],['emp','ทะเบียน'],['scan','นำเข้าสแกน'],['sheet','ใบงาน'],['cmp','เทียบเวลา'],['report','รายงาน'],['export','เชื่อมระบบหลัก'],['settings','กติกาและตั้งค่า'],['manual','คู่มือ']];
+const ACCESS = {hr:['home','emp','scan','sheet','cmp','report','export','settings','manual'], hrm:['home','emp','scan','sheet','cmp','report','export','settings','manual'], ftlead:['home','sheet','cmp','report','settings','manual'], ftmgr:['home','emp','sheet','cmp','report','settings','manual'], ceo:['home','report','settings','manual'], dceo:['home','report','settings','manual'], acc:['home','report','export','settings','manual']};
+const st = (k, t) => `<span class="st ${k}">${esc(t)}</span>`;
+const head = (t, s, act = '') => `<div class="row" style="align-items:flex-end;margin-bottom:14px"><div style="flex:1;min-width:260px"><h1 style="margin:0 0 4px;font-size:24px">${t}</h1>${s ? `<p class="muted" style="margin:0;max-width:880px">${s}</p>` : ''}</div>${act}</div>`;
+const SH_ST = {draft:['grey','ร่าง'], submitted:['warn','รอผู้จัดการอนุมัติ'], approved:['ok','อนุมัติแล้ว · ล็อก'], returned:['bad','ส่งกลับให้แก้']};
+function todos() { const T = [], P = curPeriod();
+  if (S.role === 'ftmgr') { const n = S.sheets.filter(s => s.status === 'submitted').length; if (n) T.push([`อนุมัติใบงาน Food Tech ${n} ใบ`, 'sheet', 'warn']); }
+  if (S.role === 'ftlead') { const r = S.sheets.filter(s => s.status === 'returned').length; if (r) T.push([`ใบงานถูกส่งกลับ ${r} ใบ`, 'sheet', 'bad']); if (!S.sheets.some(s => s.date === today())) T.push([`ยังไม่มีใบงานวันนี้ (${fdw(today())})`, 'sheet', 'grey']); }
+  if (isHR()) { const last = (S.imports || []).map(i => i.to).sort().pop(); if (!last || last < addDays(today(), -2)) T.push([`ไฟล์สแกนล่าสุดถึง ${last ? fds(last) : '–'} · นำเข้าไฟล์ใหม่`, 'scan', 'warn']); const un = S.emps.filter(e => e.active && !e.scanId).length; if (un) T.push([`พนักงานยังไม่มีรหัสในเครื่องสแกน ${un} คน`, 'emp', 'warn']); }
+  return T; }
+function render() {
+  const acc = ACCESS[S.role]; let t = ROUTE.split('/')[0]; if (!acc.includes(t)) { t = 'home'; ROUTE = 'home'; }
+  document.getElementById('top').innerHTML = `<div class="bar"><div class="brand">ICOCO <span>Food Tech · ปลั๊กอินระบบค่าแรงเหมา</span></div><span class="demo" title="แยกจากระบบหลัก ยังไม่เชื่อมข้อมูล">${APP_VER} · ข้อมูลสมมติ · แยกจากระบบหลัก</span><span class="sp"></span>
+    <label class="small" style="color:#A7C9BF">วันที่ในต้นแบบ <select aria-label="วันที่ในต้นแบบ" onchange="A.clock(this.value)">${CLOCKS.map(([v, l]) => `<option value="${v}" ${S.now === v ? 'selected' : ''}>${l}</option>`).join('')}</select></label>
+    <label class="small" style="color:#A7C9BF">บทบาท <select aria-label="บทบาท" onchange="A.role(this.value)">${ROLES.map(r => `<option value="${r.key}" ${S.role === r.key ? 'selected' : ''}>${esc(r.label)}</option>`).join('')}</select></label>
+    <button class="btn sm" onclick="A.reset()">เริ่มใหม่</button></div><nav class="tabs" aria-label="เมนู">${TABS.filter(([k]) => acc.includes(k)).map(([k, l]) => `<a href="#${k}" class="${t === k ? 'on' : ''}">${l}${k === 'home' && todos().length ? `<span class="n">${todos().length}</span>` : ''}</a>`).join('')}</nav>`;
+  const V = {home:vHome, emp:vEmp, scan:vScan, sheet:vSheet, cmp:vCmp, report:vReport, export:vExport, settings:vSettings, manual:vManual}[t];
+  document.getElementById('main').innerHTML = V();
+  document.getElementById('toast').innerHTML = UI.toast ? `<div class="toast" role="status">${esc(UI.toast)}</div>` : '';
+  save();
+}
+function onHash() { ROUTE = (location.hash || '#home').slice(1) || 'home'; if (!ROUTE.startsWith('sheet/')) UI.ws = null; render(); window.scrollTo(0, 0); }
+
+/* ภาพรวม */
+function vHome() {
+  const P = curPeriod(), SH = S.sheets.filter(s => s.date >= P.from && s.date <= P.to), C = SH.map(calcSheet), tot = r2(C.reduce((a, c) => a + c.total, 0));
+  const anom = SH.reduce((a, s) => a + s.rows.filter(r => anomalies(s, r).length).length, 0), T = todos();
+  return head('Food Tech', `งวด ${fds(P.from)}–${fd(P.to)} · ปลั๊กอินนี้แยกจากระบบค่าแรงเหมาเดิม ข้อมูลส่งเข้าระบบหลักผ่านไฟล์เชื่อมระบบ`)
+  + `<div class="grid g4 kpis"><div class="card kpi"><div class="l">ค่าแรงงวดนี้ (ประมาณ)</div><div class="v">${fmt(tot, 0)}</div><div class="s">${SH.length} ใบงาน</div></div><div class="card kpi"><div class="l">พนักงานในทะเบียน</div><div class="v">${S.emps.filter(e => e.active).length}</div><div class="s">ยังไม่มีรหัสสแกน ${S.emps.filter(e => e.active && !e.scanId).length}</div></div><div class="card kpi"><div class="l">ไฟล์สแกน</div><div class="v">${(S.imports || []).length}</div><div class="s">${(S.imports || []).length ? 'ถึง ' + fds((S.imports || []).map(i => i.to).sort().pop()) : 'ยังไม่นำเข้า'}</div></div><div class="card kpi"><div class="l">ความผิดปกติเวลา</div><div class="v">${anom}</div><div class="s">คน-วัน ในงวดนี้</div></div></div>
+  <div class="grid g2" style="margin-top:16px;align-items:start"><div class="card"><h2>ต้องจัดการ</h2>${T.length ? T.map(([t, go, k]) => `<a class="todo ${k}" href="#${go}">${esc(t)}</a>`).join('') : '<p class="muted">ไม่มีงานค้าง</p>'}</div>
+   <div class="card"><h2>ปลั๊กอินนี้ทำอะไร</h2><ol class="small" style="padding-left:18px;margin:0;line-height:1.8"><li>ทะเบียน Food Tech และจับคู่รหัสในเครื่องสแกน (รองรับรหัส 5 และ 7 หลัก)</li><li>นำเข้าไฟล์สแกน .DAT หลายเครื่อง เก็บเฉพาะคน Food Tech แล้วสรุปเวลาต่อคนต่อวัน</li><li>ใบงานรายวัน: เรทขั้นบันได เงินจูงใจรายคน และเงินจูงใจรวมแผนก เทียบเวลาที่จดกับสแกน</li><li>ส่งออกไฟล์เชื่อมระบบหลัก และไฟล์รูปแบบ 05/04 เดิม</li></ol><p class="small muted">สแกนเป็นตัวเทียบ ไม่ใช่แหล่งเวลาจ่ายเงิน ค่าแรงคิดจากเวลาที่หัวหน้าจด</p></div></div>`;
+}
+
+/* ทะเบียน */
+function vEmp() {
+  const sub = ROUTE.split('/')[1] || 'list', ed = isHR();
+  const nav = `<div class="seg" style="margin-bottom:14px">${[['list','รายชื่อ'],['import','นำเข้าจาก Excel']].filter(x => x[0] === 'list' || ed).map(([k, l]) => `<button class="${sub === k ? 'on' : ''}" onclick="location.hash='emp/${k}'">${l}</button>`).join('')}</div>`;
+  if (sub === 'import' && ed) return nav + vEmpImport();
+  const f = UI.ef || {q:'', sec:''}, sf = JSON.stringify(f).replace(/"/g, "'");
+  const L = S.emps.filter(e => (!f.q || (e.code + e.name + (e.scanId || '')).toLowerCase().includes(f.q.toLowerCase())) && (!f.sec || e.sec === f.sec));
+  return nav + head('ทะเบียน Food Tech', `${S.emps.length} คน · รหัสพนักงานรองรับ 5 และ 7 หลัก (เก็บเป็นข้อความ) · รหัสในเครื่องสแกนเป็นช่องแยก แก้ได้เฉพาะ HR และผู้จัดการ HR · กลุ่มจ่ายของรหัส 7 หลักรอบัญชี`, ed ? `<button class="btn" onclick="A.tplDownload()">ดาวน์โหลดแม่แบบ Excel</button>` : '')
+  + `<div class="row" style="margin-bottom:10px"><div class="f" style="margin:0;min-width:220px"><label for="eq">ค้นหา</label><input id="eq" value="${esc(f.q)}" placeholder="รหัส ชื่อ หรือรหัสสแกน" oninput="UI.ef={...${sf},q:this.value};clearTimeout(window._q);window._q=setTimeout(render,250)"></div><div class="f" style="margin:0"><label for="es">ส่วนงาน</label><select id="es" onchange="UI.ef={...${sf},sec:this.value};render()"><option value="">ทั้งหมด</option>${SECS.map(s => `<option value="${s.id}" ${f.sec === s.id ? 'selected' : ''}>${secName(s.id)}</option>`).join('')}</select></div></div>
+  <div class="tw"><table class="t"><thead><tr><th>รหัส</th><th>ชื่อ</th><th>ส่วนงาน</th><th>ประเภทจ่าย</th><th>รหัสในเครื่องสแกน</th><th class="num">อัตรารายวัน</th><th>เงินจูงใจรวมแผนก</th><th>กลุ่มจ่าย</th></tr></thead><tbody>
+  ${L.map(e => `<tr><td class="mono">${esc(e.code)}<div class="small muted">${e.code.length} หลัก</div></td><td>${esc(e.title)} ${esc(e.name)}</td><td class="small">${secName(e.sec)}</td>
+   <td>${ed ? `<select aria-label="ประเภทจ่าย ${esc(e.code)}" onchange="A.empSet('${e.code}','payType',this.value)">${[['piece','เหมา'],['day','รายวัน'],['both','ทั้งสอง']].map(([k, l]) => `<option value="${k}" ${e.payType === k ? 'selected' : ''}>${l}</option>`).join('')}</select>` : {piece:'เหมา', day:'รายวัน', both:'ทั้งสอง'}[e.payType]}</td>
+   <td>${ed ? `<input aria-label="รหัสสแกน ${esc(e.code)}" class="mono" style="width:120px;min-height:36px" value="${esc(e.scanId || '')}" placeholder="ยังไม่จับคู่" onchange="A.empSet('${e.code}','scanId',this.value.trim())">` : `<span class="mono">${esc(e.scanId || '–')}</span>`}${!e.scanId ? ' ' + st('warn', 'ยังไม่จับคู่') : ''}</td>
+   <td class="num">${ed && e.payType !== 'piece' ? `<input aria-label="อัตรารายวัน ${esc(e.code)}" type="number" style="width:90px;min-height:36px" value="${esc(e.dayRate)}" onchange="A.empSet('${e.code}','dayRate',this.value)">` : e.dayRate ? fmt(e.dayRate) : '–'}</td>
+   <td>${ed ? `<select aria-label="เงินจูงใจรวมแผนก ${esc(e.code)}" onchange="A.empSet('${e.code}','deptPool',this.value)">${[['','ไม่รับ'],['CUT','กลุ่มผ่า'],['TRIM','กลุ่มคว้าน'],['BOTH','ทั้งสอง']].map(([k, l]) => `<option value="${k}" ${(e.deptPool || '') === k ? 'selected' : ''}>${l}</option>`).join('')}</select>` : ({'':'–', CUT:'กลุ่มผ่า', TRIM:'กลุ่มคว้าน', BOTH:'ทั้งสอง'})[e.deptPool || '']}</td>
+   <td>${ed ? `<select aria-label="กลุ่มจ่าย ${esc(e.code)}" onchange="A.empSet('${e.code}','group',this.value)">${[['','รอบัญชี'],['bplus','เข้า B-Plus'],['nobplus','ไม่เข้า B-Plus']].map(([k, l]) => `<option value="${k}" ${(e.group || '') === k ? 'selected' : ''}>${l}</option>`).join('')}</select>` : ({'':'รอบัญชี', bplus:'เข้า B-Plus', nobplus:'ไม่เข้า B-Plus'})[e.group || '']}</td></tr>`).join('')}</tbody></table></div>
+  <p class="small muted">ประเภท "ทั้งสอง" = แต่ละวันได้จ่ายแบบเดียวตามใบงาน ไม่จ่ายซ้ำ · การแก้ทุกช่องลงประวัติ</p>`;
+}
+function vEmpImport() {
+  const P = UI.imp;
+  return head('นำเข้ารายชื่อจาก Excel', 'ชีตเหมาและชีตรายวัน (ใช้แม่แบบหรือไฟล์ที่มีหัวคอลัมน์ รหัส ชื่อ แผนก) · ระบบสรุปปัญหาก่อน HR ยืนยัน: ชื่อแผนกสะกดต่าง รหัสอยู่ทั้งสองชีต รหัสที่ไม่พบในสแกน', `<button class="btn" onclick="A.tplDownload()">ดาวน์โหลดแม่แบบ</button>`)
+  + `<div class="card"><div class="f"><label for="xf">ไฟล์ Excel</label><input id="xf" type="file" accept=".xlsx,.xls" onchange="A.xlsRead(this.files[0])"></div>
+  ${P ? `<h2>สรุปก่อนบันทึก</h2><div class="grid g4 kpis"><div class="card kpi"><div class="l">แถวทั้งหมด</div><div class="v">${P.rows.length}</div></div><div class="card kpi"><div class="l">คนใหม่</div><div class="v">${P.rows.filter(r => !emp(r.code)).length}</div></div><div class="card kpi"><div class="l">อยู่ทั้งสองชีต</div><div class="v">${P.both.length}</div><div class="s">ตั้งเป็น "ทั้งสอง"</div></div><div class="card kpi"><div class="l">ชื่อแผนกจับคู่ไม่ได้</div><div class="v">${P.rows.filter(r => !r.sec).length}</div></div></div>
+   ${P.fixed.length ? `<p class="small">จับคู่ชื่อแผนกที่สะกดต่าง: ${P.fixed.map(([a, b]) => `"${esc(a)}" → ${secName(b)}`).join(' · ')}</p>` : ''}
+   <div class="tw" style="max-height:320px"><table class="t"><thead><tr><th>รหัส</th><th>ชื่อ</th><th>แผนกในไฟล์</th><th>ส่วนงาน</th><th>ประเภท</th><th>ปัญหา</th></tr></thead><tbody>${P.rows.map(r => `<tr><td class="mono">${esc(r.code)}</td><td>${esc(r.name)}</td><td class="small">${esc(r.rawSec)}</td><td>${r.sec ? secName(r.sec) : `<select aria-label="เลือกส่วนงาน ${esc(r.code)}" onchange="UI.imp.rows.find(x=>x.code==='${esc(r.code)}').sec=this.value;render()"><option value="">— เลือก —</option>${SECS.map(s => `<option value="${s.id}">${secName(s.id)}</option>`).join('')}</select>`}</td><td>${{piece:'เหมา', day:'รายวัน', both:'ทั้งสอง'}[r.payType]}</td><td class="small">${[!/^\d{5}(\d{2})?$/.test(r.code) ? 'รหัสไม่ใช่ 5 หรือ 7 หลัก' : '', S.imports.length && !Object.keys(S.scans).some(k => k.startsWith(r.code + '|')) && !emp(r.code) ? 'ไม่พบในสแกน' : ''].filter(Boolean).join(' · ') || '–'}</td></tr>`).join('')}</tbody></table></div>
+   <button class="btn pri" style="margin-top:12px" ${P.rows.some(r => !r.sec) ? 'disabled' : ''} onclick="A.xlsSave()">ยืนยันบันทึก ${P.rows.length} คน</button>${P.rows.some(r => !r.sec) ? '<span class="small" style="margin-left:8px;color:var(--bad)">เลือกส่วนงานให้ครบก่อน</span>' : ''}` : '<p class="muted small">ยังไม่ได้เลือกไฟล์</p>'}</div>`;
+}
+
+/* นำเข้าสแกน */
+function vScan() {
+  const P = UI.sp;
+  return head('นำเข้าไฟล์สแกนหน้า (.DAT)', `เลือกได้หลายไฟล์พร้อมกัน (เครื่องละไฟล์) · ระบบเก็บเฉพาะคน Food Tech ทิ้งแถวของคนแผนกอื่นทันที แสดงเป็นจำนวนเท่านั้น · ตัดสแกนซ้ำภายใน ${S.set.dedupSec} วินาที · สแกนเป็นตัวเทียบ ไม่ใช่เวลาจ่ายเงิน`)
+  + `<div class="card"><div class="row"><div class="f" style="margin:0"><label for="df">ไฟล์ .DAT</label><input id="df" type="file" multiple accept=".dat,.txt" onchange="A.datRead(this.files)"></div><span class="sp"></span><button class="btn" onclick="A.demoDat(false)">ดาวน์โหลดไฟล์ตัวอย่าง (สมมติ)</button><button class="btn pri" onclick="A.demoDat(true)">ใช้ไฟล์ตัวอย่างทดลองนำเข้า</button></div>
+  ${P ? (() => { const K = P.stat; return `<h2 style="margin-top:16px">สรุปก่อนบันทึก</h2><div class="grid g4 kpis"><div class="card kpi"><div class="l">แถวทั้งหมด</div><div class="v">${fmt0(K.total)}</div><div class="s">${P.files.length} ไฟล์ · ${fds(K.from)}–${fds(K.to)}</div></div><div class="card kpi"><div class="l">ของ Food Tech</div><div class="v">${fmt0(K.ft)}</div></div><div class="card kpi"><div class="l">ข้าม (แผนกอื่น/ไม่รู้จัก)</div><div class="v">${fmt0(K.skip)}</div><div class="s">ไม่เก็บ ไม่แสดงรหัส</div></div><div class="card kpi"><div class="l">รูปแบบผิด</div><div class="v">${K.bad}</div></div></div>
+   <div class="tw" style="margin-top:10px"><table class="t"><thead><tr><th>ไฟล์</th><th>ซีเรียลเครื่อง</th><th class="num" style="text-align:right">แถว</th><th class="num" style="text-align:right">Food Tech</th><th class="num" style="text-align:right">ข้าม</th><th>ซ้ำกับที่นำเข้าแล้ว</th></tr></thead><tbody>${P.files.map(f => `<tr><td class="small">${esc(f.name)}</td><td class="mono">${esc(f.serial)}</td><td class="num">${fmt0(f.total)}</td><td class="num">${fmt0(f.ft)}</td><td class="num">${fmt0(f.skip)}</td><td>${f.dupHash ? st('bad', 'ไฟล์เดิมเคยนำเข้า') : f.overlap ? st('warn', 'ช่วงวันที่ทับ') : '–'}</td></tr>`).join('')}</tbody></table></div>
+   ${P.suggest.length ? `<h3>เสนอจับคู่รหัสในเครื่องกับพนักงาน (${P.suggest.length})</h3><div class="tw"><table class="t"><thead><tr><th>ใช้</th><th>รหัสในเครื่อง</th><th>พนักงาน</th><th>เหตุผล</th></tr></thead><tbody>${P.suggest.map((g, i) => `<tr><td><input type="checkbox" aria-label="ยืนยันจับคู่ ${esc(g.uid)}" ${g.ok ? 'checked' : ''} onchange="UI.sp.suggest[${i}].ok=this.checked"></td><td class="mono">${esc(g.uid)}</td><td><span class="mono">${esc(g.emp)}</span> ${esc(empName(g.emp))}</td><td class="small">${g.how === 'zero' ? 'ตัดเลข 0 หนึ่งตัวแล้วตรงรหัสพนักงาน' : 'เท่ากับรหัสพนักงาน'}</td></tr>`).join('')}</tbody></table></div><p class="small muted">ไม่ติ๊ก = ไม่จับคู่ แถวของรหัสนั้นจะถูกข้าม</p>` : ''}
+   ${P.files.some(f => f.dupHash || f.overlap) ? `<div class="note warn">มีไฟล์ที่เคยนำเข้าหรือช่วงวันที่ทับ · <label><input type="radio" name="mode" ${P.mode === 'replace' ? 'checked' : ''} onchange="UI.sp.mode='replace'"> ใช้แทนข้อมูลเดิมในช่วงนี้</label> <label><input type="radio" name="mode" ${P.mode === 'add' ? 'checked' : ''} onchange="UI.sp.mode='add'"> เพิ่ม (ตัดซ้ำให้)</label></div>` : ''}
+   <button class="btn pri" style="margin-top:12px" onclick="A.datSave()">ยืนยันนำเข้า</button>`; })() : ''}</div>
+  <h2 style="margin-top:18px">ประวัติการนำเข้า</h2><div class="tw"><table class="t"><thead><tr><th>เวลา</th><th>ผู้นำเข้า</th><th>ไฟล์ · ซีเรียล</th><th>ช่วงวันที่</th><th class="num">เก็บ</th><th class="num">ข้าม</th><th>แฮช</th></tr></thead><tbody>${(S.imports || []).slice().reverse().map(im => `<tr><td class="small">${fdt(im.at)}</td><td class="small">${esc(im.by)}</td><td class="small">${im.files.map(f => `${esc(f.name)} · <span class="mono">${esc(f.serial)}</span>`).join('<br>')}</td><td class="small">${fds(im.from)}–${fds(im.to)}</td><td class="num">${fmt0(im.ft)}</td><td class="num">${fmt0(im.skip)}</td><td class="mono small">${im.files.map(f => f.hash.slice(0, 10)).join('<br>')}</td></tr>`).join('') || '<tr><td colspan="7" class="muted">ยังไม่มี</td></tr>'}</tbody></table></div>`;
+}
+
+/* ใบงาน */
+function vSheet() {
+  const id = ROUTE.split('/')[1]; if (id) return vSheetEdit(id);
+  const can = ['ftlead','hr'].includes(S.role), L = S.sheets.slice().sort((a, b) => a.date < b.date ? 1 : -1);
+  return head('ใบงาน Food Tech', 'หนึ่งใบต่อวันทั้งแผนก (เงินจูงใจรวมแผนกใช้ยอดรวมทั้งแผนก) · หัวหน้าจดเวลาเข้า-ออก-พักทุกคน · ความผิดปกติเทียบสแกนต้องใส่เหตุผลก่อนส่ง · ผู้จัดการ Food Tech อนุมัติ', can ? `<button class="btn pri" onclick="A.newSheet()">+ ใบงานวันนี้</button>` : '')
+  + `<div class="tw"><table class="t"><thead><tr><th>ใบงาน</th><th>วันที่</th><th class="num">มา</th><th class="num">ค่าแรง</th><th class="num">ผิดปกติ</th><th>สถานะ</th>${S.role === 'ftmgr' ? '<th></th>' : ''}</tr></thead><tbody>${L.map(s => { const C = calcSheet(s), an = s.rows.filter(r => anomalies(s, r).length), nr = an.filter(r => !(r.reason || '').trim()).length; return `<tr class="click" onclick="location.hash='sheet/${s.id}'"><td class="mono">${s.no}</td><td>${fdw(s.date)}</td><td class="num">${pres(s).length}</td><td class="num">${fmt(C.total)}</td><td class="num">${an.length ? `${an.length}${nr ? ` <span style="color:var(--bad)">(${nr} ไม่มีเหตุผล)</span>` : ''}` : '0'}${covered(s.date) ? '' : ' <span class="tag">ยังไม่มีสแกน</span>'}</td><td>${st(...SH_ST[s.status])}</td>${S.role === 'ftmgr' ? `<td onclick="event.stopPropagation()">${s.status === 'submitted' ? `<button class="btn sm pri" ${nr ? 'disabled' : ''} onclick="A.approve('${s.id}')">อนุมัติ</button><button class="btn sm" onclick="A.ret('${s.id}')">ส่งกลับ</button>` : ''}</td>` : ''}</tr>`; }).join('') || '<tr><td colspan="7" class="muted">ยังไม่มีใบงาน</td></tr>'}</tbody></table></div>`;
+}
+function vSheetEdit(id) {
+  if (!UI.ws || UI.ws.id !== id) { const s0 = S.sheets.find(x => x.id === id); if (!s0) return '<p>ไม่พบใบงาน</p>'; UI.ws = JSON.parse(JSON.stringify(s0)); }
+  const s = UI.ws, ro = !(['ftlead','hr'].includes(S.role) && ['draft','returned','submitted'].includes(s.status)), chk = checkSheet(s), C = chk.C, f = UI.wf || '';
+  const rows = s.rows.map((r, i) => ({r, i})).filter(({r}) => !f || (emp(r.emp) || {}).sec === f);
+  const dis = ro ? 'disabled' : '';
+  return `<a class="btn sm" href="#sheet">← ใบงานทั้งหมด</a>` + head(`ใบงาน ${s.no}`, `${fdw(s.date)} · ${st(...SH_ST[s.status])}${s.appr ? ` · อนุมัติ ${esc(s.appr.by)} ${fdt(s.appr.at)}` : ''}${s.retWhy ? ` · <span style="color:var(--bad)">ส่งกลับ: ${esc(s.retWhy)}</span>` : ''}`, ro ? '' : `<button class="btn" onclick="A.wsSave(false)">บันทึกร่าง</button><button class="btn pri" ${chk.bad.length ? 'disabled' : ''} onclick="A.wsSave(true)">ส่งผู้จัดการ${chk.bad.length ? ` (แก้ ${chk.bad.length})` : ''}</button>`)
+  + `<div class="grid g4 kpis">${Object.entries(JOBS).filter(([jid, j]) => !j.pack && !j.dayJob).map(([jid, j]) => { const x = C.T[jid] || {good:0, bad:0}, d = C.deptAmt[jid]; return `<div class="card kpi"><div class="l">${esc(j.name)}</div><div class="v">${fmt0(x.good)}</div><div class="s">ลูกดีรวม · เสีย ${fmt(defectPct(x.good, x.bad), 1)}%${deptOn(jid, s.date) ? ` · จูงใจรวม <b>${d && d.amt ? d.amt + ' บาท/คน' : d && d.fail ? 'ไม่ได้ (เสียเกิน)' : 'ไม่ถึงเกณฑ์'}</b>` : ''}</div></div>`; }).join('')}${(() => { const W = pres(s).filter(r => r.mode === 'piece' && r.job === 'FT-WCUT'); return W.length ? `<div class="card kpi"><div class="l">ผ่าน้ำมะพร้าว (รายวัน)</div><div class="v">${W.length} คน</div><div class="s">${fmt(W.reduce((a, r) => a + C.rows[r.emp].wage + C.rows[r.emp].ot, 0))} บาท · ${fmt((jv('FT-WCUT', s.date) || {}).dayRate)} บาท/วัน</div></div>` : ''; })()}<div class="card kpi"><div class="l">ค่าแรงใบนี้</div><div class="v">${fmt(C.total)}</div><div class="s">${pres(s).length} คนมา · เรทตามประกาศที่มีผล ${fds(s.date)}</div></div></div>
+  ${C.pack.rows ? (() => { const pv = jv('FT-PACK', s.date); return `<div class="card" style="margin-top:12px"><h2 style="margin-bottom:4px">ห้อง PACK · ${C.pack.rows} คน</h2>${!pv ? `<p style="color:var(--bad)">${esc(C.pack.err)}</p>` : S.set.packBasis === 'room' ? `<p class="small muted" style="margin-top:0">ประกาศ ${pv.notice} · ยอดรวมห้องต่อวันเทียบขั้น แล้วแบ่งเงินตามชั่วโมงของแต่ละคน (ค่าตั้งค่า รอยืนยัน)</p><div class="row">${Object.entries(pv.products).map(([k, p]) => { const x = C.pack.prods[k]; return `<div class="f" style="margin:0;min-width:200px"><label for="pk${k}">ยอดแพ็ค ${p.label} (ลูก)</label><input id="pk${k}" type="number" min="0" step="1" value="${esc((s.pack || {})[k] ?? '')}" ${dis} onchange="A.wsPack('${k}',this.value)"><span class="hint">${x ? `เรท ${fmt(x.rate)} × ${fmt0(x.q)} = <b>${fmt(x.amt)}</b>` : p.tiers.map(t => `${fmt0(t.min)}${t.max == null ? '+' : '–' + fmt0(t.max)}: ${fmt(t.rate)}`).join(' · ')}</span></div>`; }).join('')}<div><div class="small muted">รวมห้อง PACK</div><div style="font-size:22px;font-weight:800">${fmt(C.pack.amt)}</div></div></div>` : `<p class="small muted">ประกาศ ${pv.notice} · ยอดรายคน กรอกในแถวของแต่ละคน</p>`}</div>`; })() : ''}
+  <div class="row" style="margin:12px 0"><div class="seg">${[['','ทั้งหมด'], ...SECS.map(x => [x.id, x.en])].map(([k, l]) => `<button class="${f === k ? 'on' : ''}" onclick="UI.wf='${k}';render()">${l}</button>`).join('')}</div><span class="sp"></span>${!ro && ['CUT','TRIM','TILL'].includes(f) ? (s.rows.some(r => (emp(r.emp) || {}).sec === f && r.mode === 'piece' && r.job !== 'FT-WCUT') ? `<button class="btn sm" onclick="A.wsBulk('${f}','FT-WCUT')">ทั้งส่วนงาน ${SEC[f].en} ทำผ่าน้ำมะพร้าว</button>` : `<button class="btn sm" onclick="A.wsBulk('${f}','')">${SEC[f].en} กลับเป็นงานผลิต</button>`) : ''}${ro ? '' : `<button class="btn sm" onclick="A.wsCopy()">ใช้ใบงานวันก่อนหน้าเป็นฐาน</button>`}</div>
+  ${s.status === 'approved' && chk.bad.length ? `<div class="note warn" style="margin-bottom:12px"><b>พบหลังอนุมัติ ${chk.bad.length} รายการ</b> · ใบงานนี้อนุมัติก่อนนำเข้าไฟล์สแกน ใบงานล็อกแล้วจึงไม่แก้ที่นี่ ให้ HR ตรวจในหน้า <a href="#cmp">เทียบเวลา</a> และแก้ผ่านใบขอแก้ไขของระบบหลักหลังเชื่อมระบบ</div>` : ''}
+  ${(chk.bad.length && s.status !== 'approved') || chk.warn.length ? `<div class="card" style="margin-bottom:12px">${s.status === 'approved' ? '' : chk.bad.slice(0, UI.allChk ? 999 : 6).map(m => `<div class="chk bad"><b>บล็อก</b><span>${esc(m)}</span></div>`).join('')}${s.status !== 'approved' && chk.bad.length > 6 && !UI.allChk ? `<button class="btn sm" onclick="UI.allChk=1;render()">ดูทั้งหมด ${chk.bad.length} รายการ</button>` : ''}${chk.warn.map(m => `<div class="chk warn"><b>เตือน</b><span>${esc(m)}</span></div>`).join('')}</div>` : ''}
+  <div class="tw"><table class="t ws"><thead><tr><th>มา</th><th>พนักงาน</th><th>จ่าย</th><th>เข้า</th><th>ออก</th><th>พัก (นาที)</th><th class="num">ชม.</th><th>งาน · ลูกดี · ลูกเสีย</th><th class="num">ค่าแรง</th><th class="num">จูงใจ</th><th>สแกน (เข้า · พัก · ออก)</th><th>เหตุผล</th></tr></thead><tbody>
+  ${rows.map(({r, i}) => { const e = emp(r.emp) || {}, c = C.rows[r.emp], sc = e.scanId && covered(s.date) ? scanDay(e.code, s.date) : null, A = anomalies(s, r);
+    return `<tr class="${A.length ? 'anrow' : ''}"><td><input type="checkbox" aria-label="มา ${esc(e.name)}" ${r.present ? 'checked' : ''} ${dis} onchange="A.ws(${i},'present',this.checked)"></td><td><span class="mono small">${esc(e.code)}</span> ${esc(e.name)}<div class="small muted">${SEC[e.sec] ? SEC[e.sec].en : ''}${e.deptPool ? ' · รับจูงใจรวม' : ''}</div></td>
+     <td>${e.payType === 'both' && !(e.sec === 'PACK' && !jv('FT-PACK', s.date)) ? `<select aria-label="แบบจ่าย" ${dis} onchange="A.ws(${i},'mode',this.value)"><option value="piece" ${r.mode === 'piece' ? 'selected' : ''}>เหมา</option><option value="day" ${r.mode === 'day' ? 'selected' : ''}>รายวัน</option></select>` : r.mode === 'piece' ? 'เหมา' : 'รายวัน'}</td>
+     <td><input type="time" aria-label="เข้า" value="${esc(r.in || '')}" ${dis} onchange="A.ws(${i},'in',this.value)"></td><td><input type="time" aria-label="ออก" value="${esc(r.out || '')}" ${dis} onchange="A.ws(${i},'out',this.value)"></td><td><input type="number" aria-label="พัก" min="0" step="5" style="width:70px" value="${esc(r.brk)}" ${dis} onchange="A.ws(${i},'brk',this.value)"></td><td class="num">${r.present ? fmt(netH(r), 1) : ''}</td>
+     <td>${r.mode === 'piece' ? (JOBS[r.job] && JOBS[r.job].pack ? (S.set.packBasis === 'room' ? `<span class="small">แพ็ค · ส่วนแบ่งยอดห้องตามชั่วโมง</span>` : (jv('FT-PACK', s.date) ? Object.entries(jv('FT-PACK', s.date).products).map(([k, p]) => `<input type="number" aria-label="แพ็ค ${p.label}" min="0" step="1" style="width:90px" placeholder="${p.label}" value="${esc(r[k] ?? '')}" ${dis} onchange="A.ws(${i},'${k}',this.value)">`).join(' ') : '')) : `<select aria-label="งาน" ${dis} onchange="A.ws(${i},'job',this.value)">${jobsOn(s.date).filter(k => !JOBS[k].pack).map(k => `<option value="${k}" ${r.job === k ? 'selected' : ''}>${esc(JOBS[k].name.replace(/ \(สโนว์บอล\)/, ''))}</option>`).join('')}</select>${JOBS[r.job] && JOBS[r.job].dayJob ? ` <span class="small muted">รายวัน ${fmt((jv(r.job, s.date) || {}).dayRate)} บาท · ไม่ต้องกรอกยอด</span>` : ` <input type="number" aria-label="ลูกดี" min="0" step="1" style="width:84px" placeholder="ลูกดี" value="${esc(r.good)}" ${dis} onchange="A.ws(${i},'good',this.value)">${(jv(r.job, s.date) || {}).gradeB != null ? ` <input type="number" aria-label="เกรด B" min="0" step="1" style="width:76px" placeholder="เกรด B" title="เกรด B ${fmt(jv(r.job, s.date).gradeB)} บาท/ลูก" value="${esc(r.gb ?? '')}" ${dis} onchange="A.ws(${i},'gb',this.value)">` : ''} <input type="number" aria-label="ลูกเสีย" min="0" step="1" style="width:70px" placeholder="เสีย" value="${esc(r.bad)}" ${dis} onchange="A.ws(${i},'bad',this.value)">`}${c && r.present && !(JOBS[r.job] || {}).dayJob ? `<div class="small muted">${c.rate != null ? 'เรท ' + fmt(c.rate) : ''}${+r.gb ? ' · เกรด B ' + fmt0(r.gb) + ' × ' + fmt((jv(r.job, s.date) || {}).gradeB) : ''}${(+r.good || 0) + (+r.bad || 0) ? ' · เสีย ' + fmt(c.dp, 1) + '%' : ''}</div>` : ''}`) : '<span class="small muted">รายวัน ' + (e.dayRate ? fmt(e.dayRate) + ' บาท' : '[ ]') + '</span>'}</td>
+     <td class="num">${c ? fmt(c.wage + c.ot) : ''}</td><td class="num">${c && (c.inc || c.dept) ? `${c.inc ? fmt0(c.inc) : ''}${c.inc && c.dept ? ' + ' : ''}${c.dept ? fmt0(c.dept) + '*' : ''}` : ''}</td>
+     <td class="small">${sc ? (sc.n ? `${hm(sc.in)} · ${sc.bout != null ? hm(sc.bout) + '–' + hm(sc.bin) : '–'} · ${hm(sc.out)} <span class="muted">(${sc.n} ครั้ง)</span>` : '<span class="muted">ไม่มีสแกน</span>') : '<span class="muted">–</span>'}${A.map(a => `<div style="color:var(--bad)">${AN_LBL[a]}</div>`).join('')}</td>
+     <td>${A.length ? `<input aria-label="เหตุผล" placeholder="ต้องใส่เหตุผล" value="${esc(r.reason || '')}" ${dis} onchange="A.ws(${i},'reason',this.value)">` : ''}</td></tr>`; }).join('')}</tbody></table></div>
+  <p class="small muted">${s.date >= '2026-11-05' ? 'ไม่มีเงินจูงใจตั้งแต่ 5 พ.ย. 2569 (ยกเลิกประกาศ 014 และ 015/2568)' : `* เงินจูงใจรวมแผนก จ่ายให้คนที่ติ๊ก "รับจูงใจรวม" ในทะเบียนและมาทำงานวันนั้น · เงินจูงใจรายคนต้องมีของเสียน้อยกว่า ${S.set.defectPct}% (ประกาศ 014, 015/2568 ใช้ถึง 4 พ.ย. 2569)`}</p>
+  <div class="f" style="max-width:720px;margin-top:10px"><label for="wn">หมายเหตุการเฉลี่ยงานคัดเกรด (ไม่คำนวณ)</label><textarea id="wn" ${dis} oninput="UI.ws.note=this.value">${esc(s.note || '')}</textarea></div>`;
+}
+
+/* เทียบเวลา */
+function vCmp() {
+  const P = UI.cp ? periodsRecent(6).find(x => x.id === UI.cp) : curPeriod(), SH = S.sheets.filter(s => s.date >= P.from && s.date <= P.to);
+  const cnt = {}, rows = []; SH.forEach(s => s.rows.forEach(r => { const A = anomalies(s, r); A.forEach(a => cnt[a] = (cnt[a] || 0) + 1); if (A.length) rows.push({s, r, A}); }));
+  const scanned = new Set(Object.keys(S.scans).filter(k => { const d = k.split('|')[1]; return d >= P.from && d <= P.to; }).map(k => k.split('|')[0]));
+  const noScan = S.emps.filter(e => e.active && !scanned.has(e.code)), noSheet = [...scanned].filter(c => !SH.some(s => s.rows.some(r => r.emp === c && r.present)));
+  return head('เทียบเวลาที่จดกับสแกน', `ระบบไม่แก้เวลาที่จดและไม่ปรับจ่ายตามสแกนเอง · เกณฑ์ต่าง ${S.set.cmpMin} นาที`)
+  + `<div class="f" style="max-width:300px"><label for="cp">งวด</label><select id="cp" onchange="UI.cp=this.value;render()">${periodsRecent(6).map(x => `<option value="${x.id}" ${x.id === P.id ? 'selected' : ''}>${fds(x.from)}–${fd(x.to)}</option>`).join('')}</select></div>
+  <div class="grid g4 kpis">${Object.entries(AN_LBL).map(([k, l]) => `<div class="card kpi"><div class="l">${l}</div><div class="v">${cnt[k] || 0}</div></div>`).join('')}</div>
+  <div class="grid g2" style="margin-top:16px;align-items:start"><div class="card"><h2>อยู่ในทะเบียนแต่ไม่มีสแกนทั้งงวด (${noScan.length})</h2><p class="small muted">HR ตรวจ: อาจลาออก ย้ายแผนก หรือรหัสสแกนยังไม่จับคู่</p>${noScan.map(e => `<div class="small"><span class="mono">${esc(e.code)}</span> ${esc(e.name)}${!e.scanId ? ' ' + st('warn', 'ยังไม่จับคู่รหัสสแกน') : ''}</div>`).join('') || '<p class="muted small">ไม่มี</p>'}</div>
+   <div class="card"><h2>มีสแกนแต่ไม่มีใบงาน (${noSheet.length})</h2>${noSheet.map(c => `<div class="small"><span class="mono">${esc(c)}</span> ${esc(empName(c))}</div>`).join('') || '<p class="muted small">ไม่มี</p>'}</div></div>
+  <h2 style="margin-top:16px">รายการผิดปกติ (${rows.length})</h2><div class="tw"><table class="t"><thead><tr><th>วันที่</th><th>พนักงาน</th><th>จด</th><th>สแกน</th><th>ความผิดปกติ</th><th>เหตุผล</th></tr></thead><tbody>${rows.slice(0, 300).map(({s, r, A}) => { const e = emp(r.emp), sc = scanDay(e.code, s.date); return `<tr><td class="small">${fdw(s.date)}</td><td><span class="mono small">${esc(e.code)}</span> ${esc(e.name)}</td><td class="small">${r.present ? `${r.in}–${r.out}` : 'ไม่มา'}</td><td class="small">${sc.n ? `${hm(sc.in)}–${hm(sc.out)} (${sc.n})` : '–'}</td><td class="small">${A.map(a => AN_LBL[a]).join('<br>')}</td><td class="small">${r.reason ? esc(r.reason) : '<span style="color:var(--bad)">ยังไม่มี</span>'}</td></tr>`; }).join('') || '<tr><td colspan="6" class="muted">ไม่มี</td></tr>'}</tbody></table></div>`;
+}
+
+/* รายงาน */
+function vReport() {
+  const P = UI.rp ? periodsRecent(6).find(x => x.id === UI.rp) : curPeriod(), SH = S.sheets.filter(s => s.date >= P.from && s.date <= P.to), CS = SH.map(s => ({s, C:calcSheet(s)}));
+  const J = {}; let ind = 0, dept = 0, pd = 0, pdInc = 0, day = 0; CS.forEach(({s, C}) => { if (C.pack.amt) { const x = J['FT-PACK'] = J['FT-PACK'] || {good:0, amt:0}; x.good += Object.values(C.pack.prods).reduce((a, p) => a + p.q, 0); x.amt += C.pack.amt; } }); CS.forEach(({s, C}) => pres(s).forEach(r => { const c = C.rows[r.emp]; if (r.mode === 'piece' && JOBS[r.job] && JOBS[r.job].pack) return; if (r.mode === 'piece' && JOBS[r.job] && JOBS[r.job].dayJob) { const x = J['FT-WCUT'] = J['FT-WCUT'] || {good:0, amt:0, days:0}; x.days++; x.amt += c.wage + c.ot; return; } if (r.mode === 'piece') { const x = J[r.job] = J[r.job] || {good:0, amt:0}; x.good += +r.good || 0; x.amt += c.wage; pd++; if (c.inc) pdInc++; } else day += c.wage + c.ot; ind += c.inc; dept += c.dept; }));
+  const per = {}; CS.forEach(({s, C}) => Object.entries(C.rows).forEach(([k, c]) => { const o = per[k] = per[k] || {days:0, wage:0, inc:0, dept:0, total:0}; o.days++; o.wage += c.wage + c.ot; o.inc += c.inc; o.dept += c.dept; o.total += c.total; }));
+  const near = SH.flatMap(s => nearList(s).map(x => Object.assign(x, {date:s.date})));
+  const anom = SH.reduce((a, s) => a + s.rows.filter(r => anomalies(s, r).length).length, 0);
+  return head('รายงาน', `งวด ${fds(P.from)}–${fd(P.to)} · ค่าประมาณจากใบงานทุกสถานะ`) + `<div class="f" style="max-width:300px"><label for="rp">งวด</label><select id="rp" onchange="UI.rp=this.value;render()">${periodsRecent(6).map(x => `<option value="${x.id}" ${x.id === P.id ? 'selected' : ''}>${fds(x.from)}–${fd(x.to)}</option>`).join('')}</select></div>
+  <div class="grid g4 kpis"><div class="card kpi"><div class="l">เงินจูงใจรายคน</div><div class="v">${fmt(ind, 0)}</div><div class="s">ได้ ${pd ? fmt(pdInc / pd * 100, 0) : 0}% ของคน-วันเหมา</div></div><div class="card kpi"><div class="l">เงินจูงใจรวมแผนก</div><div class="v">${fmt(dept, 0)}</div></div><div class="card kpi"><div class="l">ค่าแรงรายวัน + OT</div><div class="v">${fmt(day, 0)}</div></div><div class="card kpi"><div class="l">ความผิดปกติเวลา</div><div class="v">${anom}</div><div class="s">คน-วัน</div></div></div>
+  <h2 style="margin-top:16px">ค่าแรงต่อลูก</h2><div class="tw"><table class="t"><thead><tr><th>งาน</th><th class="num">ลูกดี</th><th class="num">ค่าแรงเหมา</th><th class="num">ค่าแรงต่อลูก</th></tr></thead><tbody>${Object.entries(J).map(([k, x]) => `<tr><td>${esc(JOBS[k].name)}</td><td class="num">${JOBS[k].dayJob ? x.days + ' คน-วัน' : fmt0(x.good)}</td><td class="num">${fmt(x.amt)}</td><td class="num">${x.good ? fmt(x.amt / x.good, 3) : '–'}</td></tr>`).join('')}</tbody></table></div>
+  <h2 style="margin-top:16px">ยอดใกล้เกณฑ์ (±${S.set.nearPct}% · ผู้จัดการตรวจ)</h2><p class="small muted">เรทขั้นบันไดแบบทั้งวันทำให้ยอดพอดีเกณฑ์ได้ประโยชน์มาก ควรสุ่มตรวจ</p><div class="tw"><table class="t"><thead><tr><th>วันที่</th><th>พนักงาน</th><th>ยอด</th><th class="num">เกณฑ์</th><th></th></tr></thead><tbody>${near.slice(0, 200).map(x => `<tr><td class="small">${fdw(x.date)}</td><td>${x.who ? `<span class="mono small">${esc(x.who)}</span> ${esc(empName(x.who))}` : '<i>ทั้งแผนก</i>'}</td><td class="small">${esc(x.what)}</td><td class="num">${fmt0(x.th)}</td><td class="small">${x.side}</td></tr>`).join('') || '<tr><td colspan="5" class="muted">ไม่มี</td></tr>'}</tbody></table></div>
+  <h2 style="margin-top:16px">สรุปรายคน</h2><div class="tw"><table class="t"><thead><tr><th>รหัส</th><th>ชื่อ</th><th>ส่วนงาน</th><th class="num">วัน</th><th class="num">ค่าแรง</th><th class="num">จูงใจรายคน</th><th class="num">จูงใจรวมแผนก</th><th class="num">รวม</th></tr></thead><tbody>${Object.entries(per).sort((a, b) => a[0] < b[0] ? -1 : 1).map(([k, o]) => `<tr><td class="mono">${esc(k)}</td><td>${esc(empName(k))}</td><td class="small">${SEC[(emp(k) || {}).sec] ? SEC[emp(k).sec].en : ''}</td><td class="num">${o.days}</td><td class="num">${fmt(o.wage)}</td><td class="num">${fmt(o.inc)}</td><td class="num">${fmt(o.dept)}</td><td class="num"><b>${fmt(o.total)}</b></td></tr>`).join('')}</tbody></table></div>`;
+}
+
+/* เชื่อมระบบหลัก */
+function vExport() {
+  const P = UI.xp ? periodsRecent(6).find(x => x.id === UI.xp) : curPeriod(), SH = S.sheets.filter(s => s.date >= P.from && s.date <= P.to), na = SH.filter(s => s.status !== 'approved').length;
+  const unk = S.emps.filter(e => !e.group).length;
+  return head('เชื่อมกับระบบค่าแรงเหมาหลัก', 'ปลั๊กอินยังไม่แตะระบบเดิม ใช้ไฟล์ด้านล่างส่งข้อมูล: ไฟล์เชื่อมระบบหลักสำหรับนำเข้าในอนาคต และไฟล์ 05/04 รูปแบบเดิมให้บัญชีและ HR ใช้ได้ทันที')
+  + `<div class="f" style="max-width:300px"><label for="xp">งวด</label><select id="xp" onchange="UI.xp=this.value;render()">${periodsRecent(6).map(x => `<option value="${x.id}" ${x.id === P.id ? 'selected' : ''}>${fds(x.from)}–${fd(x.to)}</option>`).join('')}</select></div>
+  ${na ? `<div class="note warn">ใบงาน ${na} ใบในงวดนี้ยังไม่อนุมัติ ไฟล์จะติดคำว่า "_ร่าง"</div>` : ''}${unk ? `<div class="note warn">พนักงาน ${unk} คนยังไม่ระบุกลุ่มจ่าย (รอบัญชี) จะไม่อยู่ในไฟล์ 04 แต่อยู่ในไฟล์ 05</div>` : ''}
+  <div class="grid g3" style="margin-top:12px;align-items:start">
+   <div class="card"><h2>ไฟล์เชื่อมระบบหลัก (.json)</h2><p class="small">ทะเบียน Food Tech + รายการค่าแรงรายคนรายวัน (เหมา รายวัน OT เงินจูงใจรายคน เงินจูงใจรวมแผนก) พร้อมคอลัมน์ไฟล์ 05 (ค่าแรง / รายได้พิเศษ) · ใช้นำเข้าเมื่อระบบหลักเพิ่มแผนกที่ 5</p><button class="btn pri" onclick="A.exportJson()">ดาวน์โหลด</button></div>
+   <div class="card"><h2>ไฟล์ 05 · Food Tech</h2><p class="small">รูปแบบเดิม: ชีตรวม · ชีตต่องาน (ผ่า คว้าน ทิวส์) · ชีตรายวัน · คอลัมน์ต่อวันที่ ค่าแรง ค่ากะ รายได้พิเศษ รายการหัก ค่าแรงรวม</p><button class="btn pri" onclick="A.export05()">ดาวน์โหลด</button></div>
+   <div class="card"><h2>ไฟล์ 04 · B-Plus</h2><p class="small">เฉพาะคนที่ระบุว่าเข้า B-Plus · รหัส 7 หลักเก็บเป็นข้อความ · คอลัมน์ รหัส วันที่รายการ 1240 1210 1550</p><button class="btn pri" ${['hr','hrm'].includes(S.role) ? '' : 'disabled'} onclick="A.export04()">ดาวน์โหลด</button>${['hr','hrm'].includes(S.role) ? '' : '<p class="small muted">เฉพาะ HR</p>'}</div></div>`;
+}
+
+/* กติกาและตั้งค่า */
+function vSettings() {
+  const ed = isHR(), d = today(), vst = v => d < v.eff ? st('warn', 'มีผล ' + fd(v.eff)) : v.to && d > v.to ? st('grey', 'ยกเลิก หลัง ' + fd(v.to)) : st('ok', 'ใช้อยู่');
+  const tt = tiers => `<table class="t"><thead><tr><th>ยอดต่อวัน</th><th class="num">บาท/ลูก</th></tr></thead><tbody>${tiers.map(t => `<tr><td>${fmt0(t.min)}${t.max == null ? ' ขึ้นไป' : '–' + fmt0(t.max)}</td><td class="num">${fmt(t.rate)}</td></tr>`).join('')}</tbody></table>`;
+  return head('กติกาและตั้งค่า', `เรทตามประกาศ แยกตามฉบับและวันที่มีผล ใบงานแต่ละวันใช้ฉบับที่มีผลวันนั้นเอง · ประกาศ 17/2569 ยกเลิกประกาศก่อนหน้าทั้งหมด (${NOTICES_CANCELLED.map(x => x[0]).join(', ')} รวมเงินจูงใจ) มีผล 5 พ.ย. 2569 · ประกาศ 18/2569 (ห้อง PACK) มีผล 11 พ.ย. 2569 · ทุกเรทต้องขึ้นทะเบียนผ่านใบขอเรทของระบบหลัก (CEO และ DCEO อนุมัติร่วม) ก่อนจ่ายจริง`)
+  + `<div class="grid g2" style="align-items:start">${Object.entries(JOBS).map(([k, j]) => `<div class="card"><h2 style="margin-bottom:2px">${esc(j.name)}</h2><p class="small muted" style="margin-top:0">${k}${j.gapNote ? ' · ' + esc(j.gapNote) + ' = บล็อก ไม่เดาเรท' : ''}</p>
+     ${j.vers.slice().reverse().map(v => `<div style="border-top:1px solid var(--line);padding-top:8px;margin-top:8px"><div class="row"><b>ประกาศ ${v.notice}</b><span class="small muted">มีผล ${fd(v.eff)}${v.to ? ' ถึง ' + fd(v.to) : ''}</span><span class="sp"></span>${vst(v)}</div>
+       ${v.dayRate ? `<p style="margin:6px 0">รายวัน <b>${fmt(v.dayRate)} บาท/วัน</b> · ต่อชั่วโมง ${fmt(v.dayRate / 8)} · เกิน 8 ชม. OT ${S.set.otMult} เท่า · ใช้เมื่อไม่มีงานผลิต Snowball หรือ Bucket และให้ทีมผ่า คว้าน ทิวส์ ไปผ่าน้ำมะพร้าว</p>` : ''}${v.tiers ? tt(v.tiers) : ''}${v.gradeB != null ? `<p class="small" style="margin:4px 0">เกรด B: <b>${fmt(v.gradeB)} บาท/ลูก</b> (ไม่นับในยอดเทียบขั้น · ค่าตั้งค่า)</p>` : ''}
+       ${v.products ? Object.values(v.products).map(p => `<h3 style="margin:8px 0 4px">${esc(p.label)}</h3>${tt(p.tiers)}`).join('') : ''}</div>`).join('')}
+     ${j.inc ? `<h3>เงินจูงใจรายคน (${j.inc.notice}) ${vst(j.inc)}</h3><table class="t"><tbody>${j.inc.tiers.map(t => `<tr><td>${fmt0(t.min)} ลูกขึ้นไป</td><td class="num">${t.amt} บาท/วัน</td></tr>`).join('')}</tbody></table>` : ''}
+     ${j.dept ? `<h3>เงินจูงใจรวมแผนก (${j.dept.notice}) ${vst(j.dept)}</h3><table class="t"><tbody>${j.dept.tiers.map(t => `<tr><td>ยอดรวม ${fmt0(t.min)} ขึ้นไป</td><td class="num">${t.amt} บาท/คน</td></tr>`).join('')}</tbody></table>` : ''}</div>`).join('')}</div>
+  <div class="grid g2" style="margin-top:16px;align-items:start"><div class="card"><h2>ค่าตั้งค่า ${ed ? '' : '(ดูอย่างเดียว)'}</h2><table class="t"><tbody>${Object.entries(SET_LBL).map(([k, [l, u]]) => `<tr><td>${l}</td><td>${ed ? `<input aria-label="${esc(l)}" style="width:110px;min-height:36px" value="${esc(S.set[k])}" onchange="A.setSet('${k}',this.value)">` : esc(S.set[k])}</td><td class="small muted">${u}</td></tr>`).join('')}</tbody></table></div>
+   <div class="card"><h2>เรื่องรอตัดสิน (${OPEN_Q.length})</h2><table class="t"><thead><tr><th>เรื่อง</th><th>ต้นแบบใช้</th></tr></thead><tbody>${OPEN_Q.map(([a, b]) => `<tr><td class="small">${esc(a)}</td><td class="small">${esc(b)}</td></tr>`).join('')}</tbody></table></div></div>
+  <div class="card" style="margin-top:16px"><h2>ประวัติการแก้ไข</h2><div class="tw" style="max-height:300px"><table class="t"><tbody>${S.audit.slice().reverse().slice(0, 200).map(a => `<tr><td class="small">${fdt(a.at)}</td><td class="small">${esc(a.who)}</td><td>${esc(a.what)}</td><td class="small mono">${esc(a.ref)}</td><td class="small">${esc(a.note)}</td></tr>`).join('') || '<tr><td class="muted">ยังไม่มี</td></tr>'}</tbody></table></div></div>`;
+}
+/* คู่มือ */
+function vManual() {
+  const d = today(), cur = Object.entries(JOBS).map(([k, j]) => { const v = jv(k, d); return `<tr><td>${esc(j.name)}</td><td class="small">${v ? 'ประกาศ ' + v.notice + (v.tiers ? ' · ' + v.tiers.map(t => `${fmt0(t.min)}${t.max == null ? '+' : '–' + fmt0(t.max)} = ${fmt(t.rate)}`).join(' · ') : '') + (v.gradeB != null ? ' · เกรด B ' + fmt(v.gradeB) : '') + (v.products ? Object.values(v.products).map(p => ` · ${p.label}: ` + p.tiers.map(t => `${fmt0(t.min)}${t.max == null ? '+' : '–' + fmt0(t.max)} = ${fmt(t.rate)}`).join(', ')).join('') : '') : 'ยังไม่มีผล ' + (j.vers[0] ? 'เริ่ม ' + fd(j.vers[0].eff) : '')}</td></tr>`; }).join('');
+  return `<div class="manual">` + head(`คู่มือปลั๊กอิน Food Tech <span class="small muted">${APP_VER}</span>`, 'ปลั๊กอินนี้แยกจากระบบค่าแรงเหมาหลัก ข้อมูลส่งเข้าระบบหลักผ่านไฟล์ในเมนู "เชื่อมระบบหลัก"', `<button class="btn noprint" onclick="A.printManual()">พิมพ์ / บันทึก PDF (A4)</button>`)
+  + `<div class="card"><h2>บทบาท</h2><table class="t"><tbody><tr><td><b>HR ธุรการ / ผู้จัดการ HR</b></td><td>ทะเบียน รหัสสแกน นำเข้าไฟล์สแกน เทียบเวลา ส่งออกไฟล์</td></tr><tr><td><b>หัวหน้า Food Tech</b></td><td>กรอกใบงานรายวัน ใส่เหตุผลความผิดปกติ ส่งผู้จัดการ</td></tr><tr><td><b>ผู้จัดการ Food Tech</b></td><td>อนุมัติหรือส่งกลับใบงาน (อนุมัติแล้วล็อก)</td></tr><tr><td><b>CEO DCEO บัญชี</b></td><td>ดูรายงาน · บัญชีดาวน์โหลดไฟล์ 05 และไฟล์เชื่อมระบบหลัก</td></tr></tbody></table></div>
+  <div class="card"><h2>เรทที่ใช้วันนี้ (${fd(d)})</h2><table class="t"><tbody>${cur}</tbody></table><p class="small muted">ใบงานแต่ละวันใช้ประกาศที่มีผลวันนั้นเอง ใบงานก่อน 5 พ.ย. 2569 ยังคิดตามประกาศ 013–017/2568 (รวมเงินจูงใจ) · ตั้งแต่ 5 พ.ย. 2569 ประกาศเดิมยกเลิกทั้งหมด ไม่มีเงินจูงใจ</p></div>
+  <div class="card"><h2>ขั้นตอนประจำวัน</h2><ol style="line-height:1.9;margin:0;padding-left:20px">
+   <li><b>หัวหน้างาน</b> ใบงาน → "+ ใบงานวันนี้" ระบบดึงรายชื่อทั้งแผนก ตั้งงานตามส่วนงาน (หรือ "ใช้ใบงานวันก่อนหน้าเป็นฐาน")</li>
+   <li>ติ๊กคนที่มา ใส่เวลาเข้า ออก พัก · งานเหมาใส่ <b>ลูกดี</b> <b>เกรด B</b> (คว้านและทิวส์ ตั้งแต่ 5 พ.ย. 2569) และ <b>ลูกเสีย</b> · ระบบแสดงเรทขั้นและเงินจูงใจทันที</li>
+   <li><b>วันที่ไม่มีงานผลิต Snowball หรือ Bucket</b> ให้ทีมเดิมไปผ่าน้ำมะพร้าว: เลือกส่วนงาน (CUT UP, TRIM, TILL) แล้วกด "ทั้งส่วนงานนี้ทำผ่าน้ำมะพร้าว" หรือเลือกงาน "ผ่าน้ำมะพร้าว (รายวัน)" ทีละคน · จ่าย 347 บาท/วัน ตามชั่วโมงจริง ไม่ต้องกรอกยอด · หนึ่งคนหนึ่งงานต่อวัน</li>
+   <li><b>ห้อง PACK</b> (ตั้งแต่ 11 พ.ย. 2569) ใส่ยอดแพ็ครวมของห้องแยก 300G และ 454/520G ระบบเทียบขั้นแล้วแบ่งเงินตามชั่วโมงของแต่ละคน (ค่าตั้งค่า เปลี่ยนเป็นยอดรายคนได้)</li>
+   <li>คว้านมะพร้าวตั้งแต่ 5 พ.ย. 2569: 1–299 ลูก ลูกละ 1 บาท · เกรด B ไม่นับรวมในยอดเทียบขั้น · พนักงานรายวัน 347 บาท/วัน</li>
+   <li>ถ้าระบบขึ้นความผิดปกติเทียบสแกน (ไม่มีสแกน สแกนไม่ครบ เวลาต่างเกิน 15 นาที) ใส่เหตุผลในแถวนั้น แล้วกด "ส่งผู้จัดการ"</li>
+   <li><b>ผู้จัดการ Food Tech</b> อนุมัติในหน้าใบงาน ใบที่ยังมีรายการไม่มีเหตุผลอนุมัติไม่ได้</li></ol></div>
+  <div class="card"><h2>HR: ทะเบียนและไฟล์สแกน</h2><ul style="line-height:1.9;margin:0;padding-left:20px"><li>ทะเบียน: รหัสพนักงาน 5 หรือ 7 หลัก · รหัสในเครื่องสแกนแยกช่อง · ประเภทจ่าย เหมา/รายวัน/ทั้งสอง (พนักงานห้อง PACK ตั้งเป็น "ทั้งสอง": รายวันก่อน 11 พ.ย. เหมาตั้งแต่ 11 พ.ย.) · กลุ่มรับเงินจูงใจรวมแผนก · กลุ่มจ่าย B-Plus</li><li>นำเข้าสแกน: เลือกไฟล์ .DAT ทุกเครื่องพร้อมกัน ตรวจสรุป ยืนยันการจับคู่รหัสที่ระบบเสนอ แล้วกด "ยืนยันนำเข้า" · ระบบเก็บเฉพาะคน Food Tech</li><li>เทียบเวลา: ดูความผิดปกติ คนที่ไม่มีสแกนทั้งงวด และคนที่มีสแกนแต่ไม่มีใบงาน</li></ul></div>
+  <div class="card"><h2>เชื่อมระบบหลัก</h2><p style="margin:0">เลือกงวด แล้วดาวน์โหลด: ไฟล์เชื่อมระบบหลัก (.json) สำหรับนำเข้าเมื่อระบบหลักเพิ่มแผนก Food Tech · ไฟล์ 05 (ชีต ผ่า คว้าน ทิวส์ แพ็ค รายวัน) · ไฟล์ 04 (เฉพาะคนเข้า B-Plus) · งวดที่ยังมีใบงานไม่อนุมัติ ไฟล์ติดคำว่า "_ร่าง"</p></div>
+  <div class="card"><h2>ระบบบล็อกอะไร</h2><ul style="line-height:1.9;margin:0;padding-left:20px"><li>ยอดที่ไม่อยู่ในขั้นเรทใด (เช่น คว้าน 1–299 ลูกในใบงานก่อน 5 พ.ย. 2569) · ไม่เดาเรท</li><li>วันที่ยังไม่มีประกาศเรทที่มีผล (เช่น PACK ก่อน 11 พ.ย. 2569)</li><li>เกรด B ในงานที่ประกาศไม่มีเรทเกรด B</li><li>ไม่มีเวลาเข้า-ออก · ชั่วโมงรวมเกิน 14 · OT เกิน 6 · พนักงานรายวันลงเหมา หรือพนักงานเหมาลงรายวัน</li><li>ความผิดปกติเทียบสแกนที่ไม่มีเหตุผล</li></ul></div></div>`;
+}
+
+/* ---------- การกระทำ ---------- */
+let _dl = null; async function downloads() { if (_dl !== null) return _dl; try { _dl = window.claude && window.claude.use ? await window.claude.use('downloads') : false; } catch (e) { _dl = false; } return _dl; }
+async function saveFile(name, blob) {
+  const dl = await downloads();
+  if (dl) { try { await dl.save({filename:name, data:blob}); A.toast('บันทึกไฟล์แล้ว'); } catch (e) { A.toast(e && e.code === 'declined' ? 'ยกเลิกการบันทึก' : 'บันทึกไฟล์ไม่ได้ในมุมมองนี้'); } return; }
+  try { const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name; document.body.appendChild(a); a.click(); a.remove(); } catch (e) { A.toast('ดาวน์โหลดไม่ได้ในมุมมองนี้'); }
+}
+const xs = () => { const bd = {style:'thin', color:{rgb:'000000'}}, B = {top:bd, bottom:bd, left:bd, right:bd}, NF = '#,##0.00;\\(#,##0.00\\);\\-'; return {title:{font:{name:'Angsana New', sz:14, bold:true}}, hdr:{font:{name:'Angsana New', sz:14, bold:true, color:{rgb:'FFFFFF'}}, fill:{patternType:'solid', fgColor:{rgb:'1F4E78'}}, alignment:{horizontal:'center', vertical:'center', wrapText:true}, border:B}, txt:{font:{name:'Angsana New', sz:14}, border:B}, code:{font:{name:'Angsana New', sz:14}, alignment:{horizontal:'center'}, border:B, numFmt:'@'}, num:{font:{name:'Angsana New', sz:14}, border:B, numFmt:NF}, tnum:{font:{name:'Angsana New', sz:14}, fill:{patternType:'solid', fgColor:{rgb:'D9E1F2'}}, border:B, numFmt:NF}, totL:{font:{name:'Angsana New', sz:14, bold:true}, alignment:{horizontal:'center'}}, totN:{font:{name:'Angsana New', sz:14, bold:true}, numFmt:NF}}; };
+function sheetOf(aoa, styles, cols, merges) { const ws = XLSX.utils.aoa_to_sheet(aoa, {cellDates:true}); styles.forEach(([r, c, s]) => { const a = XLSX.utils.encode_cell({r, c}); if (!ws[a]) ws[a] = {t:'s', v:''}; ws[a].s = s; if (s.numFmt) ws[a].z = s.numFmt; if (s.numFmt === '@' && ws[a].t === 'n') { ws[a].t = 's'; ws[a].v = String(ws[a].v); } }); ws['!cols'] = cols.map(w => ({wch:w})); if (merges) ws['!merges'] = merges; return ws; }
+function periodLines(P) { const L = []; S.sheets.filter(s => s.date >= P.from && s.date <= P.to).forEach(s => { const C = calcSheet(s); Object.entries(C.rows).forEach(([code, c]) => c.lines.forEach(l => L.push(Object.assign({date:s.date, emp:code, sheet:s.no, status:s.status, acc:['inc_ind','inc_dept'].includes(l.type) ? 'special' : 'wage'}, l)))); }); return L; }
+const defJob = (e, d) => e && e.sec === 'PACK' && jv('FT-PACK', d) ? 'FT-PACK' : ((SEC[(e || {}).sec] || {}).job && jv(SEC[e.sec].job, d) ? SEC[e.sec].job : 'FT-TILL');
+const defMode = (e, d) => e.payType === 'day' ? 'day' : e.payType === 'piece' ? 'piece' : (e.sec === 'PACK' ? (jv('FT-PACK', d) ? 'piece' : 'day') : 'piece');
+const A = {
+  toast(m) { UI.toast = m; render(); clearTimeout(A._t); A._t = setTimeout(() => { UI.toast = ''; render(); }, 3500); },
+  role(k) { S.role = k; UI = {}; render(); },
+  reset() { if (!confirm('ล้างข้อมูลในเครื่องนี้และเริ่มข้อมูลสมมติใหม่?')) return; S = seed(); UI = {}; location.hash = '#home'; render(); },
+  empSet(code, k, v) { if (!isHR()) return; const e = emp(code); if (k === 'scanId' && v && S.emps.some(x => x.code !== code && x.scanId === v)) return A.toast(`รหัสสแกน ${v} ใช้กับคนอื่นแล้ว`); const old = e[k]; e[k] = v; e.hist.push({at:nowTs(), by:role().label, k, from:old, to:v}); audit('แก้ทะเบียน', code, `${k}: ${old || '–'} → ${v || '–'}`); render(); },
+  async tplDownload() { const wb = XLSX.utils.book_new(), H = ['รหัสพนักงาน','คำนำหน้า','ชื่อ','แผนก/ส่วนงาน','รหัสในเครื่องสแกน','อัตรารายวัน','รับเงินจูงใจรวมแผนก (ผ่า/คว้าน/ทั้งสอง)'];
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet([H, ...S.emps.filter(e => e.payType !== 'day').map(e => [e.code, e.title, e.name, SEC[e.sec].en, e.scanId, e.payType === 'both' ? e.dayRate : '', ''])]), 'เหมา');
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet([H, ...S.emps.filter(e => e.payType !== 'piece').map(e => [e.code, e.title, e.name, SEC[e.sec].en, e.scanId, e.dayRate, {CUT:'ผ่า', TRIM:'คว้าน', BOTH:'ทั้งสอง'}[e.deptPool] || ''])]), 'รายวัน');
+    wb.Sheets['เหมา']['!cols'] = wb.Sheets['รายวัน']['!cols'] = [{wch:12}, {wch:8}, {wch:28}, {wch:14}, {wch:14}, {wch:12}, {wch:22}];
+    saveFile('แม่แบบ_รายชื่อFoodTech.xlsx', new Blob([XLSX.write(wb, {type:'array', bookType:'xlsx'})])); },
+  async xlsRead(f) { if (!f) return; const wb = XLSX.read(await f.arrayBuffer()), out = {}, fixed = [];
+    const pick = (row, keys) => { const k = Object.keys(row).find(h => keys.some(x => String(h).replace(/\s/g, '').toLowerCase().includes(x))); return k ? row[k] : ''; };
+    wb.SheetNames.forEach(sn => { const pay = /รายวัน|daily/i.test(sn) ? 'day' : /เหมา|piece/i.test(sn) ? 'piece' : null; if (!pay) return;
+      XLSX.utils.sheet_to_json(wb.Sheets[sn], {defval:'', raw:false}).forEach(row => { const code = String(pick(row, ['รหัสพนักงาน','รหัส','code'])).trim(); if (!/^\d+$/.test(code)) return; const raw = String(pick(row, ['แผนก','ส่วนงาน','dept','section'])).trim(), sec = normSec(raw);
+        if (sec && raw && raw !== SEC[sec].en && !fixed.some(x => x[0] === raw)) fixed.push([raw, sec]);
+        const o = out[code]; const dp = String(pick(row, ['เงินจูงใจรวม'])).trim(), pool = /ทั้งสอง|both/i.test(dp) ? 'BOTH' : /ผ่า|cut/i.test(dp) ? 'CUT' : /คว้าน|trim/i.test(dp) ? 'TRIM' : '';
+        const rec = {code, title:String(pick(row, ['คำนำหน้า','title'])).trim(), name:String(pick(row, ['ชื่อ','name'])).trim(), rawSec:raw, sec, payType:pay, scanId:String(pick(row, ['รหัสในเครื่อง','สแกน','scan'])).trim(), dayRate:String(pick(row, ['อัตรารายวัน','rate'])).trim(), deptPool:pool};
+        if (o) { if (o.payType !== pay) { o.payType = 'both'; o.both = true; } Object.keys(rec).forEach(k => { if (!o[k] && rec[k]) o[k] = rec[k]; }); } else out[code] = rec; }); });
+    const rows = Object.values(out); if (!rows.length) return A.toast('ไม่พบชีต "เหมา" หรือ "รายวัน" ที่มีคอลัมน์รหัส'); UI.imp = {rows, both:rows.filter(r => r.both), fixed}; render(); },
+  xlsSave() { const P = UI.imp; let nNew = 0, nUp = 0; P.rows.forEach(r => { const e = emp(r.code); if (e) { ['title','name','sec','payType','dayRate','deptPool'].forEach(k => { if (r[k] && r[k] !== e[k]) { e.hist.push({at:nowTs(), by:role().label, k, from:e[k], to:r[k]}); e[k] = r[k]; } }); if (r.scanId && !e.scanId) e.scanId = r.scanId; nUp++; } else { S.emps.push({code:r.code, title:r.title, name:r.name, sec:r.sec, payType:r.payType, scanId:r.scanId, dayRate:r.dayRate || (r.payType !== 'piece' ? S.set.newDayRate || 347 : ''), deptPool:r.deptPool, group:'', start:today(), active:true, hist:[]}); nNew++; } });
+    audit('นำเข้ารายชื่อจาก Excel', '', `ใหม่ ${nNew} · อัปเดต ${nUp}`); UI.imp = null; location.hash = '#emp/list'; A.toast(`บันทึกแล้ว ใหม่ ${nNew} · อัปเดต ${nUp}`); },
+  async datRead(files, given) {
+    const F = given || await Promise.all([...files].map(async f => ({name:f.name, text:await f.text()}))); const stat = {total:0, ft:0, skip:0, bad:0, from:'9999', to:'0000'}, sugg = {}, files2 = [];
+    for (const f of F) { const P = parseDat(f.text), h = await sha256(f.text), serial = serialOf(f.name); let ft = 0, skip = 0;
+      P.rows.forEach(r => { const m = matchUid(r.uid); const d = dayOfScan(r.ts); stat.from = d < stat.from ? d : stat.from; stat.to = d > stat.to ? d : stat.to; if (m) { ft++; if (m.how !== 'scan') sugg[r.uid] = {uid:r.uid, emp:m.emp, how:m.how, ok:true}; } else skip++; });
+      const dupHash = (S.imports || []).some(im => im.files.some(x => x.hash === h)), ds = P.rows.map(r => dayOfScan(r.ts)).sort(), overlap = ds.length && (S.imports || []).some(im => ds[0] <= im.to && ds[ds.length - 1] >= im.from);
+      files2.push({name:f.name, serial, hash:h, total:P.rows.length, ft, skip, bad:P.bad.length, dupHash, overlap, text:f.text}); stat.total += P.rows.length; stat.ft += ft; stat.skip += skip; stat.bad += P.bad.length; }
+    UI.sp = {files:files2, stat, suggest:Object.values(sugg), mode:'replace'}; render(); },
+  async demoDat(use) { const F = demoDat(); if (use) { location.hash = '#scan'; return A.datRead(null, F); } for (const f of F) await saveFile(f.name, new Blob([f.text], {type:'text/plain'})); },
+  datSave() { const P = UI.sp; if (!isHR()) return;
+    P.suggest.filter(g => g.ok).forEach(g => { const e = emp(g.emp); if (e && !e.scanId) { e.scanId = g.uid; e.hist.push({at:nowTs(), by:role().label, k:'scanId', from:'', to:g.uid}); audit('จับคู่รหัสสแกน', g.emp, g.uid); } });
+    const byUid = Object.fromEntries(S.emps.filter(e => e.scanId).map(e => [e.scanId, e.code])); let ft = 0, skip = 0, from = '9999', to = '0000'; const add = {};
+    P.files.forEach(f => parseDat(f.text).rows.forEach(r => { const c = byUid[r.uid]; if (!c) { skip++; return; } const d = dayOfScan(r.ts); from = d < from ? d : from; to = d > to ? d : to; (add[c + '|' + d] = add[c + '|' + d] || []).push(r.ts); ft++; }));
+    if (P.mode === 'replace') Object.keys(S.scans).forEach(k => { const d = k.split('|')[1]; if (d >= from && d <= to) delete S.scans[k]; });
+    Object.entries(add).forEach(([k, L]) => { S.scans[k] = [...new Set((S.scans[k] || []).concat(L))].sort(); });
+    S.imports.push({id:'IM' + Date.now(), at:nowTs(), by:role().label, from, to, ft, skip, mode:P.mode, files:P.files.map(f => ({name:f.name, serial:f.serial, hash:f.hash, rows:f.total}))});
+    audit('นำเข้าไฟล์สแกน', P.files.map(f => f.serial).join(', '), `เก็บ ${ft} · ข้าม ${skip} · ${from}–${to}`); UI.sp = null; A.toast(`นำเข้าแล้ว เก็บ ${fmt0(ft)} แถว ข้าม ${fmt0(skip)} แถว (ไม่เก็บ)`); },
+  newSheet() { const d = today(), ex = S.sheets.find(s => s.date === d); if (ex) return location.hash = '#sheet/' + ex.id;
+    const s = {id:'FT' + d.replace(/-/g, '') + Math.random().toString(36).slice(2, 5), no:'FT-' + d.replace(/-/g, '').slice(2), date:d, rows:S.emps.filter(e => e.active).map(e => { const m = defMode(e, d); return {emp:e.code, present:true, mode:m, job:m === 'piece' ? defJob(e, d) : '', in:'07:30', out:'17:00', brk:60, good:'', bad:'', gb:'', reason:'', note:''}; }), pack:{}, status:'draft', note:'', by:role().label, at:nowTs(), hist:[]};
+    S.sheets.push(s); audit('สร้างใบงาน', s.no, ''); location.hash = '#sheet/' + s.id; },
+  ws(i, k, v) { const r = UI.ws.rows[i]; if (['good','bad','brk','gb','p300','p454'].includes(k)) v = v === '' ? '' : Math.round(+v); if (k === 'job' && JOBS[v] && JOBS[v].dayJob) { r.good = ''; r.bad = ''; r.gb = ''; } if (k === 'mode') { r.job = v === 'piece' ? defJob(emp(r.emp), UI.ws.date) : ''; if (v === 'day') { r.good = ''; r.bad = ''; r.gb = ''; } } r[k] = v; render(); },
+  wsBulk(sec, jid) { const s = UI.ws; let n = 0; s.rows.forEach(r => { const e = emp(r.emp) || {}; if (e.sec !== sec || r.mode !== 'piece') return; r.job = jid || defJob(e, s.date); if (jid) { r.good = ''; r.bad = ''; r.gb = ''; } n++; }); A.toast(jid ? `${n} คนใน ${SEC[sec].en} ทำผ่าน้ำมะพร้าว (รายวัน ${fmt((jv('FT-WCUT', s.date) || {}).dayRate)} บาท)` : `${n} คนใน ${SEC[sec].en} กลับเป็นงานผลิต`); },
+  wsPack(k, v) { UI.ws.pack = UI.ws.pack || {}; UI.ws.pack[k] = v === '' ? '' : Math.round(+v); render(); },
+  clock(v) { S.now = v; UI = {}; audit('เปลี่ยนวันที่ในต้นแบบ', v.slice(0, 10), 'สาธิต'); render(); },
+  printManual() { window.print(); },
+  wsCopy() { const s = UI.ws, src = S.sheets.filter(x => x.date < s.date).sort((a, b) => a.date < b.date ? 1 : -1)[0]; if (!src) return A.toast('ไม่มีใบงานก่อนหน้า'); s.rows = s.rows.map(r => { const y = src.rows.find(x => x.emp === r.emp); if (!y) return r; const ok = y.mode === 'day' || jv(y.job, s.date); return Object.assign({}, r, {present:y.present, mode:ok ? y.mode : r.mode, job:ok ? y.job : r.job, in:y.in, out:y.out, brk:y.brk, good:'', bad:'', gb:''}); }); A.toast(`ใช้ ${src.no} เป็นฐาน กรอกยอดใหม่`); },
+  wsSave(submit) { const s = UI.ws, c = checkSheet(s); if (submit && c.bad.length) return A.toast('แก้รายการที่บล็อกก่อน'); s.status = submit ? 'submitted' : (s.status === 'returned' ? 'returned' : 'draft'); s.at = nowTs(); const i = S.sheets.findIndex(x => x.id === s.id); s.hist = (s.hist || []).concat([{at:nowTs(), by:role().label, what:submit ? 'ส่ง' : 'บันทึกร่าง'}]); S.sheets[i] = JSON.parse(JSON.stringify(s)); audit(submit ? 'ส่งใบงาน' : 'บันทึกร่างใบงาน', s.no, ''); A.toast(submit ? 'ส่งผู้จัดการ Food Tech แล้ว' : 'บันทึกร่างแล้ว'); },
+  approve(id) { const s = S.sheets.find(x => x.id === id), c = checkSheet(s); if (c.bad.length) return A.toast('ใบงานยังมีรายการที่ต้องแก้หรือไม่มีเหตุผล อนุมัติไม่ได้'); s.status = 'approved'; s.appr = {by:role().label, at:nowTs()}; audit('อนุมัติใบงาน', s.no, ''); A.toast('อนุมัติแล้ว ใบงานล็อก'); },
+  ret(id) { const s = S.sheets.find(x => x.id === id), w = prompt('เหตุผลที่ส่งกลับ') || ''; if (w.trim().length < 3) return; s.status = 'returned'; s.retWhy = w; audit('ส่งกลับใบงาน', s.no, w); A.toast('ส่งกลับแล้ว'); },
+  setSet(k, v) { if (!isHR()) return; const old = S.set[k]; S.set[k] = ['tierBasis','qtyBasis','deptBasis'].includes(k) ? v : +v; audit('แก้ค่าตั้งค่า', k, `${old} → ${S.set[k]}`); render(); },
+  exportJson() { const P = UI.xp ? periodsRecent(6).find(x => x.id === UI.xp) : curPeriod(), L = periodLines(P);
+    const pkg = {plugin:'icoco-foodtech', version:1, created:new Date().toISOString(), period:{from:P.from, to:P.to}, note:'ต้นแบบ · ข้อมูลสมมติ · เรทตามประกาศ 013–017/2568 รอขึ้นทะเบียนในระบบหลัก', dept:{id:'foodtech', name:'Food Tech', sections:SECS.map(s => ({id:s.id, en:s.en, th:s.th}))},
+      settings:S.set, jobs:Object.entries(JOBS).map(([k, j]) => ({id:k, name:j.name, versions:j.vers})), cancelledNotices:NOTICES_CANCELLED.map(x => x[0]), employees:S.emps.map(e => ({code:e.code, title:e.title, name:e.name, section:e.sec, payType:e.payType, scanId:e.scanId, dayRate:e.dayRate === '' ? null : +e.dayRate, deptPool:e.deptPool || null, payGroup:e.group || null})),
+      sheets:S.sheets.filter(s => s.date >= P.from && s.date <= P.to).map(s => ({no:s.no, date:s.date, status:s.status, approvedBy:s.appr ? s.appr.by : null})), lines:L, totals:{wage:r2(L.filter(l => l.acc === 'wage').reduce((a, l) => a + l.amt, 0)), special:r2(L.filter(l => l.acc === 'special').reduce((a, l) => a + l.amt, 0))}};
+    audit('ส่งออกไฟล์เชื่อมระบบหลัก', P.id, `${L.length} รายการ`); saveFile(`FoodTech_เชื่อมระบบหลัก_${P.from}_${P.to}.json`, new Blob([JSON.stringify(pkg, null, 1)], {type:'application/json'})); },
+  export05() { const P = UI.xp ? periodsRecent(6).find(x => x.id === UI.xp) : curPeriod(), L = periodLines(P), T = xs(), wb = XLSX.utils.book_new(), draft = S.sheets.some(s => s.date >= P.from && s.date <= P.to && s.status !== 'approved');
+    const groups = [['FT-CUT', 'ผ่า (CUT UP)'], ['FT-TRIM', 'คว้าน (TRIM)'], ['FT-TILL', 'ทิวส์ (TILL)'], ['FT-PACK', 'แพ็ค (PACK)'], ['FT-WCUT', 'ผ่าน้ำมะพร้าว (รายวัน)'], ['DAY', 'รายวัน-Food Tech']], key = l => l.job === 'FT-WCUT' ? 'FT-WCUT' : ['day','ot'].includes(l.type) ? 'DAY' : l.job;
+    const prim = {}; L.filter(l => l.acc === 'wage').forEach(l => { const p = prim[l.emp] = prim[l.emp] || {}; p[key(l)] = (p[key(l)] || 0) + l.amt; });
+    const home = c => Object.entries(prim[c] || {DAY:0}).sort((a, b) => b[1] - a[1])[0][0];
+    const sum = [[null, `รวมค่าแรง Food Tech (${fds(P.from)} - ${fd(P.to)})${draft ? ' · ร่าง' : ''}`], [], [null, 'ส่วนงาน', 'รวมค่าแรง (บาท)', 'รวมค่ากะ (บาท)', 'รวมรายได้พิเศษ (บาท)', 'รวมรายการหัก (บาท)', 'รวมค่าแรงทั้งหมด (บาท)']], sst = [[0, 1, T.title]]; [1, 2, 3, 4, 5, 6].forEach(c => sst.push([2, c, T.hdr]));
+    const sheets = [];
+    groups.forEach(([g, name]) => { const rowsL = L.filter(l => (l.acc === 'wage' ? key(l) === g : home(l.emp) === g)); if (!rowsL.length) return; const dates = [...new Set(rowsL.filter(l => l.acc === 'wage').map(l => l.date))].sort(), per = {};
+      rowsL.forEach(l => { const o = per[l.emp] = per[l.emp] || {d:{}, wage:0, sp:0}; if (l.acc === 'wage') { o.d[l.date] = r2((o.d[l.date] || 0) + l.amt); o.wage = r2(o.wage + l.amt); } else o.sp = r2(o.sp + l.amt); });
+      const aoa = [[null, `สรุปค่าแรง${g === 'DAY' || g === 'FT-WCUT' ? 'รายวัน' : 'รายเหมา'} - ส่วนงาน ${name}`], [], [null, 'ชื่อพนักงาน', 'รหัสพนักงาน', ...dates.map(d => new Date(+d.slice(0, 4), +d.slice(5, 7) - 1, +d.slice(8, 10))), 'ค่าแรง (บาท)', 'ค่ากะ (บาท)', 'รายได้พิเศษ (บาท)', 'รายการหัก (บาท)', 'ค่าแรงรวม (บาท)']], S2 = [[0, 1, T.title]];
+      aoa[2].forEach((h, c) => c && S2.push([2, c, h instanceof Date ? Object.assign({}, T.hdr, {numFmt:'dd/mm'}) : T.hdr])); const n0 = 3 + dates.length;
+      Object.entries(per).sort((a, b) => empName(a[0]) < empName(b[0]) ? -1 : 1).forEach(([c, o], n) => { const R = 3 + n; aoa.push([null, empName(c), c, ...dates.map(d => o.d[d] || 0), o.wage, 0, o.sp, 0, r2(o.wage + o.sp)]); S2.push([R, 1, T.txt], [R, 2, T.code]); for (let k = 3; k < n0; k++) S2.push([R, k, T.num]); for (let k = n0; k < n0 + 5; k++) S2.push([R, k, T.tnum]); });
+      const R = aoa.length, tot = [null, 'รวมทั้งหมด', null]; for (let k = 3; k < n0 + 5; k++) tot.push(r2(aoa.slice(3).reduce((a, r) => a + (+r[k] || 0), 0))); aoa.push(tot); S2.push([R, 1, T.totL]); for (let k = 3; k < n0 + 5; k++) S2.push([R, k, T.totN]);
+      sheets.push([name, sheetOf(aoa, S2, [8.7, 30, 13, ...dates.map(() => 9), 15, 15, 15, 15, 15])]); const w = tot[n0], sp = tot[n0 + 2]; const r = sum.length; sum.push([null, name, w, 0, sp, 0, r2(w + sp)]); sst.push([r, 1, T.txt], [r, 2, T.num], [r, 3, T.num], [r, 4, T.num], [r, 5, T.num], [r, 6, T.num]); });
+    const tr = sum.length, G = [2, 3, 4, 5, 6].map(c => r2(sum.slice(3).reduce((a, r) => a + (+r[c] || 0), 0))); sum.push([null, 'รวมทั้งหมด', ...G]); sst.push([tr, 1, T.totL]); [2, 3, 4, 5, 6].forEach(c => sst.push([tr, c, T.totN]));
+    XLSX.utils.book_append_sheet(wb, sheetOf(sum, sst, [8.7, 28, 18, 18, 18, 18, 18], [{s:{r:0, c:1}, e:{r:0, c:6}}]), 'รวม Food Tech'); sheets.forEach(([n, ws]) => XLSX.utils.book_append_sheet(wb, ws, n));
+    audit('ส่งออกไฟล์ 05 Food Tech', P.id, ''); saveFile(`05_FoodTech_งวด_${P.from}_${P.to}${draft ? '_ร่าง' : ''}.xlsx`, new Blob([XLSX.write(wb, {type:'array', bookType:'xlsx'})])); },
+  export04() { if (!isHR()) return; const P = UI.xp ? periodsRecent(6).find(x => x.id === UI.xp) : curPeriod(), L = periodLines(P), per = {}; L.forEach(l => { const e = emp(l.emp); if (!e || e.group !== 'bplus') return; const o = per[l.emp] = per[l.emp] || {w:0, s:0}; if (l.acc === 'wage') o.w = r2(o.w + l.amt); else o.s = r2(o.s + l.amt); });
+    const pay = P.to.slice(8) === '10' ? P.to.slice(0, 8) + '15' : iso(new Date(+P.to.slice(0, 4), +P.to.slice(5, 7), 0)), F = {font:{name:'Angsana New', sz:15}, alignment:{horizontal:'center'}, numFmt:'@'};
+    const aoa = [['รหัส','วันที่รายการ','1240','1210','1550'], ...Object.entries(per).map(([c, o]) => [c, pay.replace(/-/g, ''), o.w, 0, o.s])], st2 = []; aoa.forEach((row, r) => row.forEach((v, c) => st2.push([r, c, c >= 2 && r ? Object.assign({}, F, {numFmt:'0.00'}) : F])));
+    const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, sheetOf(aoa, st2, [14, 12, 10, 10, 10]), 'รวมคนในระบบ'); audit('ส่งออกไฟล์ 04 Food Tech', P.id, `${aoa.length - 1} คน`);
+    saveFile(`04_FoodTech_BPlus_งวด_${P.from}_${P.to}.xlsx`, new Blob([XLSX.write(wb, {type:'array', bookType:'xlsx'})])); },
+};
+window.addEventListener('hashchange', onHash);
+S = load(); onHash();
+</script>
+</body>
+</html>
