@@ -59,7 +59,7 @@ textarea.rc-in{height:auto;padding:10px 12px;text-align:left}
 .sh-t td.c{text-align:center;font-size:11px}
 .sh-t tr.sub td{background:#f1f5f9;font-weight:600}
 .sh-t tr.tot td{background:#dbeafe;font-weight:700}
-.sh .ok{color:#15803d}.sh .round{color:#0369a1}.sh .over{color:#b45309}.sh .short{color:#b91c1c}
+.sh-t tr.nx td{background:#fff7ed}.sh-t tr.cm td{background:#dcfce7;font-weight:700}.sh .ok{color:#15803d}.sh .over{color:#b45309}.sh .short{color:#b91c1c}
 .sh-two{display:grid;grid-template-columns:1.25fr 1fr;gap:12px;align-items:start}
 .sh-note{border:1px solid #94a3b8;min-height:34px;padding:5px 8px;border-radius:4px}
 .sh-sign{display:grid;grid-template-columns:1fr 1fr;gap:36px;margin-top:20px}
@@ -168,7 +168,7 @@ body.role-acc .no-acc{display:none!important}
       <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center text-2xl">🌊</div>
       <div>
         <h1 class="text-xl font-bold tracking-wide">NGV BLUE ECO • กรุงเทพกรีฑาขาออก</h1>
-        <p class="text-sm opacity-90">เป็นมิตรต่อโลก • ประหยัดพลังงาน • KPI 16,000 กก./วัน <span id="ver_label" class="ml-1 px-2 py-0.5 rounded-full bg-white/20 text-[11px]">v1.3.0 (Draft)</span></p>
+        <p class="text-sm opacity-90">เป็นมิตรต่อโลก • ประหยัดพลังงาน • KPI 16,000 กก./วัน <span id="ver_label" class="ml-1 px-2 py-0.5 rounded-full bg-white/20 text-[11px]">v1.4.0 (Draft)</span></p>
       </div>
     </div>
     <div class="flex gap-2 items-center flex-wrap">
@@ -333,7 +333,7 @@ body.role-acc .no-acc{display:none!important}
         <div id="rc_saleshint" class="text-xs text-gray-500 mb-3"></div>
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-3">
       <div class="rc-per">
-        <div class="flex items-center justify-between mb-2"><b class="text-sky-900">00:00 – 08:00 น.</b><span id="rc_pb_a"></span></div>
+        <div class="flex items-center justify-between mb-2"><div><b class="text-sky-900">00:00 – 08:00 น.</b> <span id="rc_pd_a" class="text-xs text-red-700"></span></div><span id="rc_pb_a"></span></div>
         <div class="grid grid-cols-3 gap-2">
           <div><label class="rc-lbl">ปตท. (ระบบ)</label><input data-k="sys_a" oninput="rcIn(this)" type="number" inputmode="decimal" step="0.01" min="0" class="rc-in" placeholder="0.00" ></div>
           <div><label class="rc-lbl">นับจริง</label><input data-k="act_a" oninput="rcIn(this)" type="number" inputmode="decimal" step="0.01" min="0" class="rc-in" placeholder="0.00" ></div>
@@ -341,7 +341,7 @@ body.role-acc .no-acc{display:none!important}
         </div>
       </div>
       <div class="rc-per">
-        <div class="flex items-center justify-between mb-2"><b class="text-sky-900">08:00 – 20:00 น.</b><span id="rc_pb_b"></span></div>
+        <div class="flex items-center justify-between mb-2"><div><b class="text-sky-900">กะเช้า (08:00 – 20:00 น.)</b> <span id="rc_pd_b" class="text-xs text-red-700"></span></div><span id="rc_pb_b"></span></div>
         <div class="grid grid-cols-3 gap-2">
           <div><label class="rc-lbl">ปตท. (ระบบ)</label><input data-k="sys_b" oninput="rcIn(this)" type="number" inputmode="decimal" step="0.01" min="0" class="rc-in" placeholder="0.00" ></div>
           <div><label class="rc-lbl">นับจริง</label><input data-k="act_b" oninput="rcIn(this)" type="number" inputmode="decimal" step="0.01" min="0" class="rc-in" placeholder="0.00" ></div>
@@ -349,7 +349,7 @@ body.role-acc .no-acc{display:none!important}
         </div>
       </div>
       <div class="rc-per">
-        <div class="flex items-center justify-between mb-2"><b class="text-sky-900">20:00 – 24:00 น.</b><span id="rc_pb_c"></span></div>
+        <div class="flex items-center justify-between mb-2"><div><b class="text-sky-900">20:00 – 24:00 น.</b> <span id="rc_pd_c" class="text-xs text-red-700"></span></div><span id="rc_pb_c"></span></div>
         <div class="grid grid-cols-3 gap-2">
           <div><label class="rc-lbl">ปตท. (ระบบ)</label><input data-k="sys_c" oninput="rcIn(this)" type="number" inputmode="decimal" step="0.01" min="0" class="rc-in" placeholder="0.00" ></div>
           <div><label class="rc-lbl">นับจริง</label><input data-k="act_c" oninput="rcIn(this)" type="number" inputmode="decimal" step="0.01" min="0" class="rc-in" placeholder="0.00" ></div>
@@ -361,13 +361,13 @@ body.role-acc .no-acc{display:none!important}
           <table class="w-full text-sm min-w-[420px]">
             <thead><tr class="text-xs text-sky-700"><th class="text-left p-1.5 font-medium"></th><th class="text-right p-1.5 font-medium">ปตท.</th><th class="text-right p-1.5 font-medium">นับจริง</th><th class="text-right p-1.5 font-medium">ผลต่าง</th></tr></thead>
             <tbody class="tabular-nums">
-              <tr class="border-t"><td class="p-1.5">กะเช้า <span class="text-xs text-gray-500">(08:00–20:00)</span></td><td id="rc_s_m_sys" class="p-1.5 text-right">–</td><td id="rc_s_m_act" class="p-1.5 text-right">–</td><td id="rc_s_m_d" class="p-1.5 text-right">–</td></tr>
               <tr class="border-t"><td class="p-1.5">กะกลางคืน <span class="text-xs text-gray-500">(00:00–08:00 และ 20:00–24:00)</span></td><td id="rc_s_n_sys" class="p-1.5 text-right">–</td><td id="rc_s_n_act" class="p-1.5 text-right">–</td><td id="rc_s_n_d" class="p-1.5 text-right">–</td></tr>
-              <tr class="border-t-2 border-sky-300 font-bold bg-sky-50"><td class="p-1.5">รวมทั้งวัน</td><td id="rc_s_t_sys" class="p-1.5 text-right">–</td><td id="rc_s_t_act" class="p-1.5 text-right">–</td><td id="rc_s_t_d" class="p-1.5 text-right">–</td></tr>
+              <tr class="border-t-2 border-sky-300 font-bold bg-sky-50"><td class="p-1.5">รวมยอดนำส่ง ปตท.</td><td id="rc_s_t_sys" class="p-1.5 text-right">–</td><td id="rc_s_t_act" class="p-1.5 text-right">–</td><td id="rc_s_t_d" class="p-1.5 text-right">–</td></tr>
+              <tr class="border-t bg-amber-50"><td class="p-1.5">00:00 – 08:00 น. (วันถัดไป) <span id="rc_nx_day" class="text-xs text-red-700"></span><div id="rc_nx_hint" class="text-[11px] text-gray-500"></div></td><td id="rc_s_x_sys" class="p-1.5 text-right">–</td><td id="rc_s_x_act" class="p-1.5 text-right">–</td><td id="rc_s_x_d" class="p-1.5 text-right">–</td></tr>
+              <tr class="border-t-2 border-emerald-400 font-bold bg-emerald-50 text-emerald-900"><td class="p-1.5">รวมยอดเงินวันนี้ <span class="text-[11px] font-normal">(ยอดรวมที่ใช้ในการกระทบยอด)</span></td><td id="rc_s_c_sys" class="p-1.5 text-right">–</td><td id="rc_s_c_act" class="p-1.5 text-right">–</td><td id="rc_s_c_d" class="p-1.5 text-right">–</td></tr>
             </tbody>
           </table>
         </div>
-        <div class="mt-3 flex gap-2 flex-wrap perm-editRecon"><button onclick="rcRoundUp()" class="rc-chipbtn">ปัดนับจริงขึ้นเป็นบาทเต็ม (เฉพาะช่องที่ว่าง)</button></div>
       </div>
 
       <!-- 2 -->
@@ -375,7 +375,7 @@ body.role-acc .no-acc{display:none!important}
         <div class="rc-h"><span>② เงินเข้าธนาคาร และยอดคงเหลือในตู้เซฟ</span></div>
         <div class="grid md:grid-cols-2 gap-5">
           <div class="space-y-3">
-            <div><div class="flex justify-between items-end"><label class="rc-lbl">เงินเข้าธนาคาร (บาท)</label><label class="flex items-center gap-1.5 text-xs text-sky-800 mb-1"><input type="checkbox" id="rc_deposit_auto" onchange="rcDepAuto(this)" class="w-4 h-4">ใช้ยอด ปตท. รวม</label></div><input data-k="deposit" oninput="rcIn(this)" type="number" inputmode="decimal" step="0.01" min="0" class="rc-in" placeholder="0.00" ></div>
+            <div><div class="flex justify-between items-end"><label class="rc-lbl">เงินเข้าธนาคาร (บาท)</label><label class="flex items-center gap-1.5 text-xs text-sky-800 mb-1"><input type="checkbox" id="rc_deposit_auto" onchange="rcDepAuto(this)" class="w-4 h-4">ใช้ยอด ปตท. <span id="rc_dep_day"></span> ทั้งหมด</label></div><input data-k="deposit" oninput="rcIn(this)" type="number" inputmode="decimal" step="0.01" min="0" class="rc-in" placeholder="0.00" ></div>
             <div><div class="flex justify-between items-end"><label class="rc-lbl">ยอดยกมาในตู้ (บาท)</label><label class="flex items-center gap-1.5 text-xs text-sky-800 mb-1"><input type="checkbox" id="rc_opening_auto" onchange="rcOpenAuto(this)" class="w-4 h-4">ใช้ยอดนับจริงวันก่อน</label></div><input data-k="opening" oninput="rcIn(this)" type="number" inputmode="decimal" step="0.01" min="0" class="rc-in" placeholder="0.00" ><div id="rc_opening_hint" class="text-[11px] text-gray-500 mt-1"></div></div>
             <div class="grid grid-cols-2 gap-2">
               <div><label class="rc-lbl">แลกเหรียญ (ถ้ามี)</label><input data-k="coin_exchange" oninput="rcIn(this)" type="number" inputmode="decimal" step="0.01" min="0" class="rc-in" placeholder="0.00" ></div>
@@ -384,8 +384,8 @@ body.role-acc .no-acc{display:none!important}
           </div>
           <div class="bg-sky-50/60 border border-sky-100 rounded-2xl p-4 text-sm self-start">
             <div class="rc-lad"><span>ยอดยกมาในตู้</span><span id="rc_l_open">–</span></div>
-            <div class="rc-lad"><span>เงินสดนับจริงวันนี้</span><span id="rc_l_act">–</span></div>
-            <div class="rc-lad"><span>เงินเข้าธนาคาร</span><span id="rc_l_dep">–</span></div>
+            <div class="rc-lad"><span>บวก: เงินสดนับจริง<div class="text-[11px] text-gray-500">กะเช้า + 20:00–24:00 + 00:00–08:00 วันถัดไป</div><div id="rc_l_actf" class="text-[11px] text-gray-500"></div></span><span id="rc_l_act">–</span></div>
+            <div class="rc-lad"><span>หัก: เงินเข้าธนาคาร</span><span id="rc_l_dep">–</span></div>
             <div class="rc-lad tot"><span>ยอดคงเหลือตามบัญชี</span><span id="rc_l_book">–</span></div>
             <div class="rc-lad"><span>ยอดนับจริงในตู้ <span class="text-[11px] text-gray-500">(จากข้อ ③)</span></span><span id="rc_l_counted">–</span></div>
             <div class="rc-lad"><span>ผลต่าง <span id="rc_l_diffbadge"></span></span><span id="rc_l_diff">–</span></div>
@@ -584,8 +584,9 @@ alter publication supabase_realtime add table ngv_attendance;</pre></div>
       <ol class="list-decimal ml-6 text-sm space-y-2">
         <li><b>Orada</b> บันทึกยอดขายประจำวันในแท็บ "ยอดขาย & KPI" ตามปกติ</li>
         <li><b>Leader</b> เปิดแท็บ "กระทบยอดเงินสด" เลือกวันที่รายงาน — ช่อง <b>ปตท. (ระบบ)</b> ดึงจากยอดขายของ Orada ให้อัตโนมัติ (00-08 = กะ3, 08-20 = กะเช้า, 20-24 = กะ2) พิมพ์ทับได้</li>
-        <li>กรอก <b>นับจริง</b> 3 ช่วงเวลา (หรือกด "ปัดนับจริงขึ้นเป็นบาทเต็ม") — ผลต่าง กะเช้า/กะกลางคืน/รวม คำนวณเอง</li>
-        <li><b>เงินเข้าธนาคาร</b> ใช้ยอด ปตท. รวมให้เอง และ <b>ยอดยกมาในตู้</b> ดึงจากยอดนับจริงของวันก่อน (ติ๊กออกเพื่อกรอกเอง)</li>
+        <li>กรอก <b>นับจริง</b> 3 ช่วงเวลา (ไม่มีการปัดเศษ — กรอกตามที่นับจริง) — ผลต่าง กะกลางคืน, รวมยอดนำส่ง ปตท. คำนวณเอง</li>
+        <li>แถว <b>00:00–08:00 (วันถัดไป)</b> ดึงจากรายงานของวันถัดไปอัตโนมัติ (ต้องบันทึกรายงานวันถัดไปก่อนจึงจะส่งได้) และ <b>รวมยอดเงินวันนี้</b> = รวมยอดนำส่ง ปตท. + แถวนี้</li>
+        <li><b>เงินเข้าธนาคาร</b> = ยอด ปตท. ของวันที่รายงานทั้งหมด (ไม่รวมวันถัดไป) ให้เอง • <b>บวก: เงินสดนับจริง</b> = กะเช้า + 20:00–24:00 + 00:00–08:00 วันถัดไป (00:00–08:00 ของวันนี้อยู่ในยอดยกมาแล้ว) • และ <b>ยอดยกมาในตู้</b> ดึงจากยอดนับจริงของวันก่อน (ติ๊กออกเพื่อกรอกเอง)</li>
         <li>นับเงินในตู้เซฟ: ธนบัตรกรอก <b>จำนวนใบ</b> เหรียญกรอก <b>เป็นเงิน</b> — ระบบรวมและเทียบกับยอดตามบัญชี</li>
         <li>ถ้ามีผลต่างผิดปกติ (เกิน ≥ 1 บาท หรือขาด) ต้องใส่หมายเหตุก่อนส่ง</li>
         <li>กด <b>ส่งให้ผู้จัดการยืนยัน</b> → <b>Manager</b> ตรวจ แล้วกด <b>ยืนยันรายงาน</b> (ใส่รหัสผ่านซ้ำ) หรือ <b>ตีกลับ</b> พร้อมเหตุผล</li>
@@ -600,6 +601,7 @@ alter publication supabase_realtime add table ngv_attendance;</pre></div>
       <ol class="list-decimal ml-6 text-sm space-y-1 mb-3">
         <li>Supabase Dashboard → <b>SQL Editor</b> → New query</li>
         <li>วาง SQL ด้านล่างทั้งหมด (หรือไฟล์ <code>ngv_recon_setup.sql</code>) แล้วกด <b>Run</b> — สร้างตาราง <code>ngv_users</code>, <code>ngv_recon</code>, ฟังก์ชัน login/ยืนยัน และเปิด Realtime</li>
+        <li>ถ้าเคยรัน SQL เวอร์ชันก่อนแล้ว ให้รันไฟล์ <code>ngv_recon_nextday.sql</code> เพิ่ม (เพิ่มช่อง 00:00–08:00 วันถัดไป ในตาราง ngv_recon)</li>
         <li>เปิดเว็บใหม่ → ล็อกอิน → ป้าย "โหมดสำรอง" ที่มุมบนต้องหายไป และแท็บกระทบยอดขึ้น "☁️ ซิงก์ Supabase"</li>
       </ol>
       <pre class="bg-gray-900 text-green-400 p-3 rounded-xl text-[11px] overflow-auto max-h-96">-- ============================================================
@@ -639,6 +641,7 @@ create table if not exists public.ngv_recon(
   sys_a numeric, act_a numeric,              -- 00:00-08:00  ปตท. / นับจริง
   sys_b numeric, act_b numeric,              -- 08:00-20:00
   sys_c numeric, act_c numeric,              -- 20:00-24:00
+  nx_sys numeric, nx_act numeric,            -- 00:00-08:00 ของวันถัดไป (ดึงจากรายงานวันถัดไป)
   sys_auto      boolean default true,
   deposit       numeric,                     -- เงินเข้าธนาคาร
   deposit_auto  boolean default true,
@@ -1299,8 +1302,9 @@ function initYearFilter(){
 /* ================================================================
    v1.2.0 (Draft) — Login 3 บทบาท + Tab กระทบยอดเงินสด
    ================================================================ */
-const APP_VERSION='v1.3.0 (Draft)';
-const TOL=1;        // ผลต่างนับจริง-ปตท. ที่ถือเป็นปัดเศษ (บาท) : 0 <= diff < TOL
+const APP_VERSION='v1.4.0 (Draft)';
+const TOL=1;        // ผลต่างนับจริง-ปตท. ตั้งแต่ค่านี้ขึ้นไป (หรือนับขาด) ต้องใส่หมายเหตุก่อนส่ง (ไม่มีการปัดเศษ)
+const NEXT_DAY_REQUIRED=true;   // true = ส่งรายงานไม่ได้จนกว่าจะมียอด 00:00–08:00 ของวันถัดไป
 const SAFE_TOL=1;   // ผลต่างยอดตู้เซฟที่ยอมรับได้ (บาท)
 
 /* ---------- สิทธิ์ตามบทบาท (แก้ตรงนี้ที่เดียว) ---------- */
@@ -1406,12 +1410,12 @@ function switchTab(n){
 
 /* ================= RECON : data ================= */
 const RECON_KEY='ngv_recon_v1';
-const RECON_COLS=['date','sys_a','act_a','sys_b','act_b','sys_c','act_c','sys_auto','deposit','deposit_auto','opening','opening_auto','coin_exchange','kbank_deposit','count_date','n1000','n500','n100','n50','n20','c10','c5','c2','c1','c050','c025','note','total_sys','total_act','diff_total','book_close','safe_counted','safe_diff','status','created_by','updated_by','updated_at','submitted_by','submitted_at','confirmed_by','confirmed_at','reject_note'];
+const RECON_COLS=['date','sys_a','act_a','sys_b','act_b','sys_c','act_c','nx_sys','nx_act','sys_auto','deposit','deposit_auto','opening','opening_auto','coin_exchange','kbank_deposit','count_date','n1000','n500','n100','n50','n20','c10','c5','c2','c1','c050','c025','note','total_sys','total_act','diff_total','book_close','safe_counted','safe_diff','status','created_by','updated_by','updated_at','submitted_by','submitted_at','confirmed_by','confirmed_at','reject_note'];
 const NUM_F=['sys_a','act_a','sys_b','act_b','sys_c','act_c','deposit','opening','coin_exchange','kbank_deposit','c10','c5','c2','c1','c050','c025'];
 const INT_F=['n1000','n500','n100','n50','n20'];
 const DEN_N=[['n1000',1000],['n500',500],['n100',100],['n50',50],['n20',20]];
 const DEN_C=[['c10',10],['c5',5],['c2',2],['c1',1],['c050',0.5],['c025',0.25]];
-const PERIODS=[['a','00:00 – 08:00 น.'],['b','08:00 – 20:00 น.'],['c','20:00 – 24:00 น.']];
+const PERIODS=[['a','00:00 – 08:00 น.'],['b','กะเช้า (08:00 – 20:00 น.)'],['c','20:00 – 24:00 น.']];
 let reconData=[];try{reconData=JSON.parse(localStorage.getItem(RECON_KEY)||'[]');}catch(e){reconData=[];}
 let cur=null,curDirty=false,reconServerOK=false;
 
@@ -1432,14 +1436,19 @@ function prevSafe(date){
   return best;
 }
 function derive(r){
-  if(r.status==='confirmed')return r;   // รายงานที่ยืนยันแล้วใช้ตัวเลขที่ล็อกไว้ ไม่คำนวณใหม่
-  r.total_sys=r2(gv(r.sys_a)+gv(r.sys_b)+gv(r.sys_c));
+  if(r.status==='confirmed'||r.status==='submitted')return r;   // ส่งแล้ว/ยืนยันแล้ว ใช้ตัวเลขที่ล็อกไว้ ไม่คำนวณใหม่
+  r.total_sys=r2(gv(r.sys_a)+gv(r.sys_b)+gv(r.sys_c));          // รวมยอดนำส่ง ปตท. (วันที่รายงาน)
   r.total_act=r2(gv(r.act_a)+gv(r.act_b)+gv(r.act_c));
   r.diff_total=r2(r.total_act-r.total_sys);
-  if(r.deposit_auto)r.deposit=r.total_sys;
+  // ยอด 00:00–08:00 ของวันถัดไป: ดึงจากรายงานวันถัดไป (ช่วง a) อัตโนมัติ
+  const nxr=reconData.find(x=>x.date===addDays(r.date,1));
+  r.nx_sys=(nxr&&nxr.sys_a!=null)?Number(nxr.sys_a):null;
+  r.nx_act=(nxr&&nxr.act_a!=null)?Number(nxr.act_a):null;
+  if(r.deposit_auto)r.deposit=r.total_sys;                        // เงินเข้าธนาคาร = ยอด ปตท. ของวันที่รายงานทั้งหมด
   const pv=prevSafe(r.date);
   if(r.opening_auto){if(pv)r.opening=pv.v;else r.opening_auto=false;}
-  r.book_close=r.opening==null?null:r2(gv(r.opening)+r.total_act-gv(r.deposit));
+  // เงินสดนับจริงที่บวก = กะเช้า(08-20) + 20-24 + 00-08 วันถัดไป  (00-08 ของวันนี้อยู่ในยอดยกมาแล้ว)
+  r.book_close=(r.opening==null||r.nx_act==null)?null:r2(gv(r.opening)+gv(r.act_b)+gv(r.act_c)+r.nx_act-gv(r.deposit));
   let nt=0,ct=0;DEN_N.forEach(([k,d])=>nt+=gv(r[k])*d);DEN_C.forEach(([k])=>ct+=gv(r[k]));
   r.safe_counted=r2(nt+ct);
   r.safe_diff=r.book_close==null?null:r2(r.safe_counted-r.book_close);
@@ -1449,14 +1458,12 @@ function pst(sys,act){
   if(sys==null||act==null)return {k:'na',d:null,t:''};
   const d=r2(act-sys);
   if(Math.abs(d)<0.005)return {k:'ok',d,t:'ตรง'};
-  if(d>0&&d<TOL)return {k:'round',d,t:'ปัดเศษ'};
   if(d>0)return {k:'over',d,t:'เกิน'};
   return {k:'short',d,t:'ขาด'};
 }
 function sst(d){
   if(d==null)return {k:'na',t:''};
   if(Math.abs(d)<0.005)return {k:'ok',t:'ตรง'};
-  if(Math.abs(d)<SAFE_TOL)return {k:'round',t:'คลาดเคลื่อนเล็กน้อย'};
   return d>0?{k:'over',t:'เกิน'}:{k:'short',t:'ขาด'};
 }
 const BADGE={ok:'bg-emerald-100 text-emerald-700',round:'bg-sky-100 text-sky-700',over:'bg-amber-100 text-amber-700',short:'bg-red-100 text-red-700',na:'bg-gray-100 text-gray-500'};
@@ -1466,15 +1473,15 @@ function issuesOf(r){
   const o={block:[],warn:[],ok:[],needNote:false};
   const miss=['sys_a','act_a','sys_b','act_b','sys_c','act_c'].filter(k=>r[k]==null);
   if(miss.length)o.block.push('กรอกยอด ปตท. และนับจริงให้ครบทุกช่วงเวลา (ขาด '+miss.length+' ช่อง)');else o.ok.push('กรอกยอดครบทุกช่วงเวลา');
-  const ab=['a','b','c'].filter(p=>{const s=pst(r['sys_'+p],r['act_'+p]);return s.k==='over'||s.k==='short';});
+  const ab=['a','b','c'].filter(p=>{const s=pst(r['sys_'+p],r['act_'+p]);return s.k==='short'||(s.k==='over'&&s.d>=TOL);});
   if(ab.length){o.needNote=true;o.warn.push('ผลต่างผิดปกติ '+ab.length+' ช่วงเวลา (เกิน ≥ '+TOL+' บาท หรือนับขาด)');}
-  else if(!miss.length)o.ok.push('ผลต่างทุกช่วงอยู่ในเกณฑ์ปัดเศษ');
+  else if(!miss.length)o.ok.push('ผลต่างทุกช่วงน้อยกว่า '+TOL+' บาท');
+  if(NEXT_DAY_REQUIRED&&r.status!=='confirmed'&&(r.nx_sys==null||r.nx_act==null)){const nd=addDays(r.date,1);o.block.push('รอยอด 00:00–08:00 ของวันที่ '+Number(nd.slice(8))+' — ให้ Leader บันทึกรายงานวันที่ '+thShort(nd)+' (ช่อง ปตท./นับจริง 00:00–08:00) ก่อน');}
   if(r.opening==null)o.block.push('ระบุยอดยกมาในตู้เซฟ (ใช้ครั้งแรกที่เริ่มระบบ)');
   if(!(r.safe_counted>0))o.block.push('กรอกการนับเงินในตู้เซฟ (ใบที่ 2)');
   else if(r.safe_diff!=null){
-    const s=sst(r.safe_diff);
-    if(s.k==='over'||s.k==='short'){o.needNote=true;o.warn.push('ยอดนับจริงในตู้ต่างจากยอดตามบัญชี '+sgn(r.safe_diff)+' บาท');}
-    else o.ok.push('ยอดในตู้เซฟตรงกับยอดตามบัญชี');
+    if(Math.abs(r.safe_diff)>=SAFE_TOL){o.needNote=true;o.warn.push('ยอดนับจริงในตู้ต่างจากยอดตามบัญชี '+sgn(r.safe_diff)+' บาท');}
+    else o.ok.push('ผลต่างยอดในตู้เซฟน้อยกว่า '+SAFE_TOL+' บาท');
   }
   if(!r.count_date)o.block.push('ระบุวันที่นับเงินในตู้');
   if(o.needNote&&!(r.note||'').trim())o.block.push('ระบุหมายเหตุ/สาเหตุของผลต่าง');
@@ -1537,20 +1544,30 @@ function reconCalc(){
   el('rc_opening_auto').disabled=!canEdit()||!pv;
   setT('rc_opening_hint',pv?('ยอดนับจริงในตู้ของวันที่ '+thShort(pv.date)+' = '+fmt(pv.v)):'ยังไม่มีข้อมูลวันก่อนหน้า — กรอกยอดยกมาเอง');
   // ช่วงเวลา
+  const dayN=Number(cur.date.slice(8)),nxDate=addDays(cur.date,1),nxN=Number(nxDate.slice(8));
   PERIODS.forEach(([k])=>{
     const s=pst(cur['sys_'+k],cur['act_'+k]);
     setT('rc_d_'+k,s.d==null?'–':sgn(s.d));
     setC('rc_d_'+k,'rc-diff '+TXT[s.k]);
     setH('rc_pb_'+k,badge(s));
+    setT('rc_pd_'+k,'(วันที่ '+dayN+')');
   });
-  // กะเช้า = 08:00–20:00 (ช่วง b) • กะกลางคืน = 00:00–08:00 (ช่วง a) + 20:00–24:00 (ช่วง c)
-  const mS=r2(gv(cur.sys_b)),mA=r2(gv(cur.act_b)),nS=r2(gv(cur.sys_a)+gv(cur.sys_c)),nA=r2(gv(cur.act_a)+gv(cur.act_c));
-  const sumRow=(p,sy,ac,ready)=>{setT('rc_s_'+p+'_sys',fmt(sy));setT('rc_s_'+p+'_act',fmt(ac));const d=r2(ac-sy);setT('rc_s_'+p+'_d',ready?sgn(d):'–');};
-  sumRow('m',mS,mA,cur.act_b!=null&&cur.sys_b!=null);
+  const fill6=['sys_a','act_a','sys_b','act_b','sys_c','act_c'].every(k=>cur[k]!=null);
+  const nxOK=cur.nx_sys!=null&&cur.nx_act!=null;
+  // กะกลางคืน = 00:00–08:00 + 20:00–24:00 (ของวันที่รายงาน)
+  const nS=r2(gv(cur.sys_a)+gv(cur.sys_c)),nA=r2(gv(cur.act_a)+gv(cur.act_c));
+  const sumRow=(p,sy,ac,ready)=>{setT('rc_s_'+p+'_sys',ready?fmt(sy):'–');setT('rc_s_'+p+'_act',ready?fmt(ac):'–');setT('rc_s_'+p+'_d',ready?sgn(r2(ac-sy)):'–');};
   sumRow('n',nS,nA,cur.act_a!=null&&cur.sys_a!=null&&cur.act_c!=null&&cur.sys_c!=null);
-  sumRow('t',cur.total_sys,cur.total_act,['sys_a','act_a','sys_b','act_b','sys_c','act_c'].every(k=>cur[k]!=null));
+  sumRow('t',cur.total_sys,cur.total_act,fill6);
+  sumRow('x',cur.nx_sys,cur.nx_act,nxOK);
+  sumRow('c',r2(cur.total_sys+gv(cur.nx_sys)),r2(cur.total_act+gv(cur.nx_act)),fill6&&nxOK);
+  setT('rc_nx_day','(วันที่ '+nxN+')');
+  setH('rc_nx_hint',nxOK?('ดึงจากรายงานวันที่ '+thShort(nxDate)+' อัตโนมัติ'):(cur.status==='confirmed'?'รายงานนี้จัดทำก่อนเพิ่มรายการนี้':'<span class="text-amber-700">รอข้อมูลวันที่ '+nxN+'</span> • <button type="button" class="underline text-sky-700" onclick="rcGo(\''+nxDate+'\')">ไปบันทึกรายงานวันที่ '+nxN+'</button>'));
   // ยอดตู้
-  setT('rc_l_open',fmt(cur.opening));setT('rc_l_act','+ '+fmt(cur.total_act));setT('rc_l_dep','− '+fmt(cur.deposit));
+  const plus=nxOK?r2(gv(cur.act_b)+gv(cur.act_c)+gv(cur.nx_act)):(cur.status==='confirmed'?cur.total_act:null);
+  setT('rc_l_open',fmt(cur.opening));setT('rc_l_act',plus==null?'–':'+ '+fmt(plus));setT('rc_l_dep','− '+fmt(cur.deposit));
+  setT('rc_l_actf',nxOK?('= '+fmt(cur.act_c)+' + '+fmt(cur.nx_act)+' + '+fmt(cur.act_b)):'');
+  setT('rc_dep_day','วันที่ '+dayN);
   setT('rc_l_book',fmt(cur.book_close));setT('rc_l_counted',fmt(cur.safe_counted));
   const sd=sst(cur.safe_diff);
   setT('rc_l_diff',cur.safe_diff==null?'–':sgn(cur.safe_diff));setC('rc_l_diff','font-bold tabular-nums '+TXT[sd.k]);setH('rc_l_diffbadge',badge(sd));
@@ -1631,13 +1648,6 @@ function rcIn(e){
 function rcSysAuto(cb){if(!canEdit())return;cur.sys_auto=cb.checked;rcTouch();reconCalc();}
 function rcDepAuto(cb){if(!canEdit())return;cur.deposit_auto=cb.checked;rcTouch();reconCalc();}
 function rcOpenAuto(cb){if(!canEdit())return;if(cb.checked&&!prevSafe(cur.date)){cb.checked=false;showToast('ยังไม่มียอดนับจริงของวันก่อนหน้า');return;}cur.opening_auto=cb.checked;rcTouch();reconCalc();}
-function rcRoundUp(){
-  if(!canEdit())return;let n=0;
-  PERIODS.forEach(([k])=>{const s=cur['sys_'+k];if(s!=null&&cur['act_'+k]==null){cur['act_'+k]=Math.ceil(r2(s)-1e-9);n++;}});
-  if(!n){showToast('ไม่มีช่องนับจริงที่ว่างและมียอด ปตท. แล้ว');return;}
-  document.querySelectorAll('#rc_body [data-k^="act_"]').forEach(i=>i.value=cur[i.dataset.k]==null?'':cur[i.dataset.k]);
-  rcTouch();reconCalc();showToast('ปัดขึ้นเป็นบาทเต็มให้ '+n+' ช่อง — ตรวจกับเงินที่นับจริงอีกครั้ง');
-}
 
 /* ---------- save / workflow ---------- */
 function storeLocal(r){
@@ -1750,7 +1760,7 @@ function renderHistory(){
   const rows=reconData.filter(x=>f==='all'||x.date.startsWith(f)).sort((a,b)=>a.date<b.date?1:-1);
   const sm={draft:['ร่าง','bg-gray-100 text-gray-700'],submitted:['รอยืนยัน','bg-amber-100 text-amber-800'],confirmed:['ยืนยันแล้ว','bg-emerald-100 text-emerald-800']};
   el('rc_hist').innerHTML=rows.length?rows.map(x=>{
-    const s=sm[x.status]||sm.draft,d=sst(x.diff_total>=0&&x.diff_total<TOL?0:x.diff_total);
+    const s=sm[x.status]||sm.draft,d=sst(x.diff_total);
     return `<tr class="border-b hover:bg-sky-50 ${cur&&cur.date===x.date?'bg-sky-50':''}"><td class="p-2 font-medium whitespace-nowrap">${thShort(x.date)}</td><td class="p-2 text-right tabular-nums">${fmt(x.total_sys)}</td><td class="p-2 text-right tabular-nums">${fmt(x.total_act)}</td><td class="p-2 text-right tabular-nums ${TXT[d.k]}">${x.diff_total==null?'–':sgn(x.diff_total)}</td><td class="p-2 text-right tabular-nums">${fmt(x.safe_counted)}</td><td class="p-2"><span class="px-2 py-0.5 rounded-full text-[11px] font-medium ${s[1]}">${s[0]}</span>${x._dirty?' <span title="ยังไม่ซิงก์" class="text-[11px]">💾</span>':''}</td><td class="p-2"><button onclick="rcGo('${x.date}')" class="text-[#0284c7] hover:underline">เปิด</button></td></tr>`;
   }).join(''):'<tr><td colspan="7" class="p-4 text-center text-gray-400">ยังไม่มีรายงาน</td></tr>';
   const pend=reconData.filter(x=>x.status==='submitted').sort((a,b)=>a.date<b.date?-1:1);
@@ -1858,9 +1868,15 @@ function rcImportXlsx(ev){
 /* ================= รายงาน A4 / PDF / รูป ================= */
 function buildSheet(r){
   const rr=clone(r);derive(rr);
-  const rows=PERIODS.map(([k,l])=>{const s=pst(rr['sys_'+k],rr['act_'+k]);return `<tr><td>${l}</td><td class="n">${fmt(rr['sys_'+k])}</td><td class="n">${fmt(rr['act_'+k])}</td><td class="n ${s.k}">${s.d==null?'–':sgn(s.d)}</td><td class="c ${s.k}">${s.t}</td></tr>`;}).join('');
-  const mS=r2(gv(rr.sys_b)),mA=r2(gv(rr.act_b)),nS=r2(gv(rr.sys_a)+gv(rr.sys_c)),nA=r2(gv(rr.act_a)+gv(rr.act_c));
+  const dayN=Number(rr.date.slice(8)),nxDate=addDays(rr.date,1),nxN=Number(nxDate.slice(8));
+  const rows=PERIODS.map(([k,l])=>{const s=pst(rr['sys_'+k],rr['act_'+k]);return `<tr><td>${l} (วันที่ ${dayN})</td><td class="n">${fmt(rr['sys_'+k])}</td><td class="n">${fmt(rr['act_'+k])}</td><td class="n ${s.k}">${s.d==null?'–':sgn(s.d)}</td><td class="c ${s.k}">${s.t}</td></tr>`;}).join('');
+  const nS=r2(gv(rr.sys_a)+gv(rr.sys_c)),nA=r2(gv(rr.act_a)+gv(rr.act_c));
   const sub=(l,s,a,cls)=>`<tr class="${cls}"><td>${l}</td><td class="n">${fmt(s)}</td><td class="n">${fmt(a)}</td><td class="n">${sgn(r2(a-s))}</td><td></td></tr>`;
+  const nxOK=rr.nx_sys!=null&&rr.nx_act!=null;
+  const nxs=nxOK?pst(rr.nx_sys,rr.nx_act):{k:'na',d:null,t:''};
+  const nxRow=`<tr class="nx"><td>00:00 – 08:00 น. (วันถัดไป) (วันที่ ${nxN})</td><td class="n">${nxOK?fmt(rr.nx_sys):'–'}</td><td class="n">${nxOK?fmt(rr.nx_act):'–'}</td><td class="n ${nxs.k}">${nxOK?sgn(nxs.d):'–'}</td><td class="c ${nxs.k}">${nxs.t}</td></tr>`;
+  const cmRow=nxOK?`<tr class="cm"><td>รวมยอดเงินวันนี้ <span class="sh-small">(ยอดรวมที่ใช้ในการกระทบยอด)</span></td><td class="n">${fmt(r2(rr.total_sys+rr.nx_sys))}</td><td class="n">${fmt(r2(rr.total_act+rr.nx_act))}</td><td class="n">${sgn(r2(rr.total_act+rr.nx_act-rr.total_sys-rr.nx_sys))}</td><td></td></tr>`:`<tr class="cm"><td>รวมยอดเงินวันนี้ <span class="sh-small">(ยอดรวมที่ใช้ในการกระทบยอด)</span></td><td class="n">–</td><td class="n">–</td><td class="n">–</td><td></td></tr>`;
+  const plus=nxOK?r2(gv(rr.act_b)+gv(rr.act_c)+rr.nx_act):rr.total_act;
   const sd=sst(rr.safe_diff);
   const nrows=DEN_N.map(([k,d])=>`<tr><td>${fmt0(d)}</td><td class="n">${fmt0(gv(rr[k]))}</td><td class="n">${fmt0(gv(rr[k])*d)}</td></tr>`).join('');
   const crows=DEN_C.map(([k,d])=>`<tr><td>${d===0.5?'0.50':d===0.25?'0.25':d}</td><td class="n">${fmt0(gv(rr[k]))}</td></tr>`).join('');
@@ -1873,15 +1889,16 @@ function buildSheet(r){
   <div class="sh-h">1. ยอดขาย ปตท. (ระบบ) เทียบเงินสดนับจริง (บาท)</div>
   <table class="sh-t"><thead><tr><th style="width:30%">ช่วงเวลา</th><th>ปตท. (ระบบ)</th><th>นับจริง</th><th>ผลต่าง</th><th style="width:12%">สถานะ</th></tr></thead><tbody>
     ${rows}
-    ${sub('กะเช้า (08:00 – 20:00 น.)',mS,mA,'sub')}
     ${sub('กะกลางคืน (00:00 – 08:00 และ 20:00 – 24:00 น.)',nS,nA,'sub')}
-    ${sub('รวมทั้งวัน',rr.total_sys,rr.total_act,'tot')}
+    ${sub('รวมยอดนำส่ง ปตท.',rr.total_sys,rr.total_act,'tot')}
+    ${nxRow}
+    ${cmRow}
   </tbody></table>
   <div class="sh-h">2. เงินเข้าธนาคารและยอดเงินในตู้เซฟ (บาท)</div>
   <table class="sh-t"><tbody>
     <tr><td style="width:62%">ยอดยกมาในตู้เซฟ (ยอดนับจริงวันก่อนหน้า)</td><td class="n">${fmt(rr.opening)}</td></tr>
-    <tr><td>บวก: เงินสดนับจริงวันนี้</td><td class="n">${fmt(rr.total_act)}</td></tr>
-    <tr><td>หัก: เงินเข้าธนาคาร</td><td class="n">${fmt(rr.deposit)}</td></tr>
+    <tr><td>บวก: เงินสดนับจริง${nxOK?`<br><span class="sh-small">กะเช้า + 20:00 – 24:00 น. + 00:00 – 08:00 น. (วันถัดไป) = ${fmt(rr.act_b)} + ${fmt(rr.act_c)} + ${fmt(rr.nx_act)}</span>`:''}</td><td class="n">${fmt(plus)}</td></tr>
+    <tr><td>หัก: เงินเข้าธนาคาร <span class="sh-small">(ตามยอด ปตท. ของวันที่ ${dayN} ทั้งหมด)</span></td><td class="n">${fmt(rr.deposit)}</td></tr>
     <tr class="sub"><td>ยอดคงเหลือในตู้ตามบัญชี</td><td class="n">${fmt(rr.book_close)}</td></tr>
     <tr class="sub"><td>ยอดนับจริงในตู้เซฟ (นับเมื่อ ${esc(thShort(rr.count_date))})</td><td class="n">${fmt(rr.safe_counted)}</td></tr>
     <tr class="tot"><td>ผลต่าง (นับจริง − ตามบัญชี) <span class="${sd.k}">${sd.t}</span></td><td class="n ${sd.k}">${rr.safe_diff==null?'–':sgn(rr.safe_diff)}</td></tr>
