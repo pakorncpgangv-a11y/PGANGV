@@ -421,7 +421,7 @@ body.role-acc .no-acc{display:none!important}
       <div class="rc-card">
         <div class="rc-h"><span>④ ตรวจสอบและหมายเหตุ</span></div>
         <div id="rc_checks" class="space-y-1 text-sm mb-3"></div>
-        <label class="rc-lbl">หมายเหตุ / สาเหตุของผลต่าง <span id="rc_note_req" class="hidden text-red-600">(จำเป็น — มีผลต่างผิดปกติ)</span></label>
+        <label class="rc-lbl">หมายเหตุ / สาเหตุของผลต่าง <span id="rc_note_req" class="hidden text-red-600">(จำเป็น — มีผลต่างผิดปกติ)</span> <span class="text-gray-400">(ไม่บังคับ)</span></label>
         <textarea data-k="note" oninput="rcIn(this)" rows="2" class="rc-in" placeholder="เช่น นับเงินขาด 5 บาท ตรวจสอบแล้วทอนผิด ..."></textarea>
       </div>
 
@@ -588,10 +588,11 @@ alter publication supabase_realtime add table ngv_attendance;</pre></div>
         <li>แถว <b>00:00–08:00 (วันถัดไป)</b> ดึงจากรายงานของวันถัดไปอัตโนมัติ (ต้องบันทึกรายงานวันถัดไปก่อนจึงจะส่งได้) และ <b>รวมยอดเงินวันนี้</b> = รวมยอดนำส่ง ปตท. + แถวนี้</li>
         <li><b>เงินเข้าธนาคาร</b> = ยอด ปตท. ของวันที่รายงานทั้งหมด (ไม่รวมวันถัดไป) ให้เอง • <b>บวก: เงินสดนับจริง</b> = กะเช้า + 20:00–24:00 + 00:00–08:00 วันถัดไป (00:00–08:00 ของวันนี้อยู่ในยอดยกมาแล้ว) • และ <b>ยอดยกมาในตู้</b> ดึงจากยอดนับจริงของวันก่อน (ติ๊กออกเพื่อกรอกเอง)</li>
         <li>นับเงินในตู้เซฟ: ธนบัตรกรอก <b>จำนวนใบ</b> เหรียญกรอก <b>เป็นเงิน</b> — ระบบรวมและเทียบกับยอดตามบัญชี</li>
-        <li>ถ้ามีผลต่างผิดปกติ (เกิน ≥ 1 บาท หรือขาด) ต้องใส่หมายเหตุก่อนส่ง</li>
+        <li>ถ้ามีผลต่างผิดปกติ (เกิน ≥ 1 บาท หรือขาด) ระบบแสดงคำเตือน — ใส่หมายเหตุสาเหตุได้ (ไม่บังคับ)</li>
         <li>กด <b>ส่งให้ผู้จัดการยืนยัน</b> → <b>Manager</b> ตรวจ แล้วกด <b>ยืนยันรายงาน</b> (ใส่รหัสผ่านซ้ำ) หรือ <b>ตีกลับ</b> พร้อมเหตุผล</li>
         <li>หลังยืนยัน รายงานถูกล็อก — Manager กด <b>พิมพ์ / PDF</b> (A4) หรือ <b>บันทึกเป็นรูป</b> เพื่อแจ้งหน่วยงานอื่น</li>
         <li>ถ้า Leader แก้ไขรายงานที่ส่งแล้ว สถานะจะกลับเป็นร่างและต้องส่งใหม่</li>
+        <li>ถ้าภายหลัง Leader แก้ยอด <b>00:00–08:00 ของวันถัดไป</b> รายงานวันก่อนหน้าที่ส่งหรือยืนยันไปแล้วจะ <b>ย้อนกลับเป็นร่างอัตโนมัติ</b> (ขึ้นแจ้งเตือน) → Leader ตรวจสอบและกดส่งใหม่ → Manager กดยืนยันใหม่</li>
       </ol>
       <p class="text-xs text-gray-600 mt-3">Excel: Export ทุกวันได้ทุกคน • Leader Import ได้ (เข้าเป็น "ร่าง" เสมอ ไม่ทับวันที่ยืนยันแล้ว)</p>
     </div>
@@ -742,6 +743,32 @@ do $$ begin
   alter publication supabase_realtime add table public.ngv_recon;
 exception when duplicate_object then null;
 end $$;
+
+-- 6) ถ้าแก้ยอด 00:00-08:00 ของ &quot;วันถัดไป&quot; → รายงานวันก่อนหน้าที่ส่ง/ยืนยันแล้ว ย้อนกลับเป็นร่างอัตโนมัติ
+--    (Leader ตรวจสอบ/ส่งใหม่ แล้ว Manager กดยืนยันใหม่) — รันเป็น security definer จึงปลดล็อกแถวที่ confirmed ได้
+create or replace function public.ngv_recon_nextday_guard()
+returns trigger language plpgsql security definer set search_path = public as $$
+declare pd text;
+begin
+  pd := to_char(new.date::date - 1, &#x27;YYYY-MM-DD&#x27;);
+  update public.ngv_recon p
+     set status = &#x27;draft&#x27;, confirmed_by = null, confirmed_at = null,
+         submitted_by = null, submitted_at = null,
+         nx_sys = new.sys_a, nx_act = new.act_a,
+         reject_note = &#x27;ยอด 00:00–08:00 ของวันที่ &#x27; || to_char(new.date::date, &#x27;DD/MM/YYYY&#x27;) ||
+                       &#x27; มีการเปลี่ยนแปลง — กลับไปตรวจสอบรายงานนี้ แล้วส่งให้ผู้จัดการยืนยันใหม่&#x27;,
+         updated_at = now()
+   where p.date = pd
+     and p.status in (&#x27;submitted&#x27;, &#x27;confirmed&#x27;)
+     and p.nx_act is not null
+     and (p.nx_sys is distinct from new.sys_a or p.nx_act is distinct from new.act_a);
+  return new;
+end $$;
+
+drop trigger if exists ngv_recon_nextday_guard on public.ngv_recon;
+create trigger ngv_recon_nextday_guard
+  after insert or update on public.ngv_recon
+  for each row execute function public.ngv_recon_nextday_guard();
 </pre>
     </div>
 
@@ -1303,7 +1330,8 @@ function initYearFilter(){
    v1.2.0 (Draft) — Login 3 บทบาท + Tab กระทบยอดเงินสด
    ================================================================ */
 const APP_VERSION='v1.4.0 (Draft)';
-const TOL=1;        // ผลต่างนับจริง-ปตท. ตั้งแต่ค่านี้ขึ้นไป (หรือนับขาด) ต้องใส่หมายเหตุก่อนส่ง (ไม่มีการปัดเศษ)
+const TOL=1;        // ผลต่างนับจริง-ปตท. ตั้งแต่ค่านี้ขึ้นไป (หรือนับขาด) ถือว่าผิดปกติ — แสดงคำเตือน (ไม่มีการปัดเศษ)
+const NOTE_REQUIRED=false;      // true = ผลต่างผิดปกติต้องใส่หมายเหตุก่อนส่ง • false = หมายเหตุไม่บังคับ (ค่าปัจจุบัน)
 const NEXT_DAY_REQUIRED=true;   // true = ส่งรายงานไม่ได้จนกว่าจะมียอด 00:00–08:00 ของวันถัดไป
 const SAFE_TOL=1;   // ผลต่างยอดตู้เซฟที่ยอมรับได้ (บาท)
 
@@ -1484,7 +1512,7 @@ function issuesOf(r){
     else o.ok.push('ผลต่างยอดในตู้เซฟน้อยกว่า '+SAFE_TOL+' บาท');
   }
   if(!r.count_date)o.block.push('ระบุวันที่นับเงินในตู้');
-  if(o.needNote&&!(r.note||'').trim())o.block.push('ระบุหมายเหตุ/สาเหตุของผลต่าง');
+  if(NOTE_REQUIRED&&o.needNote&&!(r.note||'').trim())o.block.push('ระบุหมายเหตุ/สาเหตุของผลต่าง');
   return o;
 }
 
@@ -1605,7 +1633,7 @@ function renderChecks(){
     o.block.map(t=>`<div class="text-red-700">✗ ${esc(t)}</div>`).join('')+
     o.warn.map(t=>`<div class="text-amber-700">⚠ ${esc(t)}</div>`).join('')+
     o.ok.map(t=>`<div class="text-emerald-700">✓ ${esc(t)}</div>`).join('');
-  el('rc_note_req').classList.toggle('hidden',!o.needNote);
+  el('rc_note_req').classList.toggle('hidden',!(NOTE_REQUIRED&&o.needNote));
 }
 function renderReconActions(){
   const box=el('rc_actions');const st=cur.status;const o=issuesOf(cur);
@@ -1672,6 +1700,24 @@ function pushMsg(res,okMsg){
   else showToast(okMsg+' (เก็บในเครื่อง ซิงก์ไม่สำเร็จ: '+((res.error&&res.error.message)||'').slice(0,60)+')');
   return false;
 }
+/* ถ้ายอด 00:00–08:00 ของวันนี้ (ช่วง a) เปลี่ยน → รายงานของ "วันก่อนหน้า" ที่ส่งแล้ว/ยืนยันแล้ว ต้องย้อนกลับเป็นร่าง
+   ให้ Leader ตรวจสอบ/ส่งใหม่ แล้วให้ Manager กดยืนยันใหม่ (ฝั่ง Supabase ทำด้วย trigger ใน ngv_recon_nextday.sql) */
+function reopenPrevIfNeeded(r){
+  const pd=addDays(r.date,-1),p=storedRec(pd);
+  if(!p||(p.status!=='submitted'&&p.status!=='confirmed'))return null;
+  if(p.nx_sys==null||p.nx_act==null)return null;                 // รายงานเก่าก่อนมีแถวนี้ ไม่ย้อน
+  const same=r.sys_a!=null&&r.act_a!=null&&r2(p.nx_sys)===r2(r.sys_a)&&r2(p.nx_act)===r2(r.act_a);
+  if(same)return null;
+  const was=p.status;
+  p.status='draft';p.confirmed_by=null;p.confirmed_at=null;p.submitted_by=null;p.submitted_at=null;
+  p.reject_note='ยอด 00:00–08:00 ของวันที่ '+thShort(r.date)+' มีการเปลี่ยนแปลง — กลับไปตรวจสอบรายงานนี้ แล้วส่งให้ผู้จัดการยืนยันใหม่';
+  p.updated_by=SESSION?SESSION.name:'';p.updated_at=new Date().toISOString();
+  derive(p);                                                       // คำนวณใหม่จากยอดล่าสุด (ตอนนี้เป็นร่างแล้ว)
+  p._dirty=(was!=='confirmed');                                    // เคยยืนยันแล้ว: ให้ trigger ฝั่งเซิร์ฟเวอร์เป็นคนปลดล็อก
+  if(was==='confirmed'&&!reconServerOK)p._dirty=false;
+  saveReconLocal();
+  return {date:pd,was};
+}
 async function rcSave(submit){
   if(!canEdit())return;
   derive(cur);
@@ -1683,8 +1729,11 @@ async function rcSave(submit){
   cur.updated_by=SESSION.name;cur.updated_at=now;if(!cur.created_by)cur.created_by=SESSION.name;
   const c=storeLocal(cur);
   curDirty=false;
+  const ro=reopenPrevIfNeeded(c);
+  if(ro){const rp=storedRec(ro.date);if(rp&&rp._dirty)await pushRecon(rp);}
   const res=await pushRecon(c);
   pushMsg(res,submit?'ส่งให้ผู้จัดการแล้ว':'บันทึกร่างแล้ว');
+  if(ro){showToast('รายงานวันที่ '+thShort(ro.date)+' ถูกย้อนกลับเป็นร่าง เพราะยอด 00:00–08:00 ของวันนี้เปลี่ยน — ให้ตรวจสอบและส่งใหม่ แล้ว Manager ยืนยันใหม่');if(reconServerOK)await fetchRecon();}
   reconCalc();renderHistory();
 }
 async function rcDelete(){
