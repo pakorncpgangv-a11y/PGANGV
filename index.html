@@ -1458,13 +1458,17 @@ function newRec(date){
   derive(r);return r;
 }
 function applySales(r,s){r.sys_a=r2(s.k3_sale||0);r.sys_b=r2(s.k1_sale||0);r.sys_c=r2(s.k2_sale||0);}
+/* รายงานที่ส่ง/ยืนยันไปก่อนอัปเดตสูตรใหม่ (ยังไม่เคยบันทึกค่า 00:00–08:00 วันถัดไป) */
+function isLegacy(r){const s=r&&storedRec(r.date);return !!(s&&(s.status==='submitted'||s.status==='confirmed')&&(s.nx_act==null||s.nx_sys==null));}
 function prevSafe(date){
   let best=null;
   reconData.forEach(x=>{if(x.date<date&&x.safe_counted>0&&(!best||x.date>best.date))best={date:x.date,v:Number(x.safe_counted)};});
   return best;
 }
 function derive(r){
-  if(r.status==='confirmed'||r.status==='submitted')return r;   // ส่งแล้ว/ยืนยันแล้ว ใช้ตัวเลขที่ล็อกไว้ ไม่คำนวณใหม่
+  // ส่งแล้ว/ยืนยันแล้ว และมีค่า 00:00–08:00 วันถัดไปที่บันทึกไว้ → ใช้ตัวเลขที่ล็อกไว้
+  // (รายงานเก่าก่อนมีแถวนี้ ยังไม่มีค่าที่บันทึกไว้ → คำนวณและดึงยอดวันถัดไปให้อัตโนมัติ)
+  if((r.status==='confirmed'||r.status==='submitted')&&r.nx_sys!=null&&r.nx_act!=null)return r;
   r.total_sys=r2(gv(r.sys_a)+gv(r.sys_b)+gv(r.sys_c));          // รวมยอดนำส่ง ปตท. (วันที่รายงาน)
   r.total_act=r2(gv(r.act_a)+gv(r.act_b)+gv(r.act_c));
   r.diff_total=r2(r.total_act-r.total_sys);
@@ -1625,6 +1629,7 @@ function renderStatus(){
   if(st==='confirmed'){cls='bg-emerald-50 border border-emerald-200 text-emerald-800';h='🔒 ยืนยันโดย <b>'+esc(cur.confirmed_by)+'</b> เมื่อ '+esc(fmtDT(cur.confirmed_at))+' — รายงานถูกล็อก แก้ไขไม่ได้ (ผู้จัดการยกเลิกการยืนยันได้)';}
   else if(st==='submitted'){cls='bg-sky-50 border border-sky-200 text-sky-800';h='📤 ส่งโดย <b>'+esc(cur.submitted_by)+'</b> เมื่อ '+esc(fmtDT(cur.submitted_at))+' — รอผู้จัดการตรวจและกดยืนยัน';}
   else if(cur.reject_note){cls='bg-amber-50 border border-amber-300 text-amber-900';h='↩ <b>ถูกตีกลับให้แก้ไข:</b> '+esc(cur.reject_note);}
+  if(isLegacy(cur)&&(st==='submitted'||st==='confirmed'))h+='<div class="mt-1 text-amber-800">⚠ รายงานนี้บันทึกไว้ก่อนอัปเดตสูตรใหม่ — ตัวเลขที่เห็นคำนวณใหม่ตามสูตรปัจจุบัน (ดึงยอด 00:00–08:00 วันถัดไปให้แล้ว) ให้ <b>Leader บันทึก/ส่งใหม่</b> แล้ว <b>Manager ยืนยันใหม่</b> จึงจะล็อกตัวเลขชุดนี้'+(st==='confirmed'?' (Manager กด "ยกเลิกการยืนยัน" ก่อน)':'')+'</div>';
   b.className=h?('mt-3 rounded-xl p-3 text-sm '+cls):'hidden';b.innerHTML=h;
 }
 function renderChecks(){
@@ -1643,13 +1648,15 @@ function renderReconActions(){
   if(SESSION.role==='leader'){
     if(st!=='confirmed'){
       h+=B(GRAY,'💾 บันทึกร่าง','rcSave(false)',!curDirty&&!!storedRec(cur.date));
-      h+=B(BLUE,'📤 ส่งให้ผู้จัดการยืนยัน','rcSave(true)',o.block.length>0||(!curDirty&&st==='submitted'));
+      const lg=isLegacy(cur);
+      h+=B(BLUE,lg?'📤 บันทึกและส่งให้ผู้จัดการยืนยันใหม่':'📤 ส่งให้ผู้จัดการยืนยัน','rcSave(true)',o.block.length>0||(!curDirty&&st==='submitted'&&!lg));
       if(storedRec(cur.date))h+=B(RED,'🗑 ลบ','rcDelete()');
-    }else h+='<span class="text-sm text-gray-600 self-center">🔒 ยืนยันแล้ว — แก้ไขไม่ได้ (ติดต่อผู้จัดการหากต้องแก้)</span>';
+    }else h+='<span class="text-sm text-gray-600 self-center">🔒 ยืนยันแล้ว — แก้ไขไม่ได้ (ติดต่อผู้จัดการหากต้องแก้)'+(isLegacy(cur)?' • รายงานนี้ยืนยันไว้ก่อนอัปเดตสูตร ให้ Manager ยกเลิกการยืนยันก่อน':'')+'</span>';
   }
   if(isManager()){
-    if(st==='submitted'){h+=B(GREEN,'✅ ยืนยันรายงาน','rcConfirm()');h+=B(RED,'↩ ตีกลับให้แก้ไข','rcReject()');}
-    else if(st==='confirmed'){h+=B(BLUE,'🖨 พิมพ์ / PDF','rcPrint()');h+=B(GRAY,'🖼 บันทึกเป็นรูป','rcPng()');h+=B(RED,'🔓 ยกเลิกการยืนยัน','rcReopen()');}
+    const lg=isLegacy(cur);
+    if(st==='submitted'){h+=B(GREEN,'✅ ยืนยันรายงาน','rcConfirm()',lg);h+=B(RED,'↩ ตีกลับให้แก้ไข','rcReject()');if(lg)h+='<span class="text-xs text-amber-700 self-center">รอ Leader บันทึก/ส่งใหม่ก่อน จึงจะยืนยันได้</span>';}
+    else if(st==='confirmed'){h+=B(BLUE,'🖨 พิมพ์ / PDF','rcPrint()',lg);h+=B(GRAY,'🖼 บันทึกเป็นรูป','rcPng()',lg);h+=B(RED,'🔓 ยกเลิกการยืนยัน','rcReopen()');if(lg)h+='<span class="text-xs text-amber-700 self-center">ยกเลิกการยืนยัน → Leader ส่งใหม่ → ยืนยันใหม่ จึงจะพิมพ์ได้</span>';}
     else h+='<span class="text-sm text-gray-600 self-center">รอหัวหน้างานส่งรายงาน</span>';
   }
   if(SESSION.role==='sales'&&st!=='confirmed')h+='<span class="text-sm text-gray-600 self-center">โหมดดูอย่างเดียว</span>';
@@ -1769,6 +1776,7 @@ async function managerAction(action){
   if(!a)return;
   const r=storedRec(cur.date);
   if(action==='confirm'&&(!r||r.status!=='submitted')){showToast('ไม่พบรายงานที่ส่งแล้ว');return;}
+  if(action==='confirm'&&isLegacy(r)){showToast('รายงานนี้บันทึกก่อนอัปเดตสูตร — ให้ Leader บันทึกและส่งใหม่ก่อน');return;}
   if(SESSION.via==='server'&&supa){
     if(r&&r._dirty){const x=await pushRecon(r);if(!x.ok){showToast('ซิงก์รายงานขึ้น Supabase ไม่สำเร็จ ลองใหม่อีกครั้ง');return;}}
     const {data,error}=await supa.rpc('ngv_recon_action',{p_date:cur.date,p_user:SESSION.username,p_pass:a.pass,p_action:action});
@@ -1930,7 +1938,7 @@ function buildSheet(r){
   const nrows=DEN_N.map(([k,d])=>`<tr><td>${fmt0(d)}</td><td class="n">${fmt0(gv(rr[k]))}</td><td class="n">${fmt0(gv(rr[k])*d)}</td></tr>`).join('');
   const crows=DEN_C.map(([k,d])=>`<tr><td>${d===0.5?'0.50':d===0.25?'0.25':d}</td><td class="n">${fmt0(gv(rr[k]))}</td></tr>`).join('');
   let nt=0,ct=0;DEN_N.forEach(([k,d])=>nt+=gv(rr[k])*d);DEN_C.forEach(([k])=>ct+=gv(rr[k]));
-  const confirmed=rr.status==='confirmed';
+  const confirmed=rr.status==='confirmed'&&!isLegacy(rr);
   return `<div id="reconSheet" class="sh">
   ${confirmed?'':'<div class="sh-draft">ฉบับร่าง — ยังไม่ผ่านการยืนยัน</div>'}
   <div class="sh-head"><div><div class="sh-title">รายงานกระทบยอดเงินสด</div><div class="sh-sub">NGV BLUE ECO • กรุงเทพกรีฑาขาออก</div></div>
@@ -1978,6 +1986,7 @@ function openPreview(){
 function closePreview(){el('reconModal').classList.add('hidden');}
 function rcPrint(){
   if(!(isManager()&&cur&&cur.status==='confirmed')){showToast('พิมพ์ได้เฉพาะผู้จัดการ หลังกดยืนยันรายงานแล้ว');return;}
+  if(isLegacy(cur)){showToast('รายงานนี้ยืนยันไว้ก่อนอัปเดตสูตร — ยกเลิกการยืนยัน ให้ Leader ส่งใหม่ แล้วยืนยันใหม่ก่อนพิมพ์');return;}
   openPreview();
   const t=document.title;document.title='รายงานกระทบยอดเงินสด_'+cur.date;
   document.body.classList.add('printing-recon');
@@ -1987,6 +1996,7 @@ function rcPrint(){
 }
 async function rcPng(){
   if(!(isManager()&&cur&&cur.status==='confirmed')){showToast('บันทึกรูปได้เฉพาะผู้จัดการ หลังกดยืนยันรายงานแล้ว');return;}
+  if(isLegacy(cur)){showToast('รายงานนี้ยืนยันไว้ก่อนอัปเดตสูตร — ยกเลิกการยืนยัน ให้ Leader ส่งใหม่ แล้วยืนยันใหม่ก่อนบันทึกรูป');return;}
   openPreview();
   if(typeof html2canvas==='undefined'){showToast('โหลดตัวสร้างรูปไม่สำเร็จ — ใช้ปุ่มพิมพ์ / PDF แทน');return;}
   try{
