@@ -21,6 +21,9 @@ body{font-family:'Prompt',sans-serif}
 
 /* ===== v1.1.0 : สิทธิ์ผู้ใช้ + กระทบยอดเงินสด ===== */
 body:not(.can-editSales) .perm-editSales{display:none!important}
+body:not(.can-scan) .perm-scan{display:none!important}
+.sc-slip{border:1px solid #bae6fd;border-radius:14px;padding:12px;background:#fbfdff}
+.scan-btn{display:inline-flex;align-items:center;gap:6px;height:46px;padding:0 16px;border-radius:12px;font-size:14px;font-weight:600;cursor:pointer}
 body:not(.can-editAtt) .perm-editAtt{display:none!important}
 body:not(.can-editRecon) .perm-editRecon{display:none!important}
 body:not(.can-confirm) .perm-confirm{display:none!important}
@@ -158,6 +161,55 @@ thead .ev-st{background:#e0f2fe}
 }
 body.role-acc .no-acc{display:none!important}
 #inv_frame{width:100%;height:calc(100vh - 150px);height:calc(100dvh - 150px);min-height:680px;border:0;border-radius:16px;background:#e4eef8;box-shadow:0 1px 3px rgba(2,132,199,.15)}
+
+/* ===== v1.6.0 : รายงานยอดขาย & KPI ===== */
+.kr-chip{height:40px;padding:0 16px;border-radius:999px;border:1px solid #bae6fd;background:#fff;color:#0369a1;font-size:14px}
+.kr-chip.on{background:#0284c7;border-color:#0284c7;color:#fff;font-weight:600}
+.kr{width:540px;box-sizing:border-box;padding:18px 20px;background:#fff;color:#0f172a;font-family:'Prompt',sans-serif;font-size:13px;line-height:1.4;font-variant-numeric:tabular-nums;position:relative}
+.kr *{box-sizing:border-box}
+.kr-head{display:flex;justify-content:space-between;align-items:flex-end;border-bottom:3px solid #0369a1;padding-bottom:9px}
+.kr-title{font-size:19px;font-weight:700;color:#0369a1}
+.kr-sub{font-size:12px;color:#475569}
+.kr-date{text-align:right;font-size:12px;color:#475569}.kr-date b{font-size:15px;color:#0f172a;font-weight:600}
+.kr-kp{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0}
+.kr-kp3{grid-template-columns:1fr 1fr 1fr}
+.kr-k{background:#f1f5f9;border-radius:10px;padding:7px 10px;line-height:1.3}
+.kr-k span{display:block;font-size:11px;color:#64748b}
+.kr-k b{display:block;font-size:19px;font-weight:600;color:#0f172a}
+.kr-k b small{font-size:11px;font-weight:400;color:#64748b}
+.kr-kp3 .kr-k b{font-size:16px}
+.kr-k.ok{background:#dcfce7}.kr-k.ok b,.kr-k.ok span{color:#166534}
+.kr-k.bad{background:#fee2e2}.kr-k.bad b,.kr-k.bad span{color:#991b1b}
+.kr-h{font-weight:600;color:#0369a1;margin:12px 0 4px;font-size:13px}
+.kr-t{width:100%;border-collapse:collapse;font-size:12px}
+.kr-t th,.kr-t td{padding:4px 6px;border-bottom:1px solid #e2e8f0;text-align:right}
+.kr-t th{color:#64748b;font-weight:500;background:#f8fafc}
+.kr-t th:first-child,.kr-t td:first-child{text-align:left}
+.kr-t td:last-child:not(:first-child){white-space:nowrap}
+.kr-sum td{font-weight:700;background:#e0f2fe}
+.kr-two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.kr-t2{font-size:10.5px}.kr-t2 th,.kr-t2 td{padding:3px 4px}
+.kr-dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:4px;vertical-align:baseline}
+.kr-chart{display:flex;align-items:flex-end;gap:4px;height:120px;position:relative;border-bottom:1px solid #94a3b8;margin-top:6px;padding-top:2px}
+.kr-col{flex:1;height:100%;display:flex;align-items:flex-end}
+.kr-bar{width:100%;border-radius:3px 3px 0 0}
+.kr-tline{position:absolute;left:0;right:0;border-top:1.5px dashed #dc2626;opacity:.75}
+.kr-tline{z-index:3}.kr-tline span{position:absolute;left:0;top:-13px;font-size:9px;color:#dc2626;background:rgba(255,255,255,.9);padding:0 3px;border-radius:2px}
+.kr-lbl{display:flex;gap:4px;font-size:10px;color:#64748b;text-align:center;margin-top:2px}
+.kr-lbl div{flex:1}.kr-hl{font-weight:700;color:#0f172a}
+.kr-note{font-size:10.5px;color:#64748b;margin-top:4px}
+.kr-note i{display:inline-block;width:9px;height:9px;border-radius:2px;margin:0 3px 0 6px;vertical-align:baseline}
+.kr-foot{margin-top:12px;padding-top:6px;border-top:1px solid #cbd5e1;font-size:10px;color:#64748b;text-align:center}
+.kr-empty{padding:50px 0;text-align:center;font-size:15px;color:#64748b}.kr-empty span{font-size:12px}
+@media print{
+  body.printing-kr{background:#fff!important;overflow:visible!important}
+  body.printing-kr>*:not(#krModal){display:none!important}
+  body.printing-kr #krModal{position:static!important;display:block!important;background:#fff!important;padding:0!important;overflow:visible!important}
+  body.printing-kr #krModal .modal-chrome{display:none!important}
+  body.printing-kr #krModal .modal-body{box-shadow:none!important;border-radius:0!important;max-width:none!important;width:auto!important}
+  body.printing-kr #krModal .modal-pad{padding:0!important;overflow:visible!important}
+  body.printing-kr #krSheetWrap{min-width:0!important}
+}
 </style>
 </head>
 <body class="bg-[#f0f9ff] min-h-screen">
@@ -168,7 +220,7 @@ body.role-acc .no-acc{display:none!important}
       <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center text-2xl">🌊</div>
       <div>
         <h1 class="text-xl font-bold tracking-wide">NGV BLUE ECO • กรุงเทพกรีฑาขาออก</h1>
-        <p class="text-sm opacity-90">เป็นมิตรต่อโลก • ประหยัดพลังงาน • KPI 16,000 กก./วัน <span id="ver_label" class="ml-1 px-2 py-0.5 rounded-full bg-white/20 text-[11px]">v1.4.0 (Draft)</span></p>
+        <p class="text-sm opacity-90">เป็นมิตรต่อโลก • ประหยัดพลังงาน • KPI 16,000 กก./วัน <span id="ver_label" class="ml-1 px-2 py-0.5 rounded-full bg-white/20 text-[11px]">v1.6.0 (Draft)</span></p>
       </div>
     </div>
     <div class="flex gap-2 items-center flex-wrap">
@@ -238,6 +290,42 @@ body.role-acc .no-acc{display:none!important}
           <p class="text-xs text-gray-500 mt-2">เส้นแดงประ = KPI 16,000 | เขียวโดดเด่น = ผ่าน KPI | มีป้าย 🏆</p>
         </div>
       </div>
+    </div>
+
+    <!-- รายงานยอดขาย & KPI (v1.6.0) -->
+    <div id="krCard" class="bg-white p-5 rounded-2xl shadow border border-sky-100">
+      <h3 class="font-semibold text-[#0369a1] mb-1">📊 รายงานยอดขาย &amp; KPI — พิมพ์ / PDF และรูปส่ง LINE</h3>
+      <p class="text-xs text-gray-600 mb-3">เลือกช่วงรายงาน → ดูตัวอย่าง → บันทึกเป็นรูป (แชร์เข้า LINE) หรือพิมพ์ / PDF A4 หน้าเดียว • ก๊าซ = ลูกค้าเงินสด</p>
+      <div class="flex flex-wrap items-end gap-3">
+        <div id="kr_chips" class="flex gap-1.5 flex-wrap">
+          <button type="button" class="kr-chip on" data-m="day" onclick="krSetMode('day')">รายวัน</button>
+          <button type="button" class="kr-chip" data-m="week" onclick="krSetMode('week')">7 วัน</button>
+          <button type="button" class="kr-chip" data-m="month" onclick="krSetMode('month')">รายเดือน</button>
+        </div>
+        <div id="kr_date_box"><label id="kr_date_lbl" class="rc-lbl">วันที่</label><input type="date" id="kr_date" class="rc-in" style="width:165px;height:42px;text-align:left"></div>
+        <div id="kr_month_box" class="hidden"><label class="rc-lbl">เดือน</label><input type="month" id="kr_month" class="rc-in" style="width:165px;height:42px;text-align:left"></div>
+      </div>
+      <div class="mt-3 flex flex-wrap gap-2">
+        <button type="button" onclick="krOpen()" class="h-11 px-4 rounded-xl bg-sky-100 text-sky-800 text-sm font-semibold hover:bg-sky-200">👁 ดูตัวอย่างรายงาน</button>
+        <button type="button" onclick="krOpen('image')" class="h-11 px-4 rounded-xl bg-emerald-600 text-white text-sm font-semibold hover:bg-emerald-700">🖼 บันทึกเป็นรูป (ส่ง LINE)</button>
+        <button type="button" onclick="krOpen('print')" class="h-11 px-4 rounded-xl bg-[#0284c7] text-white text-sm font-semibold hover:bg-[#0369a1]">🖨 พิมพ์ / PDF (A4)</button>
+      </div>
+    </div>
+
+    <!-- สแกนใบ POS (v1.5.0) -->
+    <div id="scanCard" class="perm-scan relative bg-white p-5 rounded-2xl shadow border border-sky-100">
+      <div class="flex flex-wrap items-center justify-between gap-2 mb-1">
+        <h3 class="font-semibold text-[#0369a1]">🧾 บันทึกจากใบ POS (ถ่ายรูป / อัปโหลด)</h3>
+        <span id="scan_left" class="text-xs text-gray-500"></span>
+      </div>
+      <p class="text-xs text-gray-600 mb-3">ถ่ายรูปใบปิดกะ/ปิดวัน (หลายใบในรูปเดียว หรือหลายรูปก็ได้ — ระบบรวมให้ในหน้าเดียว) → ระบบอ่านตัวเลขให้ → <b>ทวนกับใบจริง</b> → กดบันทึก • ใช้เฉพาะ "ลูกค้าเงินสด" • ไม่เก็บรูป</p>
+      <div class="flex flex-wrap gap-2">
+        <label class="scan-btn bg-[#0284c7] text-white hover:bg-[#0369a1]">📷 ถ่ายรูป<input type="file" accept="image/*" capture="environment" class="scan-pick hidden" onchange="scanPick(this)"></label>
+        <label class="scan-btn bg-sky-100 text-sky-800 hover:bg-sky-200">🖼 เลือกรูปจากเครื่อง (ได้หลายรูป)<input type="file" accept="image/*" multiple class="scan-pick hidden" onchange="scanPick(this)"></label>
+        <button type="button" onclick="scanManual()" class="scan-btn bg-gray-100 text-gray-800 hover:bg-gray-200">✍️ กรอกเอง (ไม่ใช้รูป)</button>
+      </div>
+      <div id="scan_busy" class="hidden absolute inset-0 bg-white/85 rounded-2xl flex items-center justify-center z-10"><div class="text-sky-800 font-medium text-center"><div class="animate-pulse text-3xl mb-1">🧾</div><div id="scan_busy_t">กำลังอ่านรูป…</div><button type="button" onclick="scanCancelWait()" class="mt-3 px-4 h-9 rounded-lg bg-gray-100 text-xs text-gray-700">ยกเลิกการรอ</button></div></div>
+      <div id="scan_panel" class="hidden mt-4 pt-4 border-t border-sky-100"></div>
     </div>
 
     <!-- Form -->
@@ -824,6 +912,252 @@ end $$;
         <li>เพิ่มผู้ใช้ acc ใน Supabase: รันไฟล์ <code>ngv_acc_user.sql</code> (หรือ SQL ในข้อ 11 ที่อัปเดตแล้ว)</li>
       </ul>
     </div>
+
+    <div class="bg-white p-6 rounded-2xl shadow border border-sky-100">
+      <h3 class="font-bold text-lg text-[#0369a1] mb-3">1️⃣4️⃣ บันทึกจากใบ POS (ถ่ายรูป / กรอกเอง) — v1.5.5</h3>
+      <p class="text-sm font-medium mb-1">วิธีใช้ (Leader)</p>
+      <ol class="list-decimal ml-6 text-sm space-y-1.5 mb-3">
+        <li>แท็บ "ยอดขาย & KPI" → การ์ด <b>บันทึกจากใบ POS</b> → <b>ถ่ายรูป</b> หรือ <b>เลือกรูปจากเครื่อง</b> (ถ่ายได้หลายใบในรูปเดียว และถ่าย/เลือกเพิ่มทีละรูปหรือหลายรูปพร้อมกันได้ — ระบบรวมใบของทุกรูปไว้ในหน้าตรวจทานเดียว ใบที่ซ้ำจะถูกข้าม แต่ละรูปนับโควตา 1 ครั้ง) หรือ <b>กรอกเอง</b> ถ้าไม่ใช้รูป</li>
+        <li>ระบบอ่าน วันที่ประจำวัน • ชนิดใบ (ปิดกะที่ 1/2/3/ปิดวัน) • รถ / ก๊าซ / เงินสด / ยอดนำส่ง ปตท. แล้วแสดงในตารางข้างรูป — <b>ทวนทุกตัวเลขกับใบจริง</b> แก้ได้ทันที</li>
+        <li>ปิดกะที่ 1 = 00:00–08:00 • ปิดกะที่ 2 = 08:00–20:00 • ปิดกะที่ 3 = 20:00–24:00 (ลงช่อง กะ3 / กะเช้า / กะ2 ในแท็บยอดขายให้เอง) ใช้เฉพาะ <b>ลูกค้าเงินสด</b> ไม่รวมฟลีทการ์ด/QR</li>
+        <li>ใบ <b>ปิดวัน</b> (กรอกหรือไม่ก็ได้) ใช้ตรวจ: ผลรวม 3 กะ (รถ / ก๊าซ / เงิน) ต้องเท่าใบปิดวัน ถ้าไม่ตรงจะบันทึกไม่ได้ จนกว่าจะแก้ตัวเลขที่ผิด</li>
+        <li>ตัวช่วยตรวจอื่น ๆ: เงินสด = ยอดนำส่ง ปตท. • ราคา/กก. ต้องใกล้เคียงกันทุกกะ (เตือนเมื่อห่างเกิน 1%) • ชนิดใบ/วันที่ห้ามซ้ำหรือต่างกัน</li>
+        <li>ถ้าวันนั้นมีข้อมูลกะนี้ในระบบแล้วและไม่ตรงกับใบ (เช่น Orada กรอกไว้) ต้องติ๊ก <b>ทับค่าเดิม</b> ก่อน</li>
+        <li>ติ๊ก "ฉันทวนตัวเลขทุกใบกับใบจริงแล้ว" → <b>บันทึกลงยอดขาย</b> ช่อง ปตท. ในแท็บกระทบยอดเงินสดดึงจากยอดนี้อัตโนมัติ และถ้าช่อง ปตท. ไม่ตรงกับแท็บยอดขายของวันนั้น <b>ส่งรายงานกระทบยอดไม่ได้</b></li>
+        <li>รูปไม่ถูกเก็บ • อ่านรูปได้ <b>20 ครั้งต่อวัน</b> (นับทุกคน) • Leader เห็นและกรอกแท็บยอดขายเองได้ด้วย</li>
+      </ol>
+      <p class="text-sm font-medium mb-1">ตั้งค่าครั้งเดียว (ผู้ดูแลระบบ) — จำเป็นเฉพาะการ "อ่านรูปด้วย AI" ส่วน "กรอกเอง" ใช้ได้เลย</p>
+      <ol class="list-decimal ml-6 text-sm space-y-1.5 mb-3">
+        <li><b>รัน SQL</b>: Supabase → SQL Editor → วางโค้ด SQL ด้านล่าง → Run (ไฟล์ <code>ngv_scan_setup.sql</code>)</li>
+        <li><b>สร้าง API key</b> ที่ aistudio.google.com → Get API key (เก็บเป็นความลับ ห้ามใส่ในหน้าเว็บหรือส่งในแชต)</li>
+        <li><b>สร้างฟังก์ชัน</b>: Supabase → Edge Functions → Deploy a new function → ตั้งชื่อ <code>read-pos-slip</code> → วางโค้ดด้านล่างทั้งหมด (ไฟล์ <code>read-pos-slip.ts</code>) → Deploy ปล่อยตัวเลือก Verify JWT เป็นค่าเริ่มต้น (เปิด) • ถ้าเคย Deploy เวอร์ชันก่อนหน้าแล้วขึ้น "ส่งคำขอไปที่ฟังก์ชันไม่สำเร็จ" ให้ <b>วางโค้ดตัวล่าสุดนี้ทับแล้ว Deploy ใหม่</b> (v1.5.5)</li>
+        <li><b>ใส่ Secrets</b>: Edge Functions → Secrets → เพิ่ม <code>GEMINI_API_KEY</code> = key ที่สร้างไว้ • (ไม่บังคับ) <code>GEMINI_MODEL</code> = ชื่อรุ่นที่ทดสอบใน AI Studio แล้วอ่านได้ถูก (ค่าเริ่มต้น <code>gemini-2.5-flash</code>) • (ไม่บังคับ) <code>SCAN_DAILY_LIMIT</code> = 20 • (ไม่บังคับ) <code>GEMINI_FALLBACK_MODEL</code> = รุ่นสำรอง ใช้เมื่อรุ่นหลักตอบ 503 (คนใช้เยอะ) — ระบบลองซ้ำเองอยู่แล้ว 3 ครั้ง (<code>GEMINI_TRIES</code>) • (ไม่บังคับ) <code>GEMINI_TIMEOUT_MS</code> = 90000 • (ไม่บังคับ) <code>GEMINI_EXTRA</code> = JSON ผสมเข้า generationConfig เช่น ลดเวลาคิดของรุ่นที่ช้า</li>
+        <li>ทดลองถ่ายรูปใบ POS หนึ่งใบ ถ้าขึ้น "ยังไม่ได้ติดตั้งฟังก์ชัน" แปลว่าชื่อฟังก์ชันไม่ตรง ถ้าขึ้น "AI อ่านรูปไม่สำเร็จ" ดู Logs ของฟังก์ชัน (ส่วนใหญ่คือ key หรือชื่อรุ่นไม่ถูก)</li>
+      </ol>
+      <p class="text-xs text-gray-600 mb-2">หมายเหตุความเป็นส่วนตัว: รูปถูกส่งไปที่ Google (Gemini API) เพื่ออ่านเท่านั้น ฟังก์ชันไม่เก็บรูป ถ้าใช้ Gemini แบบฟรี Google อาจนำข้อมูลไปปรับปรุงโมเดลได้ — ใบ POS ไม่มีข้อมูลส่วนบุคคล แต่ตรวจเงื่อนไขล่าสุดของ Google ก่อนใช้งาน</p>
+      <p class="font-medium text-sm mt-3">SQL (<code>ngv_scan_setup.sql</code>)</p>
+      <pre class="bg-gray-900 text-green-400 p-3 rounded-xl text-[11px] overflow-auto max-h-72 mt-1">-- ============================================================
+-- NGV Blue Eco v1.5.0 : จำกัดจำนวนครั้งอ่านใบ POS ต่อวัน (ใช้กับ Edge Function read-pos-slip)
+-- วิธีใช้: Supabase &gt; SQL Editor &gt; New query &gt; วาง &gt; Run   (รันซ้ำได้)
+-- ============================================================
+create table if not exists public.ngv_scan_usage(
+  day   date primary key,
+  count int  not null default 0
+);
+alter table public.ngv_scan_usage enable row level security;
+revoke all on public.ngv_scan_usage from anon, authenticated;
+
+-- นับ 1 ครั้ง ถ้ายังไม่เกินลิมิตของวัน (เวลาไทย) → {ok:true, remaining:n}  ถ้าเกิน → {ok:false}
+create or replace function public.ngv_scan_hit(p_limit int)
+returns json language plpgsql security definer set search_path = public as $$
+declare d date := (now() at time zone &#x27;Asia/Bangkok&#x27;)::date; c int;
+begin
+  insert into public.ngv_scan_usage(day, count) values (d, 0) on conflict (day) do nothing;
+  update public.ngv_scan_usage set count = count + 1 where day = d and count &lt; p_limit returning count into c;
+  if c is null then return json_build_object(&#x27;ok&#x27;, false, &#x27;remaining&#x27;, 0); end if;
+  return json_build_object(&#x27;ok&#x27;, true, &#x27;remaining&#x27;, p_limit - c);
+end $$;
+
+-- คืนโควตา 1 ครั้ง (เมื่ออ่านรูปไม่สำเร็จ)
+create or replace function public.ngv_scan_refund()
+returns void language plpgsql security definer set search_path = public as $$
+declare d date := (now() at time zone &#x27;Asia/Bangkok&#x27;)::date;
+begin
+  update public.ngv_scan_usage set count = greatest(count - 1, 0) where day = d;
+end $$;
+
+-- เรียกได้เฉพาะ Edge Function (service_role) — หน้าเว็บ/anon เรียกตรงไม่ได้
+revoke all on function public.ngv_scan_hit(int) from public, anon, authenticated;
+revoke all on function public.ngv_scan_refund() from public, anon, authenticated;
+grant execute on function public.ngv_scan_hit(int) to service_role;
+grant execute on function public.ngv_scan_refund() to service_role;
+</pre>
+      <p class="font-medium text-sm mt-3">โค้ดฟังก์ชัน (<code>read-pos-slip.ts</code>)</p>
+      <pre class="bg-gray-900 text-green-400 p-3 rounded-xl text-[11px] overflow-auto max-h-96 mt-1">// ============================================================
+// Supabase Edge Function : read-pos-slip   (NGV Blue Eco v1.5.0)
+// อ่านใบปิดกะ/ปิดวัน POS ปตท. จากรูปด้วย Gemini API แล้วส่งตัวเลขกลับให้หน้าเว็บ &quot;ทวน&quot;
+//  - ตรวจ user/password ฝั่งเซิร์ฟเวอร์ (ngv_login) อนุญาตเฉพาะ leader / manager
+//  - จำกัดจำนวนครั้งต่อวัน (ค่าเริ่มต้น 20) ด้วย ngv_scan_hit
+//  - API key อยู่ใน Secrets ไม่อยู่ในหน้าเว็บ  • ไม่เก็บรูป
+// Secrets ที่ต้องตั้ง:  GEMINI_API_KEY (จำเป็น) • GEMINI_MODEL (ไม่บังคับ) • SCAN_DAILY_LIMIT (ไม่บังคับ)
+//   ไม่บังคับเพิ่มเติม: GEMINI_TIMEOUT_MS (90000) • GEMINI_TRIES (3 = ลองซ้ำเมื่อ Gemini ตอบ 503/429) •
+//   GEMINI_FALLBACK_MODEL (รุ่นสำรอง) • GEMINI_EXTRA (JSON ผสมเข้า generationConfig)
+// ============================================================
+import { createClient } from &quot;https://esm.sh/@supabase/supabase-js@2&quot;;
+
+// CORS: ตอบกลับตามหัวข้อที่เบราว์เซอร์ขอ (supabase-js เวอร์ชันใหม่ส่งหัวข้อ x-supabase-client-* เพิ่ม)
+const BASE_HEADERS =
+  &quot;authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version&quot;;
+const corsFor = (req: Request) =&gt; ({
+  &quot;Access-Control-Allow-Origin&quot;: &quot;*&quot;,
+  &quot;Access-Control-Allow-Headers&quot;: req.headers.get(&quot;access-control-request-headers&quot;) || BASE_HEADERS,
+  &quot;Access-Control-Allow-Methods&quot;: &quot;POST, OPTIONS&quot;,
+  &quot;Access-Control-Max-Age&quot;: &quot;86400&quot;,
+});
+
+const PROMPT = `ภาพนี้คือใบปิดกะ/ปิดวันจากเครื่อง POS สถานีบริการน้ำมัน/ก๊าซ ปตท. (ภาษาไทย) อาจมีหลายใบในรูปเดียว และอาจมีของวางบังหรือกระดาษเอียง
+อ่านทีละใบ แล้วตอบเป็น JSON ตาม schema ที่กำหนด กติกา:
+1) slip: &quot;shift1&quot; = &quot;รายงานการปิดกะที่ 1&quot;, &quot;shift2&quot; = &quot;...กะที่ 2&quot;, &quot;shift3&quot; = &quot;...กะที่ 3&quot;, &quot;day&quot; = &quot;รายงานการปิดวัน&quot;; ถ้าไม่แน่ใจใช้ &quot;unknown&quot;
+2) business_date = วันที่หลังคำว่า &quot;ประจำวันที่&quot; เท่านั้น (ไม่ใช่วันที่/เวลาที่พิมพ์) แปลงปี พ.ศ. เป็น ค.ศ. (ลบ 543) รูปแบบ YYYY-MM-DD
+3) ใช้เฉพาะหมวด &quot;ลูกค้าเงินสด&quot;: cash_cars = จำนวนรถ(คัน), cash_kg = ปริมาณ(กก.) (ทศนิยม 3 ตำแหน่ง), cash_baht = เป็นเงิน(บาท)
+   ห้ามใช้หมวด &quot;ฟลีทการ์ด&quot;, &quot;ลูกค้า QR&quot; หรือ &quot;รวมทั้งสิ้น&quot; มาใส่ช่อง cash_*
+4) remit_baht = &quot;ยอดเงินนำส่ง ปตท.&quot; &gt; &quot;จำนวนเงิน(บาท)&quot;
+5) ตัวเลขใช้ , คั่นหลักพัน และ . ทศนิยม ตอบเป็นตัวเลขล้วน (ไม่มี ,)
+6) ตัวไหนอ่านไม่ชัด/ถูกบัง ให้ใส่ null และอธิบายสั้น ๆ ใน notes ห้ามเดาหรือคำนวณเอง`;
+
+const SCHEMA = {
+  type: &quot;OBJECT&quot;,
+  properties: {
+    slips: {
+      type: &quot;ARRAY&quot;,
+      items: {
+        type: &quot;OBJECT&quot;,
+        properties: {
+          slip: { type: &quot;STRING&quot;, enum: [&quot;shift1&quot;, &quot;shift2&quot;, &quot;shift3&quot;, &quot;day&quot;, &quot;unknown&quot;] },
+          business_date: { type: &quot;STRING&quot;, nullable: true },
+          cash_cars: { type: &quot;INTEGER&quot;, nullable: true },
+          cash_kg: { type: &quot;NUMBER&quot;, nullable: true },
+          cash_baht: { type: &quot;NUMBER&quot;, nullable: true },
+          remit_baht: { type: &quot;NUMBER&quot;, nullable: true },
+          notes: { type: &quot;STRING&quot;, nullable: true },
+        },
+        required: [&quot;slip&quot;],
+      },
+    },
+  },
+  required: [&quot;slips&quot;],
+};
+
+const num = (v: unknown) =&gt; (typeof v === &quot;number&quot; &amp;&amp; isFinite(v) ? v : null);
+
+Deno.serve(async (req: Request) =&gt; {
+  const C = corsFor(req);
+  const json = (obj: unknown, status = 200) =&gt;
+    new Response(JSON.stringify(obj), { status, headers: { ...C, &quot;Content-Type&quot;: &quot;application/json&quot; } });
+  if (req.method === &quot;OPTIONS&quot;) return new Response(&quot;ok&quot;, { headers: C });
+  if (req.method !== &quot;POST&quot;) return json({ ok: false, error: &quot;method&quot; }, 405);
+
+  let sb: ReturnType&lt;typeof createClient&gt; | null = null;
+  let counted = false;
+  try {
+    const { user, pass, image, mime } = await req.json();
+    if (!user || !pass || !image) return json({ ok: false, error: &quot;bad_request&quot; }, 400);
+    if (typeof image !== &quot;string&quot; || image.length &gt; 7_000_000) return json({ ok: false, error: &quot;too_large&quot; }, 413);
+    const mt = typeof mime === &quot;string&quot; &amp;&amp; mime.startsWith(&quot;image/&quot;) ? mime : &quot;image/jpeg&quot;;
+
+    sb = createClient(Deno.env.get(&quot;SUPABASE_URL&quot;)!, Deno.env.get(&quot;SUPABASE_SERVICE_ROLE_KEY&quot;)!);
+
+    // 1) ยืนยันตัวตน + สิทธิ์
+    const { data: login } = await sb.rpc(&quot;ngv_login&quot;, { p_user: user, p_pass: pass });
+    if (!login?.ok) return json({ ok: false, error: &quot;auth&quot; }, 401);
+    if (![&quot;leader&quot;, &quot;manager&quot;].includes(login.role)) return json({ ok: false, error: &quot;role&quot; }, 403);
+
+    // 2) จำกัดจำนวนครั้งต่อวัน
+    const limit = Number(Deno.env.get(&quot;SCAN_DAILY_LIMIT&quot;) || 20);
+    const { data: hit, error: hitErr } = await sb.rpc(&quot;ngv_scan_hit&quot;, { p_limit: limit });
+    if (hitErr) return json({ ok: false, error: &quot;db&quot;, detail: hitErr.message }, 500);
+    if (!hit?.ok) return json({ ok: false, error: &quot;limit&quot;, remaining: 0 }, 429);
+    counted = true;
+
+    // 3) เรียก Gemini
+    const key = Deno.env.get(&quot;GEMINI_API_KEY&quot;);
+    if (!key) throw new Error(&quot;GEMINI_API_KEY not set&quot;);
+    const primary = Deno.env.get(&quot;GEMINI_MODEL&quot;) || &quot;gemini-2.5-flash&quot;;
+    const fallback = Deno.env.get(&quot;GEMINI_FALLBACK_MODEL&quot;) || &quot;&quot;;   // ไม่บังคับ: รุ่นสำรองเมื่อรุ่นหลักคนใช้เยอะ (503)
+    // generationConfig เพิ่มเติม (ไม่บังคับ): Secret GEMINI_EXTRA เป็น JSON เช่น {&quot;thinkingConfig&quot;:{&quot;thinkingBudget&quot;:0}}
+    let extra: Record&lt;string, unknown&gt; = {};
+    try { extra = JSON.parse(Deno.env.get(&quot;GEMINI_EXTRA&quot;) || &quot;{}&quot;); } catch (_) { /* ignore */ }
+    const tries = Math.max(1, Number(Deno.env.get(&quot;GEMINI_TRIES&quot;) || 3));
+    const delay = Number(Deno.env.get(&quot;GEMINI_RETRY_DELAY_MS&quot;) || 1500);
+    const deadline = Date.now() + Number(Deno.env.get(&quot;GEMINI_TIMEOUT_MS&quot;) || 90000);
+    const RETRYABLE = [429, 500, 502, 503, 504];
+    const body = JSON.stringify({
+      contents: [{ parts: [{ text: PROMPT }, { inline_data: { mime_type: mt, data: image } }] }],
+      generationConfig: { temperature: 0, responseMimeType: &quot;application/json&quot;, responseSchema: SCHEMA, ...extra },
+    });
+
+    // Gemini บางครั้งตอบ 503 &quot;high demand&quot; ชั่วคราว → ลองซ้ำอัตโนมัติ (รอเพิ่มทีละครั้ง) และสลับไปรุ่นสำรองถ้าตั้งไว้
+    let g: Record&lt;string, any&gt; | null = null;
+    let model = primary;
+    let lastStatus = 0;
+    let lastText = &quot;&quot;;
+    let retryAfter: number | null = null;
+    for (let i = 0; i &lt; tries; i++) {
+      model = i &gt;= 1 &amp;&amp; fallback ? fallback : primary;
+      const remaining = deadline - Date.now();
+      if (remaining &lt;= 0) throw Object.assign(new Error(&quot;deadline&quot;), { name: &quot;AbortError&quot; });
+      const ctl = new AbortController();
+      const timer = setTimeout(() =&gt; ctl.abort(), remaining);
+      const t0 = Date.now();
+      let r: Response;
+      try {
+        r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
+          method: &quot;POST&quot;,
+          headers: { &quot;Content-Type&quot;: &quot;application/json&quot;, &quot;x-goog-api-key&quot;: key },
+          signal: ctl.signal,
+          body,
+        });
+      } finally {
+        clearTimeout(timer);
+      }
+      console.log(&quot;gemini&quot;, model, r.status, (Date.now() - t0) + &quot;ms&quot;, &quot;try &quot; + (i + 1) + &quot;/&quot; + tries);
+      if (r.ok) { g = await r.json(); break; }
+      lastStatus = r.status;
+      const full = (await r.text()).slice(0, 4000);
+      lastText = full.slice(0, 200);
+      if (!RETRYABLE.includes(r.status) || i === tries - 1) break;
+      let wait = delay * (i + 1);
+      if (r.status === 429) {
+        // โควตา/อัตราเต็ม: ถ้า Google บอกให้รอสั้น ๆ (retryDelay ≤ 15 วินาที) → รอแล้วลองใหม่ ถ้าไม่บอกหรือรอนาน (โควตาวัน/ไม่มีโควตา) → หยุด ไม่เปลืองคำขอ
+        const m = full.match(/&quot;retryDelay&quot;\s*:\s*&quot;(\d+(?:\.\d+)?)s&quot;/);
+        retryAfter = m ? Math.ceil(Number(m[1])) : null;
+        if (retryAfter === null || retryAfter &gt; 15) break;
+        wait = retryAfter * 1000 + 300;
+      }
+      await new Promise((res) =&gt; setTimeout(res, wait));
+    }
+    if (!g) {
+      // คืนโควตาแล้วบอกสาเหตุที่หน้าเว็บเข้าใจ
+      try { if (counted &amp;&amp; sb) await sb.rpc(&quot;ngv_scan_refund&quot;); } catch (_) { /* ignore */ }
+      counted = false;
+      if ([500, 502, 503, 504].includes(lastStatus)) return json({ ok: false, error: &quot;busy&quot;, detail: &quot;gemini &quot; + lastStatus }, 503);
+      if (lastStatus === 429) return json({ ok: false, error: &quot;gemini_limit&quot;, retry_after: retryAfter, detail: lastText }, 429);
+      throw new Error(&quot;gemini &quot; + lastStatus + &quot; &quot; + lastText);
+    }
+    const text = g?.candidates?.[0]?.content?.parts?.map((p: { text?: string }) =&gt; p.text || &quot;&quot;).join(&quot;&quot;) || &quot;&quot;;
+    const parsed = JSON.parse(text);
+    const slips = (Array.isArray(parsed?.slips) ? parsed.slips : []).map((s: Record&lt;string, unknown&gt;) =&gt; ({
+      slip: [&quot;shift1&quot;, &quot;shift2&quot;, &quot;shift3&quot;, &quot;day&quot;].includes(String(s.slip)) ? String(s.slip) : &quot;unknown&quot;,
+      business_date: typeof s.business_date === &quot;string&quot; &amp;&amp; /^\d{4}-\d{2}-\d{2}$/.test(s.business_date) ? s.business_date : null,
+      cash_cars: num(s.cash_cars),
+      cash_kg: num(s.cash_kg),
+      cash_baht: num(s.cash_baht),
+      remit_baht: num(s.remit_baht),
+      notes: typeof s.notes === &quot;string&quot; ? s.notes.slice(0, 200) : null,
+    }));
+    return json({ ok: true, slips, remaining: hit.remaining, model });
+  } catch (e) {
+    // อ่านไม่สำเร็จ → คืนโควตา 1 ครั้ง
+    try { if (counted &amp;&amp; sb) await sb.rpc(&quot;ngv_scan_refund&quot;); } catch (_) { /* ignore */ }
+    if ((e as Error).name === &quot;AbortError&quot;) return json({ ok: false, error: &quot;timeout&quot; }, 504);
+    console.log(&quot;read_failed&quot;, String((e as Error).message || e).slice(0, 300));
+    return json({ ok: false, error: &quot;read_failed&quot;, detail: String((e as Error).message || e).slice(0, 300) }, 502);
+  }
+});
+</pre>
+    </div>
+
+    <div class="bg-white p-6 rounded-2xl shadow border border-sky-100">
+      <h3 class="font-bold text-lg text-[#0369a1] mb-3">1️⃣5️⃣ รายงานยอดขาย &amp; KPI — PDF / รูปส่ง LINE (v1.6.0)</h3>
+      <ol class="list-decimal ml-6 text-sm space-y-1.5">
+        <li>แท็บ "ยอดขาย &amp; KPI" → การ์ด <b>รายงานยอดขาย &amp; KPI</b> เลือก <b>รายวัน / 7 วัน / รายเดือน</b> และวันที่ (ค่าเริ่มต้น = วันล่าสุดที่มีข้อมูล)</li>
+        <li><b>ดูตัวอย่างรายงาน</b>: รายวัน = การ์ด KPI (ก๊าซรวมเทียบเป้า 16,000, ยอดขาย, จำนวนรถ, กก./คัน) + ตารางแยกกะ + กราฟ 7 วัน • 7 วัน = สรุป + กราฟ + ตารางรายวัน • รายเดือน = สรุป (รวมจำนวนวันที่ผ่าน KPI) + กราฟทั้งเดือน + ตารางรายวัน</li>
+        <li><b>บันทึกเป็นรูป (ส่ง LINE)</b>: มือถือ → เปิดหน้าแชร์ของเครื่อง เลือกแอป LINE แล้วเลือกห้องแชตได้ทันที • คอมพิวเตอร์ → ดาวน์โหลดไฟล์ PNG (ความกว้าง 1,080 พิกเซล) แล้วลากเข้า LINE</li>
+        <li><b>พิมพ์ / PDF</b>: ย่อให้พอดี A4 แนวตั้ง 1 หน้า เลือก "บันทึกเป็น PDF" ในหน้าต่างพิมพ์ได้</li>
+        <li>สีแท่งกราฟตามเกณฑ์เดียวกับตารางยอดขาย: เขียว ≥16,000 • เหลือง 15,000–15,999 • ส้ม 14,000–14,999 • แดง ≤13,999 กก. วันที่ไม่มีข้อมูลแสดงเป็นช่องว่าง</li>
+        <li>ส่งเข้ากลุ่ม LINE อัตโนมัติไม่มีในเวอร์ชันนี้ (ต้องแชร์รูปเอง)</li>
+      </ol>
+    </div>
   </div>
 </div>
 
@@ -888,6 +1222,21 @@ end $$;
     <div class="modal-pad p-3 overflow-x-auto"><div id="evSheetWrap" style="min-width:283mm"></div></div>
   </div>
 </div>
+<div id="krModal" class="hidden fixed inset-0 bg-black/60 z-[80] flex items-start justify-center p-2 md:p-6 overflow-auto">
+  <div class="modal-body bg-white rounded-2xl w-full max-w-[620px] shadow-xl">
+    <div class="modal-chrome flex flex-wrap gap-2 items-center justify-between p-3 border-b sticky top-0 bg-white rounded-t-2xl z-10">
+      <div><b class="text-[#0369a1]">ตัวอย่างรายงานยอดขาย &amp; KPI</b><div id="kr_status" class="text-[11px] text-gray-500"></div></div>
+      <div class="flex flex-wrap gap-2">
+        <button id="kr_share" onclick="krShare()" disabled class="h-10 px-4 rounded-xl bg-emerald-600 text-white text-sm font-semibold disabled:opacity-40">🖼 บันทึกเป็นรูป (ส่ง LINE)</button>
+        <button id="kr_dl" onclick="krDownload()" disabled class="h-10 px-4 rounded-xl bg-gray-100 text-sm disabled:opacity-40">⬇ ดาวน์โหลดรูป</button>
+        <button onclick="krPrint()" class="h-10 px-4 rounded-xl bg-[#0284c7] text-white text-sm font-semibold">🖨 พิมพ์ / PDF</button>
+        <button onclick="krClose()" class="h-10 px-4 rounded-xl bg-gray-100 text-sm">ปิด</button>
+      </div>
+    </div>
+    <div class="modal-pad p-3 overflow-x-auto"><div id="krSheetWrap" style="min-width:540px"></div></div>
+  </div>
+</div>
+<div id="scImgModal" class="hidden fixed inset-0 bg-black/80 z-[95] flex items-center justify-center p-3" onclick="this.classList.add('hidden')"><img id="scImgBig" alt="ใบ POS" class="max-w-full max-h-full rounded-lg"></div>
 <div id="printBlock">การพิมพ์หน้านี้ทำได้ผ่านปุ่ม "พิมพ์ / PDF" ในแท็บกระทบยอดเงินสด (ผู้จัดการ หลังยืนยัน) หรือแท็บประเมินรายวัน (ผู้จัดการ/acc)</div>
 <div id="toast" class="fixed bottom-4 right-4 bg-[#0369a1] text-white px-5 py-3 rounded-xl text-sm hidden shadow-lg z-[120] max-w-[90vw]"></div>
 
@@ -1329,7 +1678,7 @@ function initYearFilter(){
 /* ================================================================
    v1.2.0 (Draft) — Login 3 บทบาท + Tab กระทบยอดเงินสด
    ================================================================ */
-const APP_VERSION='v1.4.0 (Draft)';
+const APP_VERSION='v1.6.0 (Draft)';
 const TOL=1;        // ผลต่างนับจริง-ปตท. ตั้งแต่ค่านี้ขึ้นไป (หรือนับขาด) ถือว่าผิดปกติ — แสดงคำเตือน (ไม่มีการปัดเศษ)
 const NOTE_REQUIRED=false;      // true = ผลต่างผิดปกติต้องใส่หมายเหตุก่อนส่ง • false = หมายเหตุไม่บังคับ (ค่าปัจจุบัน)
 const NEXT_DAY_REQUIRED=true;   // true = ส่งรายงานไม่ได้จนกว่าจะมียอด 00:00–08:00 ของวันถัดไป
@@ -1338,7 +1687,7 @@ const SAFE_TOL=1;   // ผลต่างยอดตู้เซฟที่ย
 /* ---------- สิทธิ์ตามบทบาท (แก้ตรงนี้ที่เดียว) ---------- */
 const ROLE_INFO={
   sales:  {label:'ผู้บันทึกยอดขาย', tabs:[1,2,4,5,3], home:1, editSales:true,  editAtt:true,  editRecon:false, editEval:false, confirm:false, print:false, setting:true},
-  leader: {label:'หัวหน้างาน',      tabs:[4,3],     home:4, editSales:false, editAtt:false, editRecon:true,  editEval:false,  confirm:false, print:false, setting:false},
+  leader: {label:'หัวหน้างาน',      tabs:[4,1,3],   home:4, editSales:true,  editAtt:false, editRecon:true,  editEval:false,  confirm:false, print:false, setting:false, scan:true},
   acc:    {label:'ฝ่ายบัญชี',        tabs:[6,5,3],   home:6, editSales:false, editAtt:false, editRecon:false, editEval:false, confirm:false, print:true,  setting:false},
   manager:{label:'ผู้จัดการ',       tabs:[4,1,2,5,3], home:4, editSales:true,  editAtt:true,  editRecon:false, editEval:true, confirm:true,  print:true,  setting:true}
 };
@@ -1389,7 +1738,7 @@ async function doLogin(ev){
       res=f?{ok:true,username:f.u,name:f.name,role:f.role}:{ok:false};
     }
     if(!res||!res.ok){err.textContent='ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง';return false;}
-    SESSION={username:res.username,name:res.name,role:res.role,via};
+    SESSION={username:res.username,name:res.name,role:res.role,via};window.NGV_PW=p;   // เก็บรหัสผ่านในหน่วยความจำเท่านั้น (ใช้ยืนยันตอนอ่านรูป) หายเมื่อปิด/รีเฟรชหน้า
     sessionStorage.setItem('ngv_session',JSON.stringify(SESSION));
     el('lg_pass').value='';
     enterApp();
@@ -1401,7 +1750,7 @@ function enterApp(){
   const R=roleCfg();if(!R){logout(true);return;}
   el('loginOverlay').classList.add('hidden');
   document.body.classList.remove('locked');
-  ['editSales','editAtt','editRecon','editEval','confirm','print','setting'].forEach(k=>document.body.classList.toggle('can-'+k,!!R[k]));
+  ['editSales','editAtt','editRecon','editEval','confirm','print','setting','scan'].forEach(k=>document.body.classList.toggle('can-'+k,!!R[k]));
   document.body.classList.toggle('role-acc',SESSION.role==='acc');
   [1,2,3,4,5,6].forEach(i=>{const b=el('tabBtn'+i);if(b)b.style.display=R.tabs.includes(i)?'':'none';});
   const chip=el('userChip');chip.style.display='flex';
@@ -1431,6 +1780,7 @@ function switchTab(n){
   el('tabBtn'+n).className='px-5 py-2.5 bg-[#0284c7] text-white rounded-xl shadow whitespace-nowrap shrink-0';
   document.body.classList.toggle('guard-print',n===4||n===5);
   if(n===4)renderReconTab();
+  if(n===1&&typeof krDefaults==='function')krDefaults();
   if(n===5)evRender(false);
   if(n===6)invLoad();
   setTimeout(()=>{renderCharts();renderAttChart();},200);
@@ -1509,6 +1859,15 @@ function issuesOf(r){
   if(ab.length){o.needNote=true;o.warn.push('ผลต่างผิดปกติ '+ab.length+' ช่วงเวลา (เกิน ≥ '+TOL+' บาท หรือนับขาด)');}
   else if(!miss.length)o.ok.push('ผลต่างทุกช่วงน้อยกว่า '+TOL+' บาท');
   if(NEXT_DAY_REQUIRED&&r.status!=='confirmed'&&(r.nx_sys==null||r.nx_act==null)){const nd=addDays(r.date,1);o.block.push('รอยอด 00:00–08:00 ของวันที่ '+Number(nd.slice(8))+' — ให้ Leader บันทึกรายงานวันที่ '+thShort(nd)+' (ช่อง ปตท./นับจริง 00:00–08:00) ก่อน');}
+  if(r.status!=='confirmed'){
+    const sl=salesData.find(x=>x.date===r.date);
+    if(sl){
+      const mp=[['a','k3_sale','00:00–08:00'],['b','k1_sale','กะเช้า 08:00–20:00'],['c','k2_sale','20:00–24:00']];
+      const bad=mp.filter(([p,k])=>r['sys_'+p]!=null&&Math.abs(r2(r['sys_'+p])-r2(sl[k]||0))>0.004);
+      if(bad.length)o.block.push('ยอด ปตท. ไม่ตรงกับแท็บยอดขายของวันนี้ ('+bad.map(b=>b[2]+': ปตท. '+fmt(r['sys_'+b[0]])+' ≠ ยอดขาย '+fmt(sl[b[1]])).join(' • ')+') — ติ๊ก "ดึงยอด ปตท. จากแท็บยอดขายอัตโนมัติ" หรือแก้ให้ตรงกัน');
+      else o.ok.push('ยอด ปตท. ตรงกับแท็บยอดขาย');
+    }
+  }
   if(r.opening==null)o.block.push('ระบุยอดยกมาในตู้เซฟ (ใช้ครั้งแรกที่เริ่มระบบ)');
   if(!(r.safe_counted>0))o.block.push('กรอกการนับเงินในตู้เซฟ (ใบที่ 2)');
   else if(r.safe_diff!=null){
@@ -2248,6 +2607,473 @@ function invLoad(){
   if(invLoaded||!(SESSION&&SESSION.role==='acc'))return;
   invLoaded=true;
   el('inv_frame').srcdoc=new TextDecoder().decode(Uint8Array.from(atob(INV_B64),c=>c.charCodeAt(0)));
+}
+
+</script>
+<script>
+/* ================================================================
+   v1.5.0 (Draft) — บันทึกจากใบ POS (ถ่ายรูป / อัปโหลด / กรอกเอง) → ทวนตัวเลข → ลงแท็บยอดขาย
+   ใบ POS: ปิดกะที่ 1 = 00:00–08:00 (k3) • ปิดกะที่ 2 = 08:00–20:00 (k1) • ปิดกะที่ 3 = 20:00–24:00 (k2)
+   ใช้เฉพาะ "ลูกค้าเงินสด" / ยอดเงินนำส่ง ปตท. (ไม่รวมฟลีทการ์ด / QR)
+   ================================================================ */
+const SCAN_TYPES=[
+  ['shift1','ปิดกะที่ 1 (00:00–08:00)','k3'],
+  ['shift2','ปิดกะที่ 2 (08:00–20:00)','k1'],
+  ['shift3','ปิดกะที่ 3 (20:00–24:00)','k2'],
+  ['day','ปิดวัน (ใช้ตรวจผลรวมเท่านั้น)',null]
+];
+const SCAN_KEY=Object.fromEntries(SCAN_TYPES.map(t=>[t[0],t[2]]));
+const SCAN_LABEL=Object.fromEntries(SCAN_TYPES.map(t=>[t[0],t[1]]));
+const SCAN_MAXPX=1600, SCAN_PRICE_TOL=0.01;
+let scan=null,scanBusy=false,scanSeq=0,scanLeft=null;
+
+/* ---------- ช่วยคำนวณ ---------- */
+const bahtOf=s=>s.cash!=null?s.cash:s.remit;   // เงินสด (ถ้าว่างใช้ยอดนำส่ง — ในใบเป็นเลขเดียวกัน)
+const SCAN_ORDER={shift1:1,shift2:2,shift3:3,day:4,'':5};
+const sNum=v=>(v===''||v==null||!isFinite(Number(v)))?null:Number(v);
+const sEq=(a,b,t)=>Math.abs(a-b)<=t;
+function scanBlank(type,date){return {id:++scanSeq,type:type||'',date:date||'',cars:null,kg:null,cash:null,remit:null,note:'',ow:false};}
+function scanExisting(date){return salesData.find(x=>x.date===date)||null;}
+function scanExShift(date,type){
+  const k=SCAN_KEY[type],ex=scanExisting(date);if(!k||!ex)return null;
+  const o={cars:ex[k+'_car']||0,kg:ex[k+'_gas']||0,baht:ex[k+'_sale']||0};
+  return (o.cars||o.kg||o.baht)?o:null;
+}
+function scanMainDate(){
+  const c={};scan.slips.forEach(s=>{if(s.date)c[s.date]=(c[s.date]||0)+1;});
+  const e=Object.entries(c).sort((a,b)=>b[1]-a[1]);return e.length?e[0][0]:'';
+}
+function scanMedian(a){const x=[...a].sort((p,q)=>p-q),n=x.length;return n%2?x[(n-1)/2]:(x[n/2-1]+x[n/2])/2;}
+function scanRefPrice(){
+  // ราคาอ้างอิง (บาท/กก.) = ค่ากลางของทุกใบปิดกะในชุดนี้ (ใบที่ผิดจะเด่นออกมาเอง) ถ้ามีไม่ถึง 3 ใบ เพิ่มข้อมูลที่บันทึกไว้ 14 วันล่าสุด
+  let arr=scan.slips.filter(s=>s.type!=='day'&&s.kg>0&&bahtOf(s)>0).map(s=>bahtOf(s)/s.kg);
+  if(arr.length<3)[...salesData].sort((a,b)=>a.date<b.date?1:-1).slice(0,14).forEach(x=>['k1','k2','k3'].forEach(k=>{if(x[k+'_gas']>0&&x[k+'_sale']>0)arr.push(x[k+'_sale']/x[k+'_gas']);}));
+  return arr.length?scanMedian(arr):null;
+}
+
+/* ---------- ตรวจความถูกต้อง ---------- */
+function scanCheck(){
+  const out={slip:{},global:[],errors:0};
+  const S=scan.slips,seen={};
+  const push=(arr,k,t)=>{arr.push({k,t});if(k==='err')out.errors++;};
+  if(!S.length)push(out.global,'err','ยังไม่มีใบ — กด "+ เพิ่มใบ" หรือถ่ายรูป');
+  S.forEach(s=>{
+    const m=out.slip[s.id]=[];
+    if(!s.type)push(m,'err','เลือกชนิดใบ (ปิดกะที่ 1 / 2 / 3 / ปิดวัน)');
+    else{if(seen[s.type])push(m,'err','มีใบ "'+SCAN_LABEL[s.type]+'" ซ้ำกันในชุดนี้ — ลบใบที่ซ้ำ');seen[s.type]=true;}
+    if(!s.date)push(m,'err','ระบุวันที่ประจำวัน');
+    if(s.cars==null||s.kg==null||bahtOf(s)==null)push(m,'err','กรอกให้ครบ: รถ / ก๊าซ / เงินสด (หรือยอดนำส่ง ปตท.)');
+    if(s.cash!=null&&s.remit!=null&&!sEq(s.cash,s.remit,0.004))push(m,'err','เงินสด '+fmt(s.cash)+' ≠ ยอดนำส่ง ปตท. '+fmt(s.remit)+' (ในใบเป็นเลขเดียวกัน) — อ่าน/พิมพ์ผิดตัวใดตัวหนึ่ง');
+    if(s.type!=='day'&&s.kg>0&&bahtOf(s)>0){
+      const ref=scanRefPrice(),p=bahtOf(s)/s.kg;
+      if(ref&&Math.abs(p/ref-1)>SCAN_PRICE_TOL)push(m,'warn','ราคา/กก. '+p.toFixed(3)+' ต่างจากค่ากลาง ('+ref.toFixed(3)+') เกิน 1% — เช็คก๊าซ กก. และเงินอีกครั้ง');
+    }
+    if(s.type&&s.type!=='day'&&s.date){
+      const ex=scanExShift(s.date,s.type);
+      if(ex){
+        const same=s.cars===ex.cars&&s.kg!=null&&sEq(s.kg,ex.kg,0.0005)&&bahtOf(s)!=null&&sEq(bahtOf(s),ex.baht,0.004);
+        if(same)push(m,'ok','ตรงกับที่บันทึกไว้ในระบบแล้ว');
+        else if(!s.ow)push(m,'err','ในระบบมีข้อมูลกะนี้แล้ว: รถ '+fmt0(ex.cars)+' / ก๊าซ '+fmt(ex.kg).replace(/\.?0+$/,'')+' / เงิน '+fmt(ex.baht)+' — ต่างจากใบนี้ ติ๊ก "ทับค่าเดิม" ถ้าใบนี้ถูก (หรือลบใบนี้)');
+        else push(m,'warn','จะทับค่าเดิมในระบบ: รถ '+fmt0(ex.cars)+' / ก๊าซ '+ex.kg+' / เงิน '+fmt(ex.baht));
+      }
+    }
+  });
+  // วันที่ต้องเป็นวันเดียวกัน
+  const dates=[...new Set(S.map(s=>s.date).filter(Boolean))];
+  if(dates.length>1)push(out.global,'err','พบหลายวันที่ในชุดเดียว ('+dates.map(thShort).join(', ')+') — บันทึกทีละวัน: ลบใบที่เป็นคนละวัน หรือแก้วันที่ให้ตรงกัน');
+  if(!S.some(s=>s.type&&s.type!=='day'))push(out.global,'err','ต้องมีใบปิดกะอย่างน้อย 1 ใบ (ใบปิดวันอย่างเดียวบันทึกไม่ได้)');
+  // ตรวจผลรวม 3 กะ = ใบปิดวัน
+  const day=S.find(s=>s.type==='day'),date=scanMainDate();
+  if(day&&day.cars!=null&&day.kg!=null&&bahtOf(day)!=null){
+    let miss=[],sum={cars:0,kg:0,baht:0};
+    ['shift1','shift2','shift3'].forEach(t=>{
+      const s=S.find(x=>x.type===t);
+      if(s&&s.cars!=null&&s.kg!=null&&bahtOf(s)!=null){sum.cars+=s.cars;sum.kg+=s.kg;sum.baht+=bahtOf(s);}
+      else{const ex=scanExShift(date,t);if(ex){sum.cars+=ex.cars;sum.kg+=ex.kg;sum.baht+=ex.baht;}else miss.push(SCAN_LABEL[t].split(' (')[0]);}
+    });
+    if(miss.length)push(out.global,'info','ตรวจผลรวมกับใบปิดวันไม่ได้ — ยังไม่มี: '+miss.join(', '));
+    else{
+      const bad=[];
+      if(sum.cars!==day.cars)bad.push('รถ '+fmt0(sum.cars)+' ≠ ใบปิดวัน '+fmt0(day.cars)+' (ต่าง '+(sum.cars-day.cars)+')');
+      if(!sEq(sum.kg,day.kg,0.0005))bad.push('ก๊าซ '+sum.kg.toFixed(3)+' ≠ ใบปิดวัน '+day.kg.toFixed(3)+' (ต่าง '+(sum.kg-day.kg).toFixed(3)+')');
+      if(!sEq(sum.baht,bahtOf(day),0.005))bad.push('เงิน '+fmt(sum.baht)+' ≠ ใบปิดวัน '+fmt(bahtOf(day))+' (ต่าง '+(sum.baht-bahtOf(day)).toFixed(2)+')');
+      if(bad.length)push(out.global,'err','ผลรวม 3 กะไม่ตรงกับใบปิดวัน: '+bad.join(' • ')+' — มีกะใดกะหนึ่งอ่าน/พิมพ์ผิด ตรวจเทียบใบจริง');
+      else push(out.global,'ok','ผลรวม 3 กะ (รถ / ก๊าซ / เงิน) ตรงกับใบปิดวัน');
+    }
+  }else if(S.some(s=>s.type&&s.type!=='day'))push(out.global,'info','ไม่มีใบปิดวัน — ไม่ได้ตรวจผลรวม (กรอกใบปิดวันเพิ่มเพื่อให้ระบบตรวจ)');
+  return out;
+}
+
+/* ---------- แสดงผล ---------- */
+function scanOpen(sc){scan=sc;el('scan_panel').classList.remove('hidden');renderScan();setTimeout(()=>el('scan_panel').scrollIntoView({behavior:'smooth',block:'start'}),50);}
+function scanClose(){if(scan)scan.imgs=[];scan=null;el('scan_panel').classList.add('hidden');el('scan_panel').innerHTML='';}
+function scanManual(){
+  const d=todayStr(-1);
+  scanOpen({imgs:[],source:'manual',slips:['shift1','shift2','shift3','day'].map(t=>scanBlank(t,d)),confirmed:false});
+}
+function scanAdd(){if(!scan)return;const sel=el('sc_addtype').value;if(!sel)return;scan.slips.push(scanBlank(sel,scanMainDate()||todayStr(-1)));scan.confirmed=false;renderScan();}
+function scanDel(id){scan.slips=scan.slips.filter(s=>s.id!==id);scan.confirmed=false;renderScan();}
+function scanSetAllDate(v){scan.slips.forEach(s=>s.date=v);scan.confirmed=false;renderScan();}
+function scanSet(id,k,v){
+  const s=scan.slips.find(x=>x.id===id);if(!s)return;
+  if(k==='type'||k==='date')s[k]=v;
+  else if(k==='ow')s.ow=!!v;
+  else s[k]=sNum(v);
+  scan.confirmed=false;
+  if(k==='type'||k==='date')renderScan();else scanRefresh();
+}
+function scanSetConfirm(v){scan.confirmed=!!v;scanRefresh();}
+function renderScan(){
+  if(!scan)return;
+  const date=scanMainDate();
+  const hasImg=scan.imgs&&scan.imgs.length;
+  const img=hasImg?`<div class="md:sticky md:top-2 self-start space-y-2"><div class="text-xs text-gray-500">รูปที่ถ่าย ${scan.imgs.length} รูป (เทียบกับตัวเลขด้านข้าง — ไม่ถูกเก็บ • แตะเพื่อขยาย)</div>${scan.imgs.map((u,i)=>`<div><div class="text-[11px] text-gray-500 mb-0.5">รูปที่ ${i+1}</div><img src="${u}" alt="ใบ POS รูปที่ ${i+1}" onclick="el('scImgModal').classList.remove('hidden');el('scImgBig').src=this.src" class="w-full rounded-xl border cursor-zoom-in" style="max-height:${scan.imgs.length>1?'38':'62'}vh;object-fit:contain;background:#f1f5f9"></div>`).join('')}</div>`:'';
+  const opts=SCAN_TYPES.map(t=>`<option value="${t[0]}">${t[1]}</option>`).join('');
+  const rows=scan.slips.map(s=>`
+    <div class="sc-slip">
+      <div class="flex flex-wrap items-center gap-2 mb-2">
+        <select onchange="scanSet(${s.id},'type',this.value)" class="rc-in" style="width:auto;min-width:210px;text-align:left;height:40px"><option value="">— เลือกชนิดใบ —</option>${SCAN_TYPES.map(t=>`<option value="${t[0]}" ${s.type===t[0]?'selected':''}>${t[1]}</option>`).join('')}</select>
+        <label class="text-xs text-gray-600 flex items-center gap-1">ประจำวันที่<input type="date" value="${s.date||''}" onchange="scanSet(${s.id},'date',this.value)" class="rc-in" style="width:150px;height:40px;text-align:left"></label>
+        <button type="button" onclick="scanDel(${s.id})" class="ml-auto text-red-600 text-xs underline">ลบใบนี้</button>
+      </div>
+      ${s.note?`<div class="text-[11px] text-amber-700 mb-1">AI บันทึก: ${esc(s.note)}</div>`:''}
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
+        <label class="text-xs text-sky-800">รถ (คัน)<input type="number" inputmode="numeric" step="1" min="0" value="${s.cars==null?'':s.cars}" oninput="scanSet(${s.id},'cars',this.value)" class="rc-in"></label>
+        <label class="text-xs text-sky-800">ก๊าซ ปริมาณ (กก.)<input type="number" inputmode="decimal" step="0.001" min="0" value="${s.kg==null?'':s.kg}" oninput="scanSet(${s.id},'kg',this.value)" class="rc-in"></label>
+        <label class="text-xs text-sky-800">เงินสด เป็นเงิน (บาท)<input type="number" inputmode="decimal" step="0.01" min="0" value="${s.cash==null?'':s.cash}" oninput="scanSet(${s.id},'cash',this.value)" class="rc-in"></label>
+        <label class="text-xs text-sky-800">ยอดเงินนำส่ง ปตท. (บาท)<input type="number" inputmode="decimal" step="0.01" min="0" value="${s.remit==null?'':s.remit}" oninput="scanSet(${s.id},'remit',this.value)" class="rc-in" placeholder="ถ้าไม่กรอก = เท่าเงินสด"></label>
+      </div>
+      <div id="sc_ow_${s.id}" class="hidden mt-2"><label class="inline-flex items-center gap-2 text-sm text-amber-800"><input type="checkbox" ${s.ow?'checked':''} onchange="scanSet(${s.id},'ow',this.checked)" class="w-4 h-4">ทับค่าเดิมในระบบด้วยใบนี้</label></div>
+      <div id="sc_st_${s.id}" class="mt-2 text-xs space-y-0.5"></div>
+    </div>`).join('');
+  el('scan_panel').innerHTML=`
+    <div class="grid gap-4 ${hasImg?'md:grid-cols-[minmax(0,300px)_minmax(0,1fr)]':''}">
+      ${img}
+      <div class="space-y-3 min-w-0">
+        <div class="flex flex-wrap items-end gap-2 justify-between">
+          <div class="font-semibold text-sky-900">ตรวจทานตัวเลขกับใบจริง ${scan.source==='ai'?'<span class="text-[11px] font-normal px-2 py-0.5 rounded-full bg-sky-100 text-sky-800">อ่านด้วย AI</span>':'<span class="text-[11px] font-normal px-2 py-0.5 rounded-full bg-gray-100 text-gray-700">กรอกเอง</span>'}</div>
+          <label class="text-xs text-gray-600 flex items-center gap-1">เปลี่ยนวันที่ทุกใบ<input type="date" value="${date||''}" onchange="scanSetAllDate(this.value)" class="rc-in" style="width:150px;height:36px;text-align:left"></label>
+        </div>
+        ${rows}
+        <div class="flex flex-wrap items-center gap-2"><label class="scan-btn bg-sky-100 text-sky-800 hover:bg-sky-200" style="height:38px">📷 เพิ่มรูป<input type="file" accept="image/*" capture="environment" class="scan-pick hidden" onchange="scanPick(this)"></label><label class="scan-btn bg-sky-100 text-sky-800 hover:bg-sky-200" style="height:38px">🖼 เพิ่มจากเครื่อง (เลือกได้หลายรูป)<input type="file" accept="image/*" multiple class="scan-pick hidden" onchange="scanPick(this)"></label><select id="sc_addtype" class="rc-in" style="width:auto;min-width:200px;text-align:left;height:38px"><option value="">+ เพิ่มใบ…</option>${opts}</select><button type="button" onclick="scanAdd()" class="rc-chipbtn" style="height:38px">เพิ่ม</button></div>
+        <div id="sc_global" class="text-sm space-y-1"></div>
+        <label class="flex items-start gap-2 text-sm font-medium text-sky-900 bg-sky-50 border border-sky-200 rounded-xl p-3"><input type="checkbox" id="sc_confirm" onchange="scanSetConfirm(this.checked)" class="w-5 h-5 mt-0.5">ฉันทวนตัวเลขทุกใบกับใบจริงแล้ว ถูกต้อง</label>
+        <div class="flex flex-wrap gap-2">
+          <button type="button" id="sc_save" onclick="scanSave()" class="h-12 px-6 rounded-xl bg-[#0284c7] text-white font-semibold disabled:opacity-40 disabled:cursor-not-allowed">💾 บันทึกลงยอดขาย</button>
+          <button type="button" onclick="scanClose()" class="h-12 px-5 rounded-xl bg-gray-100 text-sm">ยกเลิก</button>
+        </div>
+      </div>
+    </div>`;
+  scanRefresh();
+}
+function scanRefresh(){
+  if(!scan||!el('sc_global'))return;
+  const r=scanCheck();
+  const icon={err:'✗',warn:'⚠',ok:'✓',info:'ℹ'},cls={err:'text-red-700',warn:'text-amber-700',ok:'text-emerald-700',info:'text-gray-600'};
+  scan.slips.forEach(s=>{
+    const m=r.slip[s.id]||[];
+    const box=el('sc_st_'+s.id);if(box)box.innerHTML=m.map(x=>`<div class="${cls[x.k]}">${icon[x.k]} ${esc(x.t)}</div>`).join('');
+    const ow=el('sc_ow_'+s.id);if(ow){const need=s.type&&s.type!=='day'&&s.date&&scanExShift(s.date,s.type)&&!m.some(x=>x.k==='ok');ow.classList.toggle('hidden',!need);}
+  });
+  el('sc_global').innerHTML=r.global.map(x=>`<div class="${cls[x.k]}">${icon[x.k]} ${esc(x.t)}</div>`).join('');
+  el('sc_confirm').checked=!!scan.confirmed;
+  el('sc_save').disabled=!(r.errors===0&&scan.confirmed);
+  const left=el('scan_left');if(left)left.textContent=scanLeft==null?'':('อ่านรูปได้อีก '+scanLeft+' ครั้งวันนี้');
+}
+
+/* ---------- บันทึกลงแท็บยอดขาย (ใช้ saveSale เดิม) ---------- */
+function scanSave(){
+  if(!scan)return;
+  const r=scanCheck();if(r.errors||!scan.confirmed){scanRefresh();return;}
+  const date=scanMainDate(),ex=scanExisting(date);
+  const set=(id,v)=>{el(id).value=(v==null?'':v);};
+  ['k1','k2','k3'].forEach(k=>{set('s_'+k+'_car',ex?ex[k+'_car']:'');set('s_'+k+'_gas',ex?ex[k+'_gas']:'');set('s_'+k+'_sale',ex?ex[k+'_sale']:'');});
+  set('s_tip_m',ex?ex.tip_morning:'');set('s_tip_n',ex?ex.tip_night:'');set('s_note',ex?ex.note:'');
+  set('s_date',date);
+  let n=0;
+  scan.slips.forEach(s=>{
+    const k=SCAN_KEY[s.type];if(!k)return;
+    set('s_'+k+'_car',s.cars);set('s_'+k+'_gas',s.kg);set('s_'+k+'_sale',s.remit!=null?s.remit:s.cash);n++;
+  });
+  calc();saveSale();
+  showToast('บันทึกจากใบ POS วันที่ '+thShort(date)+' แล้ว ('+n+' กะ) — ช่อง ปตท. ในกระทบยอดดึงจากยอดนี้อัตโนมัติ');
+  scanClose();
+}
+
+/* ---------- ถ่ายรูป / อัปโหลด / อ่านด้วย Gemini ผ่าน Edge Function ---------- */
+function scanResize(file){
+  return new Promise((resolve,reject)=>{
+    const fr=new FileReader();
+    fr.onerror=()=>reject(new Error('อ่านไฟล์ไม่ได้'));
+    fr.onload=()=>{
+      const im=new Image();
+      im.onerror=()=>reject(new Error('ไฟล์นี้ไม่ใช่รูปที่เปิดได้'));
+      im.onload=()=>{
+        const k=Math.min(1,SCAN_MAXPX/Math.max(im.width,im.height));
+        const c=document.createElement('canvas');c.width=Math.round(im.width*k);c.height=Math.round(im.height*k);
+        c.getContext('2d').drawImage(im,0,0,c.width,c.height);
+        const url=c.toDataURL('image/jpeg',0.85);resolve({url,b64:url.split(',')[1]});
+      };
+      im.src=fr.result;
+    };
+    fr.readAsDataURL(file);
+  });
+}
+async function scanCreds(){
+  if(window.NGV_PW)return {user:SESSION.username,pass:window.NGV_PW};
+  const a=await ask({title:'ยืนยันตัวตนเพื่ออ่านรูป',msg:'กรอกรหัสผ่านของคุณ (ใช้ยืนยันกับเซิร์ฟเวอร์ ไม่ถูกเก็บในเครื่อง)',pass:true,okText:'ตกลง'});
+  if(!a)return null;window.NGV_PW=a.pass;return {user:SESSION.username,pass:a.pass};
+}
+let scanTimer=null,scanCancelFn=null;
+function scanBusyUI(on,msg){
+  const b=el('scan_busy');if(!b)return;
+  clearInterval(scanTimer);scanTimer=null;
+  b.classList.toggle('hidden',!on);
+  document.querySelectorAll('#scanCard .scan-pick').forEach(i=>i.disabled=on);
+  if(on){
+    const t0=Date.now();const base=msg||'กำลังอ่านรูป…';
+    const upd=()=>{el('scan_busy_t').textContent=base+' ('+Math.round((Date.now()-t0)/1000)+' วินาที)';};
+    upd();scanTimer=setInterval(upd,500);
+  }
+}
+function scanCancelWait(){if(scanCancelFn)scanCancelFn();}
+function scanWait(promise){
+  // รอผลสูงสุด SCAN_TIMEOUT_MS (ค่าเริ่มต้น 100 วินาที) หรือจนกดยกเลิก — กันหน้าค้างตลอดไป
+  return new Promise((resolve,reject)=>{
+    const ms=window.SCAN_TIMEOUT_MS||100000;
+    const to=setTimeout(()=>{scanCancelFn=null;reject(Object.assign(new Error('timeout'),{scanTimeout:true}));},ms);
+    scanCancelFn=()=>{clearTimeout(to);scanCancelFn=null;reject(Object.assign(new Error('cancel'),{scanCancel:true}));};
+    promise.then(v=>{clearTimeout(to);scanCancelFn=null;resolve(v);},e=>{clearTimeout(to);scanCancelFn=null;reject(e);});
+  });
+}
+/* ---- อ่านรูป 1 ใบ → {slips} หรือ {err} ---- */
+async function scanReadOne(cr,im){
+  const {data,error}=await scanWait(supa.functions.invoke('read-pos-slip',{body:{user:cr.user,pass:cr.pass,image:im.b64,mime:'image/jpeg'}}));
+  let res=data,code=null,detail='',st=null,retryAfter=null;
+  if(error){
+    res=null;st=error.context&&error.context.status;
+    try{if(error.context&&typeof error.context.json==='function'){const j=await error.context.json();code=j.error||null;detail=j.message||j.detail||'';retryAfter=j.retry_after||null;if(j.remaining!=null)scanLeft=j.remaining;}}catch(e){}
+    if(!code)code=st===404?'notfound':st===401?'jwt':st?('http_'+st):'net';
+    console.log('read-pos-slip error:',error.name,st,detail,error);
+  }
+  if(res&&res.ok===false){code=res.error;}
+  if(code){
+    const msgs={auth:'รหัสผ่านไม่ถูกต้อง',role:'บัญชีนี้ใช้อ่านรูปไม่ได้ (เฉพาะ Leader / Manager)',limit:'ใช้ครบโควตาอ่านรูปของวันนี้แล้ว — ใช้ "กรอกเอง" แทน',notfound:'ไม่พบฟังก์ชัน read-pos-slip ใน Supabase — ตรวจว่า Deploy แล้วและชื่อตรงตัว (ดูคู่มือข้อ 14) • ใช้ "กรอกเอง" ได้',jwt:'Supabase ปฏิเสธการเรียก (401) — ตรวจว่าเว็บใช้ URL/anon key ของโปรเจกต์เดียวกับฟังก์ชัน หรือปิด Verify JWT ของฟังก์ชัน',too_large:'รูปใหญ่เกินไป ลองถ่ายใหม่',busy:'Gemini กำลังมีผู้ใช้มากชั่วคราว (503) — ระบบลองซ้ำให้แล้วยังไม่ผ่าน (โควตาไม่ถูกหัก) ลองใหม่อีกครั้งในอีก 1–2 นาที หรือใช้ "กรอกเอง"',gemini_limit:'โควตาการใช้ Gemini เต็ม (429)'+(retryAfter?(' — รอประมาณ '+retryAfter+' วินาทีแล้วลองใหม่'):' — โควตาฟรีของรุ่นนี้อาจหมดสำหรับวันนี้ (หรือรุ่นนี้ยังไม่มีโควตาฟรี) ตรวจที่ AI Studio → Usage / Rate limit หรือสลับรุ่นที่ GEMINI_MODEL / GEMINI_FALLBACK_MODEL')+' (นี่คือโควตาของ Google ไม่ใช่โควตา 20 ครั้งของเว็บ และไม่ถูกหัก) • ใช้ "กรอกเอง" ได้',timeout:'Gemini ใช้เวลานานเกินกำหนด (โควตาไม่ถูกหัก) — ลองใหม่ หรือเปลี่ยนรุ่นที่ GEMINI_MODEL • ใช้ "กรอกเอง" ได้',read_failed:'AI อ่านรูปไม่สำเร็จ'+(detail?(' ('+detail.slice(0,120)+')'):'')+' — ลองถ่ายใหม่ให้ชัดขึ้น หรือใช้ "กรอกเอง" (โควตาไม่ถูกหัก)',db:'ฟังก์ชันนับโควตาไม่ทำงาน — ตรวจว่ารัน ngv_scan_setup.sql แล้ว'+(detail?(' ('+detail.slice(0,100)+')'):''),net:'ส่งคำขอไปที่ฟังก์ชันไม่สำเร็จ ('+(error&&error.name||'network')+') — มักเกิดจากยังไม่ได้ Deploy/ชื่อฟังก์ชันไม่ตรง หรือ CORS: ให้ Deploy โค้ดฟังก์ชันตัวล่าสุด (v1.5.5) แล้วลองใหม่ • ใช้ "กรอกเอง" ได้'};
+    if(code==='auth')window.NGV_PW=null;
+    return {err:msgs[code]||(String(code).startsWith('http_')?('ฟังก์ชันตอบกลับผิดพลาด (HTTP '+String(code).slice(5)+')'+(detail?': '+detail.slice(0,120):'')):'อ่านรูปไม่สำเร็จ ('+code+')')};
+  }
+  if(!(res&&res.ok))return {err:'ไม่ได้รับคำตอบจากฟังก์ชัน'};
+  scanLeft=res.remaining;
+  const slips=(res.slips||[]).map(x=>{
+    const b=scanBlank(x.slip==='unknown'?'':x.slip,x.business_date||'');
+    b.cars=sNum(x.cash_cars);b.kg=sNum(x.cash_kg);b.cash=sNum(x.cash_baht);b.remit=sNum(x.remit_baht);b.note=x.notes||'';
+    if(b.cash==null&&b.remit!=null){b.cash=b.remit;b.note=(b.note?b.note+' • ':'')+'ช่องเงินสดอ่านไม่ได้ ใช้ยอดนำส่ง ปตท. แทน (ในใบเป็นเลขเดียวกัน)';}
+    return b;
+  });
+  return {slips};
+}
+/* ---- รวมใบจากหลายรูปเข้าหน้าตรวจทานเดียวกัน ---- */
+function scanMerge(list,url){
+  if(!scan)scan={imgs:[],source:'ai',slips:[],confirmed:false};
+  if(!scan.imgs)scan.imgs=[];
+  if(url)scan.imgs.push(url);
+  const cnt={};list.forEach(s=>{if(s.date)cnt[s.date]=(cnt[s.date]||0)+1;});
+  const e=Object.entries(cnt).sort((a,b)=>b[1]-a[1]);
+  const md=e.length?e[0][0]:(scanMainDate()||todayStr(-1));
+  let added=0,skipped=0;
+  list.forEach(b=>{
+    if(!b.date)b.date=md;
+    const dup=scan.slips.some(s=>s.type&&s.type===b.type&&s.date===b.date&&s.cars===b.cars&&s.kg===b.kg&&bahtOf(s)===bahtOf(b));
+    if(dup){skipped++;return;}
+    const ph=b.type?scan.slips.findIndex(s=>s.type===b.type&&s.cars==null&&s.kg==null&&s.cash==null&&s.remit==null):-1;
+    if(ph>=0){b.id=scan.slips[ph].id;scan.slips[ph]=b;added++;return;}
+    scan.slips.push(b);added++;
+  });
+  scan.slips.sort((a,b)=>((SCAN_ORDER[a.type||'']||5)-(SCAN_ORDER[b.type||'']||5))||a.id-b.id);
+  scan.confirmed=false;
+  return {added,skipped};
+}
+async function scanPick(input){
+  const files=[...(input.files||[])];input.value='';
+  if(!files.length||scanBusy)return;
+  if(!supa){showToast('อ่านรูปด้วย AI ต้องเชื่อม Supabase — ตอนนี้ใช้ "กรอกเอง" แทน');return;}
+  scanBusy=true;
+  try{
+    scanBusyUI(true,'กำลังเตรียมรูป…');
+    const cr=await scanCreds();if(!cr){scanBusyUI(false);scanBusy=false;return;}
+    let added=0,skipped=0,done=0,stopped=false;
+    for(let i=0;i<files.length;i++){
+      const tag=files.length>1?(' รูปที่ '+(i+1)+'/'+files.length):'';
+      scanBusyUI(true,'กำลังเตรียมรูป'+tag+'…');
+      const im=await scanResize(files[i]);
+      scanBusyUI(true,'กำลังอ่านรูป'+tag+' (ประมาณ 5–15 วินาที)…');
+      const out=await scanReadOne(cr,im);
+      if(out.err){showToast(out.err+(done?' • เก็บใบจากรูปก่อนหน้าไว้ในหน้าตรวจทานแล้ว':'')+(i<files.length-1?' — หยุดอ่านรูปที่เหลือ':''));stopped=true;break;}
+      if(!out.slips.length){showToast('ไม่พบใบ POS ใน'+(tag||'รูป')+' — ลองถ่ายให้เห็นตัวหนังสือชัดขึ้น');continue;}
+      const r=scanMerge(out.slips,im.url);added+=r.added;skipped+=r.skipped;done++;
+    }
+    if(scan&&done){
+      if(el('scan_panel').classList.contains('hidden'))scanOpen(scan);else renderScan();
+      if(!stopped)showToast('อ่านได้ '+done+' รูป • เพิ่ม '+added+' ใบ'+(skipped?' • ข้าม '+skipped+' ใบที่ซ้ำ':'')+' — ทวนตัวเลขกับใบจริงก่อนบันทึก');
+    }else if(scan)scanRefresh();
+  }catch(e){
+    if(e&&e.scanCancel)showToast('ยกเลิกการรออ่านรูปแล้ว (คำขอที่ส่งไปอาจยังนับโควตา 1 ครั้ง) — ลองใหม่ หรือใช้ "กรอกเอง"');
+    else if(e&&e.scanTimeout)showToast('รอนานเกินไป (เกิน '+Math.round((window.SCAN_TIMEOUT_MS||100000)/1000)+' วินาที) ไม่มีคำตอบจากฟังก์ชัน — ตรวจ Logs ของฟังก์ชันใน Supabase หรือเปลี่ยนรุ่น GEMINI_MODEL • ใช้ "กรอกเอง" ได้');
+    else showToast('อ่านรูปไม่สำเร็จ: '+(e.message||e));
+    if(scan&&el('scan_panel').classList.contains('hidden')&&scan.slips.length)scanOpen(scan);
+  }
+  scanBusy=false;scanBusyUI(false);
+}
+
+</script>
+<script>
+/* ================================================================
+   v1.6.0 (Draft) — รายงานยอดขาย & KPI : พิมพ์ / PDF (A4) และบันทึกเป็นรูปเพื่อส่ง LINE
+   ข้อมูลจากตารางยอดขาย (salesData) — ก๊าซเงินสดตามที่ตกลง • เกณฑ์สี KPI เดียวกับตารางยอดขาย
+   ================================================================ */
+const KR_TARGET=16000;
+const KR_SHIFTS=[['00:00 – 08:00','k3'],['08:00 – 20:00 (เช้า)','k1'],['20:00 – 24:00','k2']];
+const krBand=g=>g>=16000?{c:'#10b981',t:'ผ่าน KPI'}:g>=15000?{c:'#facc15',t:'ใกล้เป้า'}:g>=14000?{c:'#fb923c',t:'ปานกลาง'}:{c:'#ef4444',t:'ต่ำกว่าเป้า'};
+let krMode='day',krBlob=null,krSeq=0,krAuto=false;
+const krN=(v,d)=>(Number(v)||0).toLocaleString('en-US',{minimumFractionDigits:d||0,maximumFractionDigits:d||0});
+
+/* ---------- ตั้งค่าหน้าจอ ---------- */
+function krLatestDate(){const d=salesData.map(x=>x.date).filter(Boolean).sort();return d.length?d[d.length-1]:todayStr(-1);}
+function krDefaults(){
+  if(!el('kr_date'))return;
+  if(!el('kr_date').value)el('kr_date').value=krLatestDate();
+  if(!el('kr_month').value)el('kr_month').value=krLatestDate().slice(0,7);
+}
+function krSetMode(m){
+  krMode=m;
+  document.querySelectorAll('#kr_chips .kr-chip').forEach(b=>b.classList.toggle('on',b.dataset.m===m));
+  el('kr_date_box').classList.toggle('hidden',m==='month');
+  el('kr_month_box').classList.toggle('hidden',m!=='month');
+  el('kr_date_lbl').textContent=m==='week'?'วันสุดท้ายของช่วง 7 วัน':'วันที่';
+}
+function krRange(){
+  if(krMode==='month'){
+    const ym=el('kr_month').value||krLatestDate().slice(0,7),[y,m]=ym.split('-').map(Number);
+    const last=new Date(Date.UTC(y,m,0)).getUTCDate();
+    return {mode:'month',from:ym+'-01',to:ym+'-'+String(last).padStart(2,'0'),ym};
+  }
+  const d=el('kr_date').value||krLatestDate();
+  return krMode==='week'?{mode:'week',from:addDays(d,-6),to:d}:{mode:'day',from:d,to:d};
+}
+function krRows(from,to){return salesData.filter(x=>x.date>=from&&x.date<=to).sort((a,b)=>a.date<b.date?-1:1);}
+function krStats(rows){
+  const o={days:rows.length,gas:0,sale:0,car:0,pass:0,best:null,worst:null};
+  rows.forEach(r=>{const g=Number(r.all_gas)||0;o.gas+=g;o.sale+=Number(r.all_sale)||0;o.car+=Number(r.all_car)||0;if(g>=KR_TARGET)o.pass++;if(!o.best||g>o.best.g)o.best={d:r.date,g};if(!o.worst||g<o.worst.g)o.worst={d:r.date,g};});
+  o.avg=o.days?o.gas/o.days:0;return o;
+}
+const krShort=d=>{const [,m,dd]=d.split('-');return Number(dd)+'/'+Number(m);};
+
+/* ---------- กราฟแท่ง (div ล้วน เพื่อให้ถ่ายเป็นรูปได้ชัด) ---------- */
+function krChart(from,to,highlight){
+  const days=[];for(let d=from;d<=to;d=addDays(d,1))days.push(d);
+  const map=Object.fromEntries(salesData.map(x=>[x.date,Number(x.all_gas)||0]));
+  const max=Math.max(KR_TARGET*1.12,...days.map(d=>map[d]||0));
+  const many=days.length>10;
+  const bars=days.map(d=>{
+    const g=map[d];const has=g!=null;
+    const h=has?Math.max(2,g/max*100):0;
+    return `<div class="kr-col"><div class="kr-bar" style="height:${h}%;background:${has?krBand(g).c:'transparent'}"></div></div>`;
+  }).join('');
+  const labels=days.map(d=>`<div class="${d===highlight?'kr-hl':''}" style="${many?'font-size:8px':''}">${many?Number(d.slice(8)):Number(d.slice(8))}</div>`).join('');
+  return `<div class="kr-chart"><div class="kr-tline" style="bottom:${KR_TARGET/max*100}%"><span>เป้า ${krN(KR_TARGET)}</span></div>${bars}</div><div class="kr-lbl">${labels}</div>`;
+}
+const krLegend='<div class="kr-note">เส้นประ = เป้า 16,000 กก. • <i style="background:#10b981"></i>≥16,000 <i style="background:#facc15"></i>15,000–15,999 <i style="background:#fb923c"></i>14,000–14,999 <i style="background:#ef4444"></i>≤13,999 กก.</div>';
+
+/* ---------- ประกอบรายงาน ---------- */
+function buildKpiReport(){
+  const R=krRange();
+  const rows=krRows(R.from,R.to);
+  const title=R.mode==='day'?'รายงานยอดขาย & KPI รายวัน':R.mode==='week'?'รายงานยอดขาย & KPI 7 วัน':'รายงานยอดขาย & KPI รายเดือน';
+  const sub=R.mode==='day'?'ประจำวันที่':R.mode==='week'?'ช่วงวันที่':'ประจำเดือน';
+  const rng=R.mode==='day'?thLong(R.from):R.mode==='week'?(thShort(R.from)+' – '+thShort(R.to)):(MONTHS[Number(R.ym.slice(5))-1]+' '+(Number(R.ym.slice(0,4))+543));
+  const head=`<div class="kr-head"><div><div class="kr-title">${title}</div><div class="kr-sub">NGV BLUE ECO • กรุงเทพกรีฑาขาออก</div></div><div class="kr-date">${sub}<br><b>${esc(rng)}</b></div></div>`;
+  const foot=`<div class="kr-foot">จัดทำโดยระบบ NGV Blue Eco ${APP_VERSION} • ${esc(fmtDT(new Date().toISOString()))} • ก๊าซ = ลูกค้าเงินสด</div>`;
+  if(!rows.length)return `<div id="krSheet" class="kr">${head}<div class="kr-empty">ไม่มีข้อมูลยอดขายในช่วงนี้<br><span>บันทึกในแท็บ "ยอดขาย &amp; KPI" ก่อน</span></div>${foot}</div>`;
+  const st=krStats(rows);
+  const card=(l,v,u,extra,cls)=>`<div class="kr-k ${cls||''}"><span>${l}</span><b>${v}${u?` <small>${u}</small>`:''}</b>${extra?`<span>${extra}</span>`:''}</div>`;
+  let body='';
+  if(R.mode==='day'){
+    const r=rows[0],g=Number(r.all_gas)||0,diff=g-KR_TARGET;
+    body+=`<div class="kr-kp">${card('ก๊าซรวม (เป้า '+krN(KR_TARGET)+')',krN(g,3),'กก.',krBand(g).t+' '+(diff>=0?'+':'−')+krN(Math.abs(diff),3),g>=KR_TARGET?'ok':(g>=15000?'':'bad'))}${card('ยอดขายรวม',krN(r.all_sale,2),'บาท')}${card('จำนวนรถ',krN(r.all_car),'คัน')}${card('เฉลี่ยต่อคัน',(r.all_car>0?krN(g/r.all_car,2):'–'),'กก.')}</div>`;
+    body+=`<div class="kr-h">แยกตามกะ</div><table class="kr-t"><tr><th>กะ</th><th>รถ</th><th>ก๊าซ กก.</th><th>ยอดขาย</th></tr>${KR_SHIFTS.map(([l,k])=>`<tr><td>${l}</td><td>${krN(r[k+'_car'])}</td><td>${krN(r[k+'_gas'],3)}</td><td>${krN(r[k+'_sale'],2)}</td></tr>`).join('')}<tr class="kr-sum"><td>รวม</td><td>${krN(r.all_car)}</td><td>${krN(r.all_gas,3)}</td><td>${krN(r.all_sale,2)}</td></tr></table>`;
+    const f7=addDays(R.to,-6),r7=krRows(f7,R.to),s7=krStats(r7);
+    body+=`<div class="kr-h">ก๊าซรายวัน 7 วันล่าสุด (กก.)</div>${krChart(f7,R.to,R.to)}${krLegend}<div class="kr-note">มีข้อมูล ${s7.days} วัน • ผ่าน KPI ${s7.pass} จาก ${s7.days} วัน • เฉลี่ย ${krN(s7.avg,0)} กก./วัน</div>`;
+    if(r.note)body+=`<div class="kr-note" style="margin-top:6px">หมายเหตุ: ${esc(r.note)}</div>`;
+  }else if(R.mode==='week'){
+    body+=`<div class="kr-kp">${card('ก๊าซรวม '+st.days+' วัน',krN(st.gas,3),'กก.')}${card('เฉลี่ยต่อวัน',krN(st.avg,0),'กก.','เป้า '+krN(KR_TARGET),st.avg>=KR_TARGET?'ok':'')}${card('ผ่าน KPI',st.pass+' / '+st.days,'วัน')}${card('ยอดขายรวม',krN(st.sale,2),'บาท')}</div>`;
+    body+=`<div class="kr-h">ก๊าซรายวัน (กก.)</div>${krChart(R.from,R.to,'')}${krLegend}`;
+    body+=`<div class="kr-h">รายวัน</div><table class="kr-t"><tr><th>วันที่</th><th>รถ</th><th>ก๊าซ กก.</th><th>ยอดขาย</th><th>สถานะ</th></tr>${rows.map(r=>{const b=krBand(Number(r.all_gas)||0);return `<tr><td>${thShort(r.date)}</td><td>${krN(r.all_car)}</td><td>${krN(r.all_gas,3)}</td><td>${krN(r.all_sale,2)}</td><td><i class="kr-dot" style="background:${b.c}"></i>${b.t}</td></tr>`;}).join('')}<tr class="kr-sum"><td>รวม</td><td>${krN(st.car)}</td><td>${krN(st.gas,3)}</td><td>${krN(st.sale,2)}</td><td></td></tr></table>`;
+    if(st.days>1)body+=`<div class="kr-note">สูงสุด ${thShort(st.best.d)}: ${krN(st.best.g,3)} กก. • ต่ำสุด ${thShort(st.worst.d)}: ${krN(st.worst.g,3)} กก.</div>`;
+  }else{
+    const nd=Number(R.to.slice(8));
+    body+=`<div class="kr-kp kr-kp3">${card('ก๊าซรวมเดือน',krN(st.gas,3),'กก.')}${card('เฉลี่ยต่อวัน',krN(st.avg,0),'กก.','เป้า '+krN(KR_TARGET),st.avg>=KR_TARGET?'ok':'')}${card('ผ่าน KPI',st.pass+' / '+st.days,'วัน','มีข้อมูล '+st.days+' จาก '+nd+' วัน')}${card('ยอดขายรวม',krN(st.sale,2),'บาท')}${card('จำนวนรถรวม',krN(st.car),'คัน')}${card('สูงสุด / ต่ำสุด',krN(st.best.g,0)+' / '+krN(st.worst.g,0),'กก.',thShort(st.best.d)+' / '+thShort(st.worst.d))}</div>`;
+    body+=`<div class="kr-h">ก๊าซรายวัน (กก.)</div>${krChart(R.from,R.to,'')}${krLegend}`;
+    const half=Math.ceil(rows.length/2),tb=rs=>`<table class="kr-t kr-t2"><tr><th>วันที่</th><th>รถ</th><th>ก๊าซ กก.</th><th>ยอดขาย</th></tr>${rs.map(r=>{const b=krBand(Number(r.all_gas)||0);return `<tr><td><i class="kr-dot" style="background:${b.c}"></i>${Number(r.date.slice(8))}</td><td>${krN(r.all_car)}</td><td>${krN(r.all_gas,0)}</td><td>${krN(r.all_sale,0)}</td></tr>`;}).join('')}</table>`;
+    body+=`<div class="kr-h">รายวัน</div><div class="kr-two">${tb(rows.slice(0,half))}${tb(rows.slice(half))}</div>`;
+  }
+  return `<div id="krSheet" class="kr">${head}${body}${foot}</div>`;
+}
+
+/* ---------- ดูตัวอย่าง / รูป / PDF ---------- */
+function krCanShare(){try{return !!(navigator.canShare&&navigator.share&&navigator.canShare({files:[new File(['x'],'x.png',{type:'image/png'})]}));}catch(e){return false;}}
+function krFilename(){const R=krRange();return 'NGV_KPI_'+(R.mode==='month'?R.ym:(R.mode==='week'?R.from+'_'+R.to:R.from))+'.png';}
+function krBtns(ready,msg){
+  ['kr_share','kr_dl'].forEach(i=>{const b=el(i);if(b)b.disabled=!ready;});
+  const m=el('kr_status');if(m)m.textContent=msg||'';
+  const sb=el('kr_share');if(sb)sb.textContent=krCanShare()?'📤 แชร์รูป (เลือก LINE)':'🖼 บันทึกเป็นรูป (ส่ง LINE)';
+}
+function krOpen(action){
+  krDefaults();
+  el('krSheetWrap').innerHTML=buildKpiReport();
+  el('krModal').classList.remove('hidden');
+  krAuto=action==='image';
+  if(action==='print'){setTimeout(krPrint,300);return;}
+  krPrepare();
+}
+function krClose(){el('krModal').classList.add('hidden');krBlob=null;krSeq++;}
+async function krPrepare(){
+  const id=++krSeq;krBlob=null;krBtns(false,'กำลังเตรียมรูป…');
+  try{
+    if(typeof html2canvas==='undefined')throw new Error('ไม่มีตัวสร้างรูป');
+    await (document.fonts&&document.fonts.ready);
+    const cv=await html2canvas(el('krSheet'),{scale:2,backgroundColor:'#ffffff',useCORS:true});
+    const blob=await new Promise(r=>cv.toBlob(r,'image/png'));
+    if(id!==krSeq)return;
+    krBlob=blob;krBtns(true,'รูปพร้อมแล้ว ('+Math.round(blob.size/1024)+' KB)');
+    if(krAuto&&!krCanShare()){krAuto=false;krDownload();}
+  }catch(e){if(id===krSeq)krBtns(false,'สร้างรูปไม่สำเร็จ: '+(e.message||e)+' — ใช้พิมพ์ / PDF แทนได้');}
+}
+function krDownload(){
+  if(!krBlob)return;
+  const a=document.createElement('a');a.href=URL.createObjectURL(krBlob);a.download=krFilename();document.body.appendChild(a);a.click();
+  setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},2000);
+  showToast('บันทึกรูปแล้ว ('+krFilename()+') — เปิด LINE แล้วเลือกรูปนี้ส่งได้');
+}
+async function krShare(){
+  if(!krBlob)return;
+  if(krCanShare()){
+    const f=new File([krBlob],krFilename(),{type:'image/png'});
+    try{await navigator.share({files:[f],title:'รายงานยอดขาย & KPI'});return;}
+    catch(e){if(e&&e.name==='AbortError')return;}
+  }
+  krDownload();
+}
+function krPrint(){
+  const sh=el('krSheet');if(!sh)return;
+  const old=document.title,R=krRange();document.title='รายงานยอดขาย_KPI_'+R.from+(R.to!==R.from?'_'+R.to:'');
+  document.body.classList.add('printing-kr');
+  sh.style.zoom='';
+  const maxW=194*96/25.4,maxH=279*96/25.4;
+  const z=Math.min(maxW/sh.offsetWidth,maxH/sh.offsetHeight);
+  sh.style.zoom=Math.max(0.5,(z*0.99)).toFixed(3);
+  const done=()=>{document.body.classList.remove('printing-kr');document.title=old;sh.style.zoom='';window.removeEventListener('afterprint',done);};
+  window.addEventListener('afterprint',done);
+  setTimeout(()=>window.print(),250);
 }
 
 </script>
