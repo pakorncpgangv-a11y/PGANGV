@@ -220,7 +220,7 @@ body.role-acc .no-acc{display:none!important}
       <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center text-2xl">🌊</div>
       <div>
         <h1 class="text-xl font-bold tracking-wide">NGV BLUE ECO • กรุงเทพกรีฑาขาออก</h1>
-        <p class="text-sm opacity-90">เป็นมิตรต่อโลก • ประหยัดพลังงาน • KPI 16,000 กก./วัน <span id="ver_label" class="ml-1 px-2 py-0.5 rounded-full bg-white/20 text-[11px]">v1.6.0 (Draft)</span></p>
+        <p class="text-sm opacity-90">เป็นมิตรต่อโลก • ประหยัดพลังงาน • KPI 16,000 กก./วัน <span id="ver_label" class="ml-1 px-2 py-0.5 rounded-full bg-white/20 text-[11px]">v1.7.0 (Draft)</span></p>
       </div>
     </div>
     <div class="flex gap-2 items-center flex-wrap">
@@ -318,7 +318,7 @@ body.role-acc .no-acc{display:none!important}
         <h3 class="font-semibold text-[#0369a1]">🧾 บันทึกจากใบ POS (ถ่ายรูป / อัปโหลด)</h3>
         <span id="scan_left" class="text-xs text-gray-500"></span>
       </div>
-      <p class="text-xs text-gray-600 mb-3">ถ่ายรูปใบปิดกะ/ปิดวัน (หลายใบในรูปเดียว หรือหลายรูปก็ได้ — ระบบรวมให้ในหน้าเดียว) → ระบบอ่านตัวเลขให้ → <b>ทวนกับใบจริง</b> → กดบันทึก • ใช้เฉพาะ "ลูกค้าเงินสด" • ไม่เก็บรูป</p>
+      <p class="text-xs text-gray-600 mb-3">ถ่ายรูปใบปิดกะ/ปิดวัน (หลายใบในรูปเดียว หรือหลายรูปก็ได้ — ระบบรวมให้ในหน้าเดียว) → ระบบอ่านตัวเลขให้ (OCR ในเครื่อง ไม่ใช้ AI ไม่ส่งรูปออกไปไหน) → <b>ทวนกับใบจริง</b> → กดบันทึก • ใช้เฉพาะ "ลูกค้าเงินสด" • ไม่เก็บรูป</p>
       <div class="flex flex-wrap gap-2">
         <label class="scan-btn bg-[#0284c7] text-white hover:bg-[#0369a1]">📷 ถ่ายรูป<input type="file" accept="image/*" capture="environment" class="scan-pick hidden" onchange="scanPick(this)"></label>
         <label class="scan-btn bg-sky-100 text-sky-800 hover:bg-sky-200">🖼 เลือกรูปจากเครื่อง (ได้หลายรูป)<input type="file" accept="image/*" multiple class="scan-pick hidden" onchange="scanPick(this)"></label>
@@ -914,29 +914,31 @@ end $$;
     </div>
 
     <div class="bg-white p-6 rounded-2xl shadow border border-sky-100">
-      <h3 class="font-bold text-lg text-[#0369a1] mb-3">1️⃣4️⃣ บันทึกจากใบ POS (ถ่ายรูป / กรอกเอง) — v1.5.5</h3>
+      <h3 class="font-bold text-lg text-[#0369a1] mb-3">1️⃣4️⃣ บันทึกจากใบ POS (ถ่ายรูป / กรอกเอง) — อ่านด้วย OCR ในเครื่อง</h3>
       <p class="text-sm font-medium mb-1">วิธีใช้ (Leader)</p>
       <ol class="list-decimal ml-6 text-sm space-y-1.5 mb-3">
-        <li>แท็บ "ยอดขาย & KPI" → การ์ด <b>บันทึกจากใบ POS</b> → <b>ถ่ายรูป</b> หรือ <b>เลือกรูปจากเครื่อง</b> (ถ่ายได้หลายใบในรูปเดียว และถ่าย/เลือกเพิ่มทีละรูปหรือหลายรูปพร้อมกันได้ — ระบบรวมใบของทุกรูปไว้ในหน้าตรวจทานเดียว ใบที่ซ้ำจะถูกข้าม แต่ละรูปนับโควตา 1 ครั้ง) หรือ <b>กรอกเอง</b> ถ้าไม่ใช้รูป</li>
-        <li>ระบบอ่าน วันที่ประจำวัน • ชนิดใบ (ปิดกะที่ 1/2/3/ปิดวัน) • รถ / ก๊าซ / เงินสด / ยอดนำส่ง ปตท. แล้วแสดงในตารางข้างรูป — <b>ทวนทุกตัวเลขกับใบจริง</b> แก้ได้ทันที</li>
+        <li>แท็บ "ยอดขาย &amp; KPI" → การ์ด <b>บันทึกจากใบ POS</b> → <b>ถ่ายรูป</b> หรือ <b>เลือกรูปจากเครื่อง</b> (หลายใบในรูปเดียว หรือหลายรูปก็ได้ ระบบรวมใบของทุกรูปไว้ในหน้าตรวจทานเดียว ใบที่ซ้ำจะถูกข้าม) หรือ <b>กรอกเอง</b> ถ้าไม่ใช้รูป</li>
+        <li>ระบบอ่านตัวเลขจากรูปด้วย <b>OCR ในเครื่อง</b> (ไม่ใช้ AI ไม่ส่งรูปออกไปไหน ไม่เก็บรูป ไม่มีโควตา) ครั้งแรกจะโหลดตัวอ่านภาษาไทย/อังกฤษประมาณ 8–10 MB หลังจากนั้นเบราว์เซอร์จำไว้ให้ ใช้เวลาอ่านประมาณ 10–40 วินาทีต่อรูปแล้วแต่เครื่อง (ถ้ารอบแรกยังไม่ชัวร์ ระบบอ่านซ้ำรอบที่ 2 ให้เอง; มีตัวนับเวลาและปุ่มยกเลิก)</li>
+        <li>ตัวเลขที่อ่านได้: รถ / ก๊าซ (กก.) / เงินสด / ยอดนำส่ง ปตท. + <b>ชนิดใบ</b> และ <b>วันที่ประจำวัน</b> (อ่านจากหัวใบภาษาไทย ถ้าอ่านไม่ออกใช้เวลาที่พิมพ์ช่วยเดา: 08:00 = กะที่ 1, 20:00 = กะที่ 2, 00:xx = กะที่ 3 หรือปิดวัน) แสดงข้างรูป — <b>ทวนทุกตัวเลขกับใบจริง</b> แก้ได้ทันที ช่องที่ระบบเดาจะมีข้อสังเกตสีส้มกำกับ</li>
         <li>ปิดกะที่ 1 = 00:00–08:00 • ปิดกะที่ 2 = 08:00–20:00 • ปิดกะที่ 3 = 20:00–24:00 (ลงช่อง กะ3 / กะเช้า / กะ2 ในแท็บยอดขายให้เอง) ใช้เฉพาะ <b>ลูกค้าเงินสด</b> ไม่รวมฟลีทการ์ด/QR</li>
-        <li>ใบ <b>ปิดวัน</b> (กรอกหรือไม่ก็ได้) ใช้ตรวจ: ผลรวม 3 กะ (รถ / ก๊าซ / เงิน) ต้องเท่าใบปิดวัน ถ้าไม่ตรงจะบันทึกไม่ได้ จนกว่าจะแก้ตัวเลขที่ผิด</li>
-        <li>ตัวช่วยตรวจอื่น ๆ: เงินสด = ยอดนำส่ง ปตท. • ราคา/กก. ต้องใกล้เคียงกันทุกกะ (เตือนเมื่อห่างเกิน 1%) • ชนิดใบ/วันที่ห้ามซ้ำหรือต่างกัน</li>
-        <li>ถ้าวันนั้นมีข้อมูลกะนี้ในระบบแล้วและไม่ตรงกับใบ (เช่น Orada กรอกไว้) ต้องติ๊ก <b>ทับค่าเดิม</b> ก่อน</li>
+        <li>ตัวช่วยตรวจ (ไม่ใช้ AI): เงิน = ก๊าซ × ราคา/กก. (ราคาเดียวกันทุกกะ ระบบซ่อมตัวเลขที่ผิดหลักเดียวให้) • เงินสด = ยอดนำส่ง ปตท. • ผลรวม 3 กะต้องเท่าใบปิดวัน (กรอกใบปิดวันเพิ่มเพื่อให้ระบบตรวจ) • ชนิดใบ/วันที่ห้ามซ้ำหรือต่างกัน • ถ้าวันนั้นมีข้อมูลกะนี้ในระบบแล้วและไม่ตรง ต้องติ๊ก <b>ทับค่าเดิม</b></li>
         <li>ติ๊ก "ฉันทวนตัวเลขทุกใบกับใบจริงแล้ว" → <b>บันทึกลงยอดขาย</b> ช่อง ปตท. ในแท็บกระทบยอดเงินสดดึงจากยอดนี้อัตโนมัติ และถ้าช่อง ปตท. ไม่ตรงกับแท็บยอดขายของวันนั้น <b>ส่งรายงานกระทบยอดไม่ได้</b></li>
-        <li>รูปไม่ถูกเก็บ • อ่านรูปได้ <b>20 ครั้งต่อวัน</b> (นับทุกคน) • Leader เห็นและกรอกแท็บยอดขายเองได้ด้วย</li>
+        <li><b>ถ่ายให้แม่นขึ้น:</b> ถ่ายใกล้ ตรง ไม่เอียง มีแสงพอ ไม่มีที่เย็บกระดาษ/นิ้วทับตัวเลข • ถ่ายทีละใบแม่นกว่าถ่ายหลายใบ • ถ้าอ่านไม่ได้หรืออ่านผิดบ่อย ลองถ่ายใหม่ หรือใช้ "กรอกเอง"</li>
       </ol>
-      <p class="text-sm font-medium mb-1">ตั้งค่าครั้งเดียว (ผู้ดูแลระบบ) — จำเป็นเฉพาะการ "อ่านรูปด้วย AI" ส่วน "กรอกเอง" ใช้ได้เลย</p>
+      <p class="text-sm font-medium mb-1">ติดตั้งครั้งเดียว: อัปโหลดโฟลเดอร์ <code>ocr</code> ขึ้น GitHub (ผู้ดูแลระบบ)</p>
       <ol class="list-decimal ml-6 text-sm space-y-1.5 mb-3">
-        <li><b>รัน SQL</b>: Supabase → SQL Editor → วางโค้ด SQL ด้านล่าง → Run (ไฟล์ <code>ngv_scan_setup.sql</code>)</li>
-        <li><b>สร้าง API key</b> ที่ aistudio.google.com → Get API key (เก็บเป็นความลับ ห้ามใส่ในหน้าเว็บหรือส่งในแชต)</li>
-        <li><b>สร้างฟังก์ชัน</b>: Supabase → Edge Functions → Deploy a new function → ตั้งชื่อ <code>read-pos-slip</code> → วางโค้ดด้านล่างทั้งหมด (ไฟล์ <code>read-pos-slip.ts</code>) → Deploy ปล่อยตัวเลือก Verify JWT เป็นค่าเริ่มต้น (เปิด) • ถ้าเคย Deploy เวอร์ชันก่อนหน้าแล้วขึ้น "ส่งคำขอไปที่ฟังก์ชันไม่สำเร็จ" ให้ <b>วางโค้ดตัวล่าสุดนี้ทับแล้ว Deploy ใหม่</b> (v1.5.5)</li>
-        <li><b>ใส่ Secrets</b>: Edge Functions → Secrets → เพิ่ม <code>GEMINI_API_KEY</code> = key ที่สร้างไว้ • (ไม่บังคับ) <code>GEMINI_MODEL</code> = ชื่อรุ่นที่ทดสอบใน AI Studio แล้วอ่านได้ถูก (ค่าเริ่มต้น <code>gemini-2.5-flash</code>) • (ไม่บังคับ) <code>SCAN_DAILY_LIMIT</code> = 20 • (ไม่บังคับ) <code>GEMINI_FALLBACK_MODEL</code> = รุ่นสำรอง ใช้เมื่อรุ่นหลักตอบ 503 (คนใช้เยอะ) — ระบบลองซ้ำเองอยู่แล้ว 3 ครั้ง (<code>GEMINI_TRIES</code>) • (ไม่บังคับ) <code>GEMINI_TIMEOUT_MS</code> = 90000 • (ไม่บังคับ) <code>GEMINI_EXTRA</code> = JSON ผสมเข้า generationConfig เช่น ลดเวลาคิดของรุ่นที่ช้า</li>
-        <li>ทดลองถ่ายรูปใบ POS หนึ่งใบ ถ้าขึ้น "ยังไม่ได้ติดตั้งฟังก์ชัน" แปลว่าชื่อฟังก์ชันไม่ตรง ถ้าขึ้น "AI อ่านรูปไม่สำเร็จ" ดู Logs ของฟังก์ชัน (ส่วนใหญ่คือ key หรือชื่อรุ่นไม่ถูก)</li>
+        <li>แตกไฟล์ <code>ocr.zip</code> ที่ได้รับ จะได้โฟลเดอร์ <code>ocr</code> ข้างในมี 6 ไฟล์: <code>tesseract.min.js</code>, <code>worker.min.js</code>, <code>tesseract-core-simd-lstm.wasm.js</code>, <code>tesseract-core-lstm.wasm.js</code>, <code>tha.traineddata.gz</code>, <code>eng.traineddata.gz</code></li>
+        <li>เปิดรีโป GitHub ของเว็บนี้ (ที่มีไฟล์ <code>index.html</code>) → กด <b>Add file</b> → <b>Upload files</b></li>
+        <li><b>ลากโฟลเดอร์ <code>ocr</code> ทั้งโฟลเดอร์</b> วางลงในหน้าอัปโหลด (หรือเลือกไฟล์ทั้ง 6 ไฟล์ แล้วพิมพ์ชื่อโฟลเดอร์เป็น <code>ocr/</code> ในช่อง path) รอให้ขึ้นครบ 6 ไฟล์</li>
+        <li>ช่อง Commit message พิมพ์ เช่น "add ocr" → กด <b>Commit changes</b> (อัปโหลด <code>index.html</code> ตัวใหม่ทับของเดิมด้วย ถ้ายังไม่ได้ทำ)</li>
+        <li>รอ 1–3 นาที ให้ GitHub Pages อัปเดต → เปิดเว็บ รีเฟรช (บนมือถือปิด-เปิดแท็บใหม่) → ลองถ่ายรูปใบ POS 1 ใบ</li>
+        <li>ตรวจว่าโครงสร้างถูก: เปิด <code>https://(ชื่อเว็บของคุณ)/ocr/tha.traineddata.gz</code> ในเบราว์เซอร์ ต้องเริ่มดาวน์โหลดไฟล์ ถ้าขึ้น 404 แปลว่าโฟลเดอร์ไม่ได้อยู่ข้าง <code>index.html</code> หรือชื่อไม่ตรง (ตัวเล็ก <code>ocr</code>)</li>
+        <li>ถ้าขึ้น "ไม่พบไฟล์ตัวอ่าน OCR" = โฟลเดอร์ยังไม่ถูกอัปหรืออยู่ผิดที่ • ถ้า "กำลังโหลด" นานผิดปกติครั้งแรก = สัญญาณช้า รอได้หรือกดยกเลิกแล้วลองใหม่</li>
       </ol>
-      <p class="text-xs text-gray-600 mb-2">หมายเหตุความเป็นส่วนตัว: รูปถูกส่งไปที่ Google (Gemini API) เพื่ออ่านเท่านั้น ฟังก์ชันไม่เก็บรูป ถ้าใช้ Gemini แบบฟรี Google อาจนำข้อมูลไปปรับปรุงโมเดลได้ — ใบ POS ไม่มีข้อมูลส่วนบุคคล แต่ตรวจเงื่อนไขล่าสุดของ Google ก่อนใช้งาน</p>
-      <p class="font-medium text-sm mt-3">SQL (<code>ngv_scan_setup.sql</code>)</p>
-      <pre class="bg-gray-900 text-green-400 p-3 rounded-xl text-[11px] overflow-auto max-h-72 mt-1">-- ============================================================
+      <details class="text-xs text-gray-600 mt-3"><summary class="cursor-pointer font-medium">ทางเลือกเดิม (ไม่ใช้เป็นค่าเริ่มต้นแล้ว): อ่านรูปด้วย Gemini ผ่าน Supabase Edge Function</summary>
+        <p class="mt-2">ยังมีโค้ดอยู่แต่ซ่อนไว้ ใช้เมื่อตั้งค่า <code>window.NGV_SCAN_ENGINE='ai'</code> ต้องรัน <code>ngv_scan_setup.sql</code>, สร้างฟังก์ชัน <code>read-pos-slip</code> และตั้ง Secret ดังที่เคยแจ้ง — ถ้าใช้ OCR ไม่ต้องทำสิ่งเหล่านี้</p>
+        <p class="font-medium mt-2">SQL (<code>ngv_scan_setup.sql</code>)</p>
+        <pre class="bg-gray-900 text-green-400 p-3 rounded-xl text-[11px] overflow-auto max-h-48 mt-1">-- ============================================================
 -- NGV Blue Eco v1.5.0 : จำกัดจำนวนครั้งอ่านใบ POS ต่อวัน (ใช้กับ Edge Function read-pos-slip)
 -- วิธีใช้: Supabase &gt; SQL Editor &gt; New query &gt; วาง &gt; Run   (รันซ้ำได้)
 -- ============================================================
@@ -972,8 +974,8 @@ revoke all on function public.ngv_scan_refund() from public, anon, authenticated
 grant execute on function public.ngv_scan_hit(int) to service_role;
 grant execute on function public.ngv_scan_refund() to service_role;
 </pre>
-      <p class="font-medium text-sm mt-3">โค้ดฟังก์ชัน (<code>read-pos-slip.ts</code>)</p>
-      <pre class="bg-gray-900 text-green-400 p-3 rounded-xl text-[11px] overflow-auto max-h-96 mt-1">// ============================================================
+        <p class="font-medium mt-2">โค้ดฟังก์ชัน (<code>read-pos-slip.ts</code>)</p>
+        <pre class="bg-gray-900 text-green-400 p-3 rounded-xl text-[11px] overflow-auto max-h-64 mt-1">// ============================================================
 // Supabase Edge Function : read-pos-slip   (NGV Blue Eco v1.5.0)
 // อ่านใบปิดกะ/ปิดวัน POS ปตท. จากรูปด้วย Gemini API แล้วส่งตัวเลขกลับให้หน้าเว็บ &quot;ทวน&quot;
 //  - ตรวจ user/password ฝั่งเซิร์ฟเวอร์ (ngv_login) อนุญาตเฉพาะ leader / manager
@@ -1145,6 +1147,7 @@ Deno.serve(async (req: Request) =&gt; {
   }
 });
 </pre>
+      </details>
     </div>
 
     <div class="bg-white p-6 rounded-2xl shadow border border-sky-100">
@@ -1678,7 +1681,7 @@ function initYearFilter(){
 /* ================================================================
    v1.2.0 (Draft) — Login 3 บทบาท + Tab กระทบยอดเงินสด
    ================================================================ */
-const APP_VERSION='v1.6.0 (Draft)';
+const APP_VERSION='v1.7.0 (Draft)';
 const TOL=1;        // ผลต่างนับจริง-ปตท. ตั้งแต่ค่านี้ขึ้นไป (หรือนับขาด) ถือว่าผิดปกติ — แสดงคำเตือน (ไม่มีการปัดเศษ)
 const NOTE_REQUIRED=false;      // true = ผลต่างผิดปกติต้องใส่หมายเหตุก่อนส่ง • false = หมายเหตุไม่บังคับ (ค่าปัจจุบัน)
 const NEXT_DAY_REQUIRED=true;   // true = ส่งรายงานไม่ได้จนกว่าจะมียอด 00:00–08:00 ของวันถัดไป
@@ -2736,7 +2739,7 @@ function renderScan(){
         <label class="text-xs text-gray-600 flex items-center gap-1">ประจำวันที่<input type="date" value="${s.date||''}" onchange="scanSet(${s.id},'date',this.value)" class="rc-in" style="width:150px;height:40px;text-align:left"></label>
         <button type="button" onclick="scanDel(${s.id})" class="ml-auto text-red-600 text-xs underline">ลบใบนี้</button>
       </div>
-      ${s.note?`<div class="text-[11px] text-amber-700 mb-1">AI บันทึก: ${esc(s.note)}</div>`:''}
+      ${s.note?`<div class="text-[11px] text-amber-700 mb-1">ข้อสังเกตจากการอ่านรูป: ${esc(s.note)}</div>`:''}
       <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
         <label class="text-xs text-sky-800">รถ (คัน)<input type="number" inputmode="numeric" step="1" min="0" value="${s.cars==null?'':s.cars}" oninput="scanSet(${s.id},'cars',this.value)" class="rc-in"></label>
         <label class="text-xs text-sky-800">ก๊าซ ปริมาณ (กก.)<input type="number" inputmode="decimal" step="0.001" min="0" value="${s.kg==null?'':s.kg}" oninput="scanSet(${s.id},'kg',this.value)" class="rc-in"></label>
@@ -2751,7 +2754,7 @@ function renderScan(){
       ${img}
       <div class="space-y-3 min-w-0">
         <div class="flex flex-wrap items-end gap-2 justify-between">
-          <div class="font-semibold text-sky-900">ตรวจทานตัวเลขกับใบจริง ${scan.source==='ai'?'<span class="text-[11px] font-normal px-2 py-0.5 rounded-full bg-sky-100 text-sky-800">อ่านด้วย AI</span>':'<span class="text-[11px] font-normal px-2 py-0.5 rounded-full bg-gray-100 text-gray-700">กรอกเอง</span>'}</div>
+          <div class="font-semibold text-sky-900">ตรวจทานตัวเลขกับใบจริง ${(scan.source==='ai'||scan.source==='ocr')?'<span class="text-[11px] font-normal px-2 py-0.5 rounded-full bg-sky-100 text-sky-800">'+(scan.source==='ocr'?'อ่านด้วย OCR ในเครื่อง':'อ่านด้วย AI')+'</span>':'<span class="text-[11px] font-normal px-2 py-0.5 rounded-full bg-gray-100 text-gray-700">กรอกเอง</span>'}</div>
           <label class="text-xs text-gray-600 flex items-center gap-1">เปลี่ยนวันที่ทุกใบ<input type="date" value="${date||''}" onchange="scanSetAllDate(this.value)" class="rc-in" style="width:150px;height:36px;text-align:left"></label>
         </div>
         ${rows}
@@ -2778,7 +2781,7 @@ function scanRefresh(){
   el('sc_global').innerHTML=r.global.map(x=>`<div class="${cls[x.k]}">${icon[x.k]} ${esc(x.t)}</div>`).join('');
   el('sc_confirm').checked=!!scan.confirmed;
   el('sc_save').disabled=!(r.errors===0&&scan.confirmed);
-  const left=el('scan_left');if(left)left.textContent=scanLeft==null?'':('อ่านรูปได้อีก '+scanLeft+' ครั้งวันนี้');
+  const left=el('scan_left');if(left)left.textContent=scanEngine()==='ocr'?'OCR ในเครื่อง • ไม่ส่งรูปออกไปไหน • ไม่จำกัดครั้ง':(scanLeft==null?'':('อ่านรูปได้อีก '+scanLeft+' ครั้งวันนี้'));
 }
 
 /* ---------- บันทึกลงแท็บยอดขาย (ใช้ saveSale เดิม) ---------- */
@@ -2824,28 +2827,31 @@ async function scanCreds(){
   const a=await ask({title:'ยืนยันตัวตนเพื่ออ่านรูป',msg:'กรอกรหัสผ่านของคุณ (ใช้ยืนยันกับเซิร์ฟเวอร์ ไม่ถูกเก็บในเครื่อง)',pass:true,okText:'ตกลง'});
   if(!a)return null;window.NGV_PW=a.pass;return {user:SESSION.username,pass:a.pass};
 }
-let scanTimer=null,scanCancelFn=null;
+let scanTimer=null,scanCancelFn=null,scanBusyBase='',scanBusyT0=0;
+const scanEngine=()=>window.NGV_SCAN_ENGINE||'ocr';     // 'ocr' = อ่านในเครื่อง (ค่าเริ่มต้น) • 'ai' = เรียก Gemini ผ่าน Supabase Edge Function (ซ่อนไว้)
+function scanBusyUpd(){const t=el('scan_busy_t');if(t)t.textContent=scanBusyBase+' ('+Math.round((Date.now()-scanBusyT0)/1000)+' วินาที)';}
+function scanBusyText(msg){scanBusyBase=msg;scanBusyUpd();}
 function scanBusyUI(on,msg){
   const b=el('scan_busy');if(!b)return;
-  clearInterval(scanTimer);scanTimer=null;
   b.classList.toggle('hidden',!on);
   document.querySelectorAll('#scanCard .scan-pick').forEach(i=>i.disabled=on);
   if(on){
-    const t0=Date.now();const base=msg||'กำลังอ่านรูป…';
-    const upd=()=>{el('scan_busy_t').textContent=base+' ('+Math.round((Date.now()-t0)/1000)+' วินาที)';};
-    upd();scanTimer=setInterval(upd,500);
-  }
+    scanBusyBase=msg||scanBusyBase||'กำลังอ่านรูป…';
+    if(!scanTimer){scanBusyT0=Date.now();scanTimer=setInterval(scanBusyUpd,500);}
+    scanBusyUpd();
+  }else{clearInterval(scanTimer);scanTimer=null;scanBusyBase='';}
 }
 function scanCancelWait(){if(scanCancelFn)scanCancelFn();}
-function scanWait(promise){
-  // รอผลสูงสุด SCAN_TIMEOUT_MS (ค่าเริ่มต้น 100 วินาที) หรือจนกดยกเลิก — กันหน้าค้างตลอดไป
+function scanWait(promise,ms0){
+  // รอผลสูงสุด ms (AI: SCAN_TIMEOUT_MS ค่าเริ่มต้น 100 วินาที) หรือจนกดยกเลิก — กันหน้าค้างตลอดไป
   return new Promise((resolve,reject)=>{
-    const ms=window.SCAN_TIMEOUT_MS||100000;
-    const to=setTimeout(()=>{scanCancelFn=null;reject(Object.assign(new Error('timeout'),{scanTimeout:true}));},ms);
+    const ms=ms0||window.SCAN_TIMEOUT_MS||100000;
+    const to=setTimeout(()=>{scanCancelFn=null;reject(Object.assign(new Error('timeout'),{scanTimeout:true,ms}));},ms);
     scanCancelFn=()=>{clearTimeout(to);scanCancelFn=null;reject(Object.assign(new Error('cancel'),{scanCancel:true}));};
     promise.then(v=>{clearTimeout(to);scanCancelFn=null;resolve(v);},e=>{clearTimeout(to);scanCancelFn=null;reject(e);});
   });
 }
+
 /* ---- อ่านรูป 1 ใบ → {slips} หรือ {err} ---- */
 async function scanReadOne(cr,im){
   const {data,error}=await scanWait(supa.functions.invoke('read-pos-slip',{body:{user:cr.user,pass:cr.pass,image:im.b64,mime:'image/jpeg'}}));
@@ -2874,7 +2880,7 @@ async function scanReadOne(cr,im){
 }
 /* ---- รวมใบจากหลายรูปเข้าหน้าตรวจทานเดียวกัน ---- */
 function scanMerge(list,url){
-  if(!scan)scan={imgs:[],source:'ai',slips:[],confirmed:false};
+  if(!scan)scan={imgs:[],source:scanEngine(),slips:[],confirmed:false};
   if(!scan.imgs)scan.imgs=[];
   if(url)scan.imgs.push(url);
   const cnt={};list.forEach(s=>{if(s.date)cnt[s.date]=(cnt[s.date]||0)+1;});
@@ -2896,20 +2902,28 @@ function scanMerge(list,url){
 async function scanPick(input){
   const files=[...(input.files||[])];input.value='';
   if(!files.length||scanBusy)return;
-  if(!supa){showToast('อ่านรูปด้วย AI ต้องเชื่อม Supabase — ตอนนี้ใช้ "กรอกเอง" แทน');return;}
+  const ocr=scanEngine()==='ocr';
+  if(!ocr&&!supa){showToast('อ่านรูปด้วย AI ต้องเชื่อม Supabase — ตอนนี้ใช้ "กรอกเอง" แทน');return;}
   scanBusy=true;
   try{
     scanBusyUI(true,'กำลังเตรียมรูป…');
-    const cr=await scanCreds();if(!cr){scanBusyUI(false);scanBusy=false;return;}
+    let cr=null;
+    if(!ocr){cr=await scanCreds();if(!cr){scanBusyUI(false);scanBusy=false;return;}}
     let added=0,skipped=0,done=0,stopped=false;
     for(let i=0;i<files.length;i++){
       const tag=files.length>1?(' รูปที่ '+(i+1)+'/'+files.length):'';
-      scanBusyUI(true,'กำลังเตรียมรูป'+tag+'…');
-      const im=await scanResize(files[i]);
-      scanBusyUI(true,'กำลังอ่านรูป'+tag+' (ประมาณ 5–15 วินาที)…');
-      const out=await scanReadOne(cr,im);
+      scanBusyText('กำลังเตรียมรูป'+tag+'…');
+      const im=ocr?await ocrPrepare(files[i]):await scanResize(files[i]);
+      let out;
+      if(ocr){
+        scanBusyText('กำลังอ่านรูป'+tag+'…');
+        out=await scanWait(ocrReadSlips(im,m=>scanBusyText(m+tag)),window.OCR_TIMEOUT_MS||300000);
+      }else{
+        scanBusyText('กำลังอ่านรูป'+tag+' (ประมาณ 5–15 วินาที)…');
+        out=await scanReadOne(cr,im);
+      }
       if(out.err){showToast(out.err+(done?' • เก็บใบจากรูปก่อนหน้าไว้ในหน้าตรวจทานแล้ว':'')+(i<files.length-1?' — หยุดอ่านรูปที่เหลือ':''));stopped=true;break;}
-      if(!out.slips.length){showToast('ไม่พบใบ POS ใน'+(tag||'รูป')+' — ลองถ่ายให้เห็นตัวหนังสือชัดขึ้น');continue;}
+      if(!out.slips.length){showToast(ocr?('อ่านตัวเลขใบ POS จาก'+(tag||'รูป')+'ไม่ได้ — ลองถ่ายใหม่ให้ใกล้ ตรง มีแสงพอ ไม่มีของทับตัวเลข (ถ่ายทีละใบจะแม่นกว่า) หรือใช้ "กรอกเอง"'):('ไม่พบใบ POS ใน'+(tag||'รูป')+' — ลองถ่ายให้เห็นตัวหนังสือชัดขึ้น'));continue;}
       const r=scanMerge(out.slips,im.url);added+=r.added;skipped+=r.skipped;done++;
     }
     if(scan&&done){
@@ -2917,9 +2931,10 @@ async function scanPick(input){
       if(!stopped)showToast('อ่านได้ '+done+' รูป • เพิ่ม '+added+' ใบ'+(skipped?' • ข้าม '+skipped+' ใบที่ซ้ำ':'')+' — ทวนตัวเลขกับใบจริงก่อนบันทึก');
     }else if(scan)scanRefresh();
   }catch(e){
-    if(e&&e.scanCancel)showToast('ยกเลิกการรออ่านรูปแล้ว (คำขอที่ส่งไปอาจยังนับโควตา 1 ครั้ง) — ลองใหม่ หรือใช้ "กรอกเอง"');
-    else if(e&&e.scanTimeout)showToast('รอนานเกินไป (เกิน '+Math.round((window.SCAN_TIMEOUT_MS||100000)/1000)+' วินาที) ไม่มีคำตอบจากฟังก์ชัน — ตรวจ Logs ของฟังก์ชันใน Supabase หรือเปลี่ยนรุ่น GEMINI_MODEL • ใช้ "กรอกเอง" ได้');
-    else showToast('อ่านรูปไม่สำเร็จ: '+(e.message||e));
+    if(ocr&&e&&(e.scanCancel||e.scanTimeout))ocrTerminate();
+    if(e&&e.scanCancel)showToast(ocr?'ยกเลิกการอ่านรูปแล้ว — ลองใหม่ หรือใช้ "กรอกเอง"':'ยกเลิกการรออ่านรูปแล้ว (คำขอที่ส่งไปอาจยังนับโควตา 1 ครั้ง) — ลองใหม่ หรือใช้ "กรอกเอง"');
+    else if(e&&e.scanTimeout)showToast(ocr?('อ่านรูปนานเกิน '+Math.round((e.ms||0)/1000)+' วินาที (เครื่องอาจช้า) — ลองถ่ายใหม่ ปิดแอปอื่นก่อน หรือใช้ "กรอกเอง"'):('รอนานเกินไป (เกิน '+Math.round((window.SCAN_TIMEOUT_MS||100000)/1000)+' วินาที) ไม่มีคำตอบจากฟังก์ชัน — ตรวจ Logs ของฟังก์ชันใน Supabase หรือเปลี่ยนรุ่น GEMINI_MODEL • ใช้ "กรอกเอง" ได้'));
+    else showToast('อ่านรูปไม่สำเร็จ: '+(e&&e.message||e));
     if(scan&&el('scan_panel').classList.contains('hidden')&&scan.slips.length)scanOpen(scan);
   }
   scanBusy=false;scanBusyUI(false);
@@ -3074,6 +3089,492 @@ function krPrint(){
   const done=()=>{document.body.classList.remove('printing-kr');document.title=old;sh.style.zoom='';window.removeEventListener('afterprint',done);};
   window.addEventListener('afterprint',done);
   setTimeout(()=>window.print(),250);
+}
+
+</script>
+<script>
+/* ================================================================
+   ocrParse — แยกตัวเลขใบปิดกะ/ปิดวัน POS ปตท. จากผล OCR (คำ + กรอบตำแหน่ง) โดยไม่ใช้ AI
+   หลักการ
+   • ตัวเลขในใบจัดชิดขวา: รถ → ก๊าซ (3 ทศนิยม) → เงิน (2 ทศนิยม) เรียงเป็นแถวตั้งในคอลัมน์เดียวกัน
+   • ใช้ "เฉพาะหลักตัวเลข" (ตัดจุด/คอมมา) เพราะ OCR ทำจุดหาย/เพี้ยนบ่อย แล้วใส่ทศนิยมตามรูปแบบใบ (กก. /1000, บาท /100)
+   • เงิน = ก๊าซ × ราคา/กก. (ราคาเดียวกันทุกกะ เช่น 21.05 คลาดเคลื่อนไม่เกิน ~0.15 บาท) → ใช้ตรวจ/ซ่อมตัวเลขที่ OCR พลาด 1 หลัก
+   • ยอดเงินสดอ่านได้หลายจุดในใบ (เงินสด / รวมทั้งสิ้น / ยอดนำส่ง) → โหวตทีละหลัก
+   • ชนิดใบ/วันที่ ใช้เวลาที่พิมพ์ (08:00 = กะที่ 1, 20:00 = กะที่ 2, 00:xx = กะที่ 3 หรือปิดวัน) เพราะ OCR อ่านภาษาไทยในรูปคุณภาพนี้ไม่ได้
+   ================================================================ */
+(function(root){
+  const pad=n=>String(n).padStart(2,'0');
+  const FIT_TOL=0.2;      // เงิน − ก๊าซ×ราคา ต้องไม่เกินค่านี้ (บาท)
+  function addDays(s,n){const [y,m,d]=s.split('-').map(Number);return new Date(Date.UTC(y,m-1,d+n)).toISOString().slice(0,10);}
+  const digitsOf=t=>t.replace(/\D/g,'');
+  function cleanNum(t){const c=String(t).replace(/^[^\d]+|[^\d]+$/g,'');return /^\d[\d,.]*$/.test(c)?c:null;}
+  const median=a=>{const x=[...a].sort((p,q)=>p-q),n=x.length;return n?(n%2?x[(n-1)/2]:(x[n/2-1]+x[n/2])/2):null;};
+
+  /* ---- 1) โทเค็นตัวเลข (รวมเศษที่ OCR แยกเป็นหลายคำ เช่น "7" + "823.448") ---- */
+  function numTokens(words){
+    const nums=[];
+    for(const w of words){
+      const c=cleanNum(w.t);if(!c)continue;
+      const d=digitsOf(c);if(!d)continue;
+      nums.push({d,conf:w.c==null?50:w.c,x0:w.x0,x1:w.x1,y:(w.y0+w.y1)/2,h:Math.max(1,w.y1-w.y0)});
+    }
+    nums.sort((a,b)=>a.y-b.y||a.x0-b.x0);
+    const rows=[];
+    for(const t of nums){
+      let r=null;
+      for(let i=rows.length-1;i>=0&&i>=rows.length-6;i--)if(Math.abs(rows[i].y-t.y)<=0.6*Math.max(rows[i].h,t.h)){r=rows[i];break;}
+      if(r){r.items.push(t);r.y=(r.y*(r.items.length-1)+t.y)/r.items.length;}else rows.push({y:t.y,h:t.h,items:[t]});
+    }
+    const out=[];
+    for(const r of rows){
+      r.items.sort((a,b)=>a.x0-b.x0);
+      let cur=null;
+      for(const t of r.items){
+        if(cur&&t.x0-cur.x1<=1.3*Math.max(cur.h,t.h)&&t.x0-cur.x1>=-0.5*cur.h){cur.d+=t.d;cur.x1=Math.max(cur.x1,t.x1);cur.conf=Math.min(cur.conf,t.conf);}
+        else{if(cur)out.push(cur);cur=Object.assign({},t);}
+      }
+      if(cur)out.push(cur);
+    }
+    return out;
+  }
+  /* ---- 2) จัดคอลัมน์ตามขอบขวา ---- */
+  function columns(toks,W){
+    const thr=0.05*W,s=[...toks].sort((a,b)=>a.x1-b.x1),cols=[];
+    for(const t of s){const c=cols[cols.length-1];if(c&&t.x1-c.maxX<=thr){c.t.push(t);c.maxX=t.x1;}else cols.push({t:[t],maxX:t.x1});}
+    cols.forEach(c=>{c.t.sort((a,b)=>a.y-b.y);c.x=c.t.reduce((s,t)=>s+t.x1,0)/c.t.length;});
+    return cols;
+  }
+  /* ---- 3) ตัวช่วยตรวจ/ซ่อมด้วยราคา ---- */
+  const fit=(kgD,bD,P)=>Math.abs(+bD/100-(+kgD/1000)*P);
+  function variants(d,minL,maxL){           // แก้ผิด 1 จุด: แทนที่ 1 หลัก / เติม 1 หลัก / ตัด 1 หลัก
+    minL=minL||4;maxL=maxL||8;
+    const out=new Set(),L=d.length;
+    for(let i=0;i<L;i++){for(let c=0;c<10;c++){const ch=String(c);if(ch!==d[i])out.add(d.slice(0,i)+ch+d.slice(i+1));}out.add(d.slice(0,i)+d.slice(i+1));}
+    for(let i=0;i<=L;i++)for(let c=0;c<10;c++)out.add(d.slice(0,i)+c+d.slice(i));
+    out.delete(d);return [...out].filter(v=>v.length>=minL&&v.length<=maxL&&v[0]!=='0');
+  }
+  // ซ่อมคู่ (ก๊าซ, เงิน) ที่ไม่เข้ากับราคา: แก้ผิดเพียง 1 จุด และต้องมีคำตอบเดียวที่ชัดเจน
+  // nk / nb = จำนวนครั้งที่อ่านค่าก๊าซ/เงินได้ตรงกัน — ค่าที่อ่านซ้ำตรงกันหลายครั้งน่าเชื่อกว่า จึงซ่อมตัวที่อ่านได้ครั้งเดียว
+  function repairPair(kgD,bD,P,nk,nb){
+    if(fit(kgD,bD,P)<=FIT_TOL)return {kgD,bD,fixed:false};
+    let c=[];
+    variants(kgD,4,8).forEach(v=>{const r=fit(v,bD,P);if(r<=FIT_TOL)c.push({t:'k',kgD:v,bD,r});});
+    variants(bD,6,9).forEach(v=>{const r=fit(kgD,v,P);if(r<=FIT_TOL)c.push({t:'b',kgD,bD:v,r});});
+    if(c.some(x=>x.t==='k')&&c.some(x=>x.t==='b')&&nk!=null&&nb!=null){
+      if(nb>nk)c=c.filter(x=>x.t==='k');else if(nk>nb)c=c.filter(x=>x.t==='b');
+    }
+    c.sort((x,y)=>x.r-y.r);
+    if(c.length===1||(c.length>1&&c[1].r-c[0].r>0.08&&c[0].t===c[1].t))return {kgD:c[0].kgD,bD:c[0].bD,fixed:true};
+    if(c.length>1&&c.every(x=>x.t===c[0].t)&&c[1].r-c[0].r>0.08)return {kgD:c[0].kgD,bD:c[0].bD,fixed:true};
+    return {kgD,bD,fixed:false,bad:true};
+  }
+  const plausible=(cars,kg)=>cars>=1&&kg/cars>=3&&kg/cars<=30;
+  const lenOK=(a,b,c)=>a.d.length>=1&&a.d.length<=4&&b.d.length>=5&&b.d.length<=8&&c.d.length>=6&&c.d.length<=9;
+  const near=(a,b,tol)=>Math.abs(a.x1-b.x1)<=tol;
+  function similar(a,b){if(a.length!==b.length)return false;let df=0;for(let i=0;i<a.length;i++)if(a[i]!==b[i]&&++df>1)return false;return true;}
+  function vote(cands){
+    const len=cands[0].d.length;let out='',low=false;
+    for(let i=0;i<len;i++){
+      const cnt={};cands.forEach(c=>{cnt[c.d[i]]=(cnt[c.d[i]]||0)+1+c.conf/1000;});
+      const e=Object.entries(cnt).sort((a,b)=>b[1]-a[1]);out+=e[0][0];
+      if(e.length>1&&Math.floor(e[0][1])===Math.floor(e[1][1]))low=true;
+    }
+    return {d:out,n:cands.length,low};
+  }
+  /* ---- 4) หาแถว รถ/ก๊าซ/เงิน ในคอลัมน์ ---- */
+  function strictTriple(col,W){
+    const t=col.t,tol=0.035*W;
+    for(let i=0;i+2<t.length;i++){
+      const a=t[i],b=t[i+1],c=t[i+2];
+      if(!lenOK(a,b,c)||!near(a,b,tol)||!near(b,c,tol))continue;
+      const hh=Math.max(a.h,b.h,c.h);
+      if(b.y-a.y>5*hh||c.y-b.y>5*hh||b.y-a.y<0.3*hh||c.y-b.y<0.3*hh)continue;
+      const cars=+a.d,kg=+b.d/1000,baht=+c.d/100,pr=baht/kg;
+      if(!plausible(cars,kg)||pr<10||pr>40)continue;
+      return {a,b,c,rest:t.slice(i+3),repaired:false};
+    }
+    return null;
+  }
+  // ทุกชุด (รถ,ก๊าซ,เงิน) ที่ผ่านเงื่อนไขในคอลัมน์ — ใช้หาราคา/กก. อ้างอิง (ลูกค้าเงินสด/ฟลีทการ์ด/QR/รวม ราคาเท่ากันหมด)
+  function allStrictTriples(col,W){
+    const out=[],t=col.t,tol=0.035*W;
+    for(let i=0;i+2<t.length;i++){
+      const a=t[i],b=t[i+1],c=t[i+2];
+      if(!(b.d.length>=5&&b.d.length<=8&&c.d.length>=6&&c.d.length<=9)||!near(b,c,tol))continue;
+      const hh=Math.max(b.h,c.h);if(c.y-b.y>5*hh||c.y-b.y<0.3*hh)continue;
+      const kg=+b.d/1000,pr=(+c.d/100)/kg;if(kg<1||pr<10||pr>40)continue;
+      out.push({b,c});
+    }
+    return out;
+  }
+  // ใช้เมื่อ strictTriple ไม่เจอ (ก๊าซ/เงินอ่านขาดหลัก): ต้องมีราคาอ้างอิง P
+  function lenientTriple(col,W,P){
+    const t=col.t,tol=0.035*W;
+    for(let j=0;j<t.length;j++){
+      const b=t[j];if(b.d.length<4||b.d.length>8)continue;
+      let a=null;for(let k=j-1;k>=0&&k>=j-3;k--){if(t[k].d.length<=4&&near(t[k],b,tol)&&b.y-t[k].y<=5*Math.max(b.h,t[k].h)){a=t[k];break;}}
+      const cands=t.slice(j+1,j+20).filter(x=>x.d.length>=5&&x.d.length<=9&&near(x,b,tol));
+      const fits=[];
+      for(const c of cands){
+        for(const kv of [b.d].concat(variants(b.d))){
+          const r=fit(kv,c.d,P);
+          if(r<=FIT_TOL&&(!a||plausible(+a.d,+kv/1000)))fits.push({kv,c,r,edit:kv!==b.d?1:0});
+        }
+      }
+      if(!fits.length)continue;
+      fits.sort((x,y)=>(x.edit-y.edit)||(x.r-y.r));
+      const best=fits[0];
+      const amb=!!(fits[1]&&fits[1].kv!==best.kv&&fits[1].edit===best.edit&&fits[1].r-best.r<0.08);
+      return {a:a||{d:'',h:b.h,y:b.y-2*b.h,conf:0,x1:b.x1},b:Object.assign({},b,{d:best.kv,conf:Math.min(b.conf,40)}),c:best.c,rest:t.slice(j+1).filter(x=>x!==best.c),repaired:best.edit===1,amb};
+    }
+    return null;
+  }
+  /* ---- 5) หัวใบ: เวลา/วันที่ ---- */
+  function headerInfo(words,x1,yTop,W){
+    const x0=x1-0.40*W,xe=x1+0.04*W,y0=yTop-0.30*W,y1=yTop-0.004*W;
+    const ws=words.filter(w=>{const cx=(w.x0+w.x1)/2,cy=(w.y0+w.y1)/2;return cx>=x0&&cx<=xe&&cy>=y0&&cy<=y1;});
+    let time=null;const years=[],days=[];
+    for(const w of ws){
+      const t=w.t.trim().replace(/^[^\d]+|[^\d]+$/g,''),cy=(w.y0+w.y1)/2,h=w.y1-w.y0;
+      const tm=t.match(/^(\d{1,2}):(\d{2})(?::(\d{2}))?$/);
+      if(tm){if(!time||cy>time.y)time={h:+tm[1],m:+tm[2],y:cy,x0:w.x0};continue;}
+      if(/^25[5-9]\d$|^26\d\d$/.test(t))years.push({y:cy,x0:w.x0,x1:w.x1,h,v:+t});
+      else if(/^\d{1,2}$/.test(t)&&+t>=1&&+t<=31)days.push({y:cy,x0:w.x0,x1:w.x1,h,v:+t});
+    }
+    const dayOf=yr=>{const c=days.filter(d=>Math.abs(d.y-yr.y)<=0.8*Math.max(d.h,yr.h)&&d.x1<=yr.x0+4&&yr.x0-d.x1<0.32*W).sort((a,b)=>b.x1-a.x1)[0];return c?c.v:null;};
+    let printed=null,biz=null;
+    years.sort((a,b)=>a.y-b.y);
+    for(const yr of years){
+      const d=dayOf(yr);if(d==null)continue;
+      const rec={d,y:yr.v-543,row:yr.y};
+      if(time&&Math.abs(yr.y-time.y)<=0.9*Math.max(yr.h,10)){if(!printed)printed=rec;}
+      else if(!biz||yr.y<biz.row)biz=rec;      // บรรทัด "ประจำวันที่" อยู่บนสุด
+    }
+    return {time,printed,biz};
+  }
+  function makeDate(rec,hint){
+    if(!rec||!hint||!hint.today)return '';
+    // วันของใบ ≤ วันนี้ เสมอ: ถ้าเลขวัน > วันที่วันนี้ แปลว่าเป็นเดือนก่อน (อ่านชื่อเดือนภาษาไทยจากรูปไม่ได้)
+    const [ty,tm,td]=hint.today.split('-').map(Number);
+    let m=tm,y=ty;if(rec.d>td){m=tm-1;if(m<1){m=12;y=ty-1;}}
+    return y+'-'+pad(m)+'-'+pad(rec.d);
+  }
+  /* ---- 6) ประกอบผล ---- */
+  function parse(words,W,H,opt){
+    opt=opt||{};
+    const toks=numTokens(words),cols=columns(toks,W);
+    const found=[];
+    for(const col of cols){const t=strictTriple(col,W);if(t)found.push({col,t});}
+    // ราคา/กก. = เลขทศนิยม 2 ตำแหน่ง (เช่น 21.05): เอาอัตราส่วนของแต่ละใบที่ "ลงตัวพอดีทศนิยม 2 ตำแหน่ง" (ใบที่อ่านผิดจะไม่ลงตัว)
+    const ratios=[];for(const col of cols)for(const p of allStrictTriples(col,W))ratios.push((+p.c.d/100)/(+p.b.d/1000));
+    const snaps=ratios.map(r=>({r,s:Math.round(r*100)/100})).filter(x=>Math.abs(x.r-x.s)<0.0006).map(x=>x.s);
+    let P=null;
+    if(snaps.length){
+      const cnt={};snaps.forEach(v=>cnt[v]=(cnt[v]||0)+1);
+      let best=Object.entries(cnt).sort((p,q)=>q[1]-p[1]);
+      if(opt.refPrice){const nr=best.find(e=>Math.abs(+e[0]-opt.refPrice)/opt.refPrice<0.005);if(nr)best=[nr];}
+      P=+best[0][0];
+    }
+    if(P==null&&opt.refPrice)P=opt.refPrice;
+    if(P!=null)for(const col of cols){
+      const lt=lenientTriple(col,W,P);
+      const fi=found.findIndex(f=>f.col===col);
+      if(lt&&fi<0)found.push({col,t:lt});
+      else if(lt&&fi>=0&&lt.b.y<found[fi].t.b.y-0.5*Math.max(lt.b.h,1)){found[fi]={col,t:lt};}   // ชุดที่อยู่บนสุดของใบคือลูกค้าเงินสด
+    }
+    const slips=[];
+    for(const {col,t} of found){
+      const {a,b,c,rest}=t;
+      const notes=[];
+      const kgC0=[{d:b.d,conf:b.conf}].concat(rest.filter(x=>similar(x.d,b.d)).map(x=>({d:x.d,conf:x.conf})));
+      const vk=vote(kgC0);let kgD=vk.d;
+      const bahtC=[{d:c.d,conf:c.conf}].concat(rest.filter(x=>similar(x.d,c.d)).map(x=>({d:x.d,conf:x.conf})));
+      let vb=vote(bahtC);
+      let fixed=!!t.repaired;
+      if(P!=null){
+        // ค่าที่เข้ากับราคา/กก. ชนะเสียงข้างมาก
+        const fitting=[...new Set(bahtC.map(x=>x.d))].filter(d=>fit(kgD,d,P)<=FIT_TOL);
+        if(fitting.length===1&&fitting[0]!==vb.d){vb={d:fitting[0],n:vb.n,low:false};fixed=true;}
+        const nb=bahtC.filter(x=>x.d===vb.d).length,nk=kgC0.filter(x=>x.d===kgD).length;
+        const rp=repairPair(kgD,vb.d,P,nk,nb);
+        if(rp.fixed){kgD=rp.kgD;vb={d:rp.bD,n:vb.n,low:false};fixed=true;}
+        else if(rp.bad)notes.push('ก๊าซกับเงินไม่สัมพันธ์กับราคา/กก. (~'+P.toFixed(2)+') ตรวจเทียบรูป');
+      }
+      const lastBaht=[...rest].reverse().find(x=>x.d.length>=6);
+      const sx=median([a.d?a.x1:b.x1,b.x1,c.x1]);
+      const hd=headerInfo(words,sx,a.y,W);
+      const slip={y:a.y,x:sx,cars:a.d?+a.d:null,kg:+kgD/1000,cash:+vb.d/100,remit:lastBaht&&similar(lastBaht.d,vb.d)?+lastBaht.d/100:null,
+        low:vb.low||vk.low,minConf:Math.min(a.d?a.conf:100,b.conf,c.conf),fixed,type:'',date:'',time:hd.time?pad(hd.time.h)+':'+pad(hd.time.m):''};
+      if(hd.time){
+        const h=hd.time.h;
+        if(h>=7&&h<=9)slip.type='shift1';
+        else if(h>=19&&h<=21)slip.type='shift2';
+        else if(h<=2){slip.type=slip.kg>=6000?'day':'shift3';notes.push('เดาชนิดใบจากเวลา '+slip.time+' และปริมาณก๊าซ (00:xx = กะที่ 3 หรือปิดวัน) ตรวจเทียบใบจริง');}
+      }
+      if(!slip.type&&slip.kg>=6500){slip.type='shift2';notes.push('เดาชนิดใบจากปริมาณก๊าซ (มากกว่า 6,500 กก. = กะที่ 2) เพราะอ่านเวลาพิมพ์ไม่ได้ ตรวจเทียบใบจริง');}
+      let dt=makeDate(hd.biz,opt);
+      if(!dt&&hd.printed){let p=makeDate(hd.printed,opt);if(p&&hd.time&&hd.time.h<8)p=addDays(p,-1);dt=p;}
+      slip.date=dt;
+      if(!slip.type)notes.push('อ่านชนิดใบไม่ได้ ให้เลือกเอง');
+      if(!slip.date)notes.push('อ่านวันที่ไม่ได้ ให้ระบุเอง');
+      if(slip.cars==null)notes.push('อ่านจำนวนรถไม่ได้ ให้กรอกเอง');
+      if(fixed)notes.push('ซ่อมตัวเลขอัตโนมัติจากราคา/กก. — ตรวจเทียบรูป');
+      if(t.amb)notes.push('มีตัวเลขที่เป็นไปได้หลายแบบ — ตรวจเทียบรูป');
+      if(slip.low)notes.push('ตัวเลขที่อ่านซ้ำไม่ตรงกัน ตรวจเทียบรูป');
+      if(slip.minConf<60)notes.push('บางตัวเลขอ่านไม่ค่อยชัด');
+      slip.note=notes.join(' • ');
+      slips.push(slip);
+    }
+    slips.sort((p,q)=>p.x-q.x);
+    return {slips,price:P};
+  }
+  root.ocrParse={allStrictTriples,parse,numTokens,columns,strictTriple,lenientTriple,vote,similar,headerInfo,repairPair,variants,median};
+  if(typeof module!=='undefined')module.exports=root.ocrParse;
+})(typeof window!=='undefined'?window:globalThis);
+
+/* ================================================================
+   ส่วนเสริมตัวแยกข้อมูลใบ POS: อ่านหัวใบภาษาไทย (ชนิดใบ/วันที่) + รวมผลหลายรอบ OCR
+   ต้องโหลดต่อจาก ocrparse.js
+   ================================================================ */
+(function(root){
+const P=root.ocrParse;
+const MONTHS=['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
+function lev(a,b){const m=a.length,n=b.length;if(!m)return n;if(!n)return m;let p=Array.from({length:n+1},(_,i)=>i);for(let i=1;i<=m;i++){const c=[i];for(let j=1;j<=n;j++)c[j]=Math.min(p[j]+1,c[j-1]+1,p[j-1]+(a[i-1]===b[j-1]?0:1));p=c;}return p[n];}
+function monthOf(s){let best=0,sc=0;MONTHS.forEach((m,i)=>{const r=1-lev(s,m)/Math.max(s.length,m.length);if(r>sc){sc=r;best=i+1;}});return sc>=0.6?best:0;}
+const pad=n=>String(n).padStart(2,'0');
+function addDays(s,n){const [y,m,d]=s.split('-').map(Number);return new Date(Date.UTC(y,m-1,d+n)).toISOString().slice(0,10);}
+function lineGroup(ws){
+  if(!ws.length)return [];
+  const hs=ws.map(w=>w.y1-w.y0).sort((a,b)=>a-b),mh=hs[Math.floor(hs.length/2)]||10;
+  const a=[...ws].sort((p,q)=>(p.y0+p.y1)-(q.y0+q.y1)),L=[];
+  a.forEach(w=>{const y=(w.y0+w.y1)/2,l=L[L.length-1];if(l&&Math.abs(l.y-y)<mh*0.75){l.w.push(w);l.y=(l.y*(l.w.length-1)+y)/l.w.length;}else L.push({y,w:[w]});});
+  return L.map(l=>({y:l.y,text:l.w.sort((p,q)=>p.x0-q.x0).map(w=>w.t).join('')}));
+}
+/* ชนิดใบ / วันที่ประจำวัน / ชั่วโมงที่พิมพ์ จากข้อความหัวใบของใบนั้น (อยู่เหนือแถวรถของใบ) */
+function thaiHeader(words,sx,W,yTop,opt){
+  const x0=sx-0.5*W,x1=sx+0.06*W,y0=yTop-0.42*W,y1=yTop;
+  const ws=words.filter(w=>{const cx=(w.x0+w.x1)/2,cy=(w.y0+w.y1)/2;return cx>=x0&&cx<=x1&&cy>=y0&&cy<=y1;});
+  const out={type:'',date:null,hour:null};
+  const L=lineGroup(ws);
+  for(const l of L){
+    const f=l.text.replace(/\s+/g,'');
+    if(!out.type&&/รายงาน|การปิ|ปิต|ปิด|ปัต|บีต|การ์ปิ/.test(f)){
+      const m=f.match(/ะที่([123])/)||f.match(/ที่([123])$/);
+      if(m)out.type=m[1]==='1'?'shift1':m[1]==='2'?'shift2':'shift3';
+      else if(/วัน/.test(f)&&!/ที่/.test(f))out.type='day';
+    }
+  }
+  let biz=null,prt=null;
+  for(const l of L){
+    const f=l.text.replace(/\s+/g,'');
+    const m=f.match(/(\d{1,2})([ก-๙]{4,12})(\d{4})/);
+    if(!m)continue;
+    const mo=monthOf(m[2]);if(!mo)continue;
+    const d=Number(m[1]);if(d<1||d>31)continue;
+    const exp=(opt&&opt.todayBE)||2569;let y=Number(m[3]);if(y<2500||y>2700||Math.abs(y-exp)>1)y=exp;
+    const iso=(y-543)+'-'+pad(mo)+'-'+pad(d);
+    const tm=f.match(/([0-9DOo]{2}):([0-9DOo]{2})/);
+    if(tm||/เว[ลสา]/.test(f)){prt={iso,hour:tm?Number(tm[1].replace(/[DOo]/g,'0')):null};}
+    else if(!biz&&/ประจ|วันที่/.test(f))biz=iso;
+    else if(!biz)biz=iso;
+  }
+  if(prt&&prt.hour!=null)out.hour=prt.hour;
+  out.date=biz||(prt?(prt.hour!=null&&prt.hour<6?addDays(prt.iso,-1):prt.iso):null);
+  return out;
+}
+function parseOne(pass,opt){
+  const r=P.parse(pass.words,pass.w,pass.h,opt);
+  const todayBE=opt&&opt.today?Number(opt.today.slice(0,4))+543:2569;
+  r.slips.forEach(s=>{
+    const th=thaiHeader(pass.words,s.x,pass.w,s.y,{todayBE});
+    s.nx=s.x/pass.w;s.th=th;
+  });
+  return r;
+}
+function score(s,Pz){
+  let q=0;if(s.cars!=null)q+=1;
+  if(Pz&&s.kg!=null&&s.cash!=null&&Math.abs(s.cash-s.kg*Pz)<=0.2)q+=3;
+  if(s.remit!=null&&s.cash!=null&&Math.abs(s.remit-s.cash)<0.005)q+=2;
+  if(s.fixed)q-=1;if(s.low)q-=1;if((s.minConf==null?100:s.minConf)<60)q-=0.5;
+  return q;
+}
+/* รวมผลหลายรอบ OCR → เลือกผลที่ดีที่สุดของแต่ละใบ แล้วเติมชนิด/วันที่จากหัวใบภาษาไทยถ้าอ่านได้ */
+function parsePasses(passes,opt){
+  opt=opt||{};
+  const rs=passes.map(p=>parseOne(p,opt));
+  const Pz=(rs.find(r=>r.price)||{}).price||opt.refPrice||null;
+  // กลุ่มใบ: ใช้รอบแรกเป็นหลัก แล้วจับคู่ใบจากรอบอื่นด้วยตำแหน่ง x (ปรับเป็นสัดส่วนความกว้าง)
+  const base=rs[0].slips.map(s=>({c:[s],nx:s.nx}));
+  rs.slice(1).forEach(r=>r.slips.forEach(s=>{
+    let b=null,bd=1;base.forEach(g=>{const d=Math.abs(g.nx-s.nx);if(d<bd){bd=d;b=g;}});
+    if(b&&bd<0.15)b.c.push(s);else base.push({c:[s],nx:s.nx});
+  }));
+  base.sort((a,b)=>a.nx-b.nx);
+  const slips=base.map(g=>{
+    const best=[...g.c].sort((a,b)=>score(b,Pz)-score(a,Pz))[0];
+    const out=Object.assign({},best);
+    const ths=g.c.map(s=>s.th).filter(Boolean);
+    const tt=ths.find(t=>t.type),dd=ths.find(t=>t.date);
+    out.thaiType=tt?tt.type:'';out.thaiDate=dd?dd.date:null;
+    if(out.thaiType&&out.type!==out.thaiType){
+      out.note=((out.note||'')+(out.type?' • ชนิดใบจากเวลา/ปริมาณ ('+out.type+') ต่างจากหัวใบ — ใช้ตามหัวใบ':'')).replace(/เดาชนิดใบจากเวลา[^•]*•?\s*/,'').replace(/เดาชนิดใบจากปริมาณ[^•]*•?\s*/,'').replace(/อ่านชนิดใบไม่ได้[^•]*•?\s*/,'');
+      out.type=out.thaiType;
+    }
+    if(out.thaiDate){out.date=out.thaiDate;out.note=(out.note||'').replace(/อ่านวันที่ไม่ได้[^•]*•?\s*/,'');}
+    return out;
+  });
+  return {slips,price:Pz,rs};
+}
+P.parsePasses=parsePasses;P.thaiHeader=thaiHeader;P.monthOf=monthOf;P.score=score;
+if(typeof module!=='undefined')module.exports=P;
+})(typeof window!=='undefined'?window:globalThis);
+
+</script>
+<script>
+/* ================================================================
+   v1.7.0 (Draft) — อ่านใบ POS ด้วย OCR ในเครื่อง (Tesseract.js) ไม่ใช้ AI ไม่ส่งรูปออกไปไหน
+   ไฟล์ตัวอ่านอยู่ในโฟลเดอร์ ./ocr/ ข้างไฟล์เว็บนี้ (GitHub Pages):
+     tesseract.min.js • worker.min.js • tesseract-core-simd-lstm.wasm.js • tesseract-core-lstm.wasm.js
+     tha.traineddata.gz • eng.traineddata.gz
+   ================================================================ */
+const OCR_DIR=new URL('./ocr/',location.href).href;
+const OCR_SHORT_SIDE=1440;          // ปรับรูปให้ด้านสั้น ≈ 1440 px (ผลทดสอบแม่นสุดที่ขนาดนี้)
+const OCR_IDLE_MS=180000;           // ไม่ใช้ 3 นาที → ปล่อยหน่วยความจำ
+let ocrWorker=null,ocrLoading=null,ocrIdleT=null,ocrProgressCb=null,ocrLang='';
+
+function ocrLoadScript(){
+  return new Promise((res,rej)=>{
+    if(window.Tesseract)return res();
+    const s=document.createElement('script');s.src=OCR_DIR+'tesseract.min.js';
+    s.onload=()=>res();
+    s.onerror=()=>rej(Object.assign(new Error('ไม่พบไฟล์ตัวอ่าน OCR (ocr/tesseract.min.js) — ให้อัปโหลดโฟลเดอร์ ocr ขึ้น GitHub ข้างไฟล์ index.html (ดูคู่มือข้อ 14)'),{ocrMissing:true}));
+    document.head.appendChild(s);
+  });
+}
+const OCR_MSG={'loading tesseract core':'กำลังโหลดตัวอ่าน','initializing tesseract':'กำลังเริ่มตัวอ่าน','loading language traineddata':'กำลังโหลดข้อมูลภาษาไทย/อังกฤษ (ครั้งแรกเท่านั้น)','initializing api':'กำลังเตรียมตัวอ่าน','recognizing text':'กำลังอ่านตัวเลขจากรูป'};
+function ocrLogger(m){
+  if(!ocrProgressCb||!m||!m.status)return;
+  const t=OCR_MSG[m.status];if(!t)return;
+  ocrProgressCb(t+(typeof m.progress==='number'&&m.status!=='initializing tesseract'?' '+Math.round(m.progress*100)+'%':''));
+}
+async function ocrGetWorker(){
+  clearTimeout(ocrIdleT);
+  if(ocrWorker)return ocrWorker;
+  if(ocrLoading)return ocrLoading;
+  ocrLoading=(async()=>{
+    await ocrLoadScript();
+    const w=await Tesseract.createWorker(['tha','eng'],1,{
+      workerPath:OCR_DIR+'worker.min.js',corePath:OCR_DIR,langPath:OCR_DIR,gzip:true,logger:ocrLogger
+    });
+    await w.setParameters({tessedit_pageseg_mode:'11'});     // 11 = ข้อความกระจาย (อ่านใบที่วางคละกันได้)
+    ocrWorker=w;ocrLang='tha+eng';return w;
+  })();
+  try{return await ocrLoading;}finally{ocrLoading=null;}
+}
+async function ocrTerminate(){
+  clearTimeout(ocrIdleT);
+  const w=ocrWorker;ocrWorker=null;ocrLoading=null;ocrLang='';
+  if(w){try{await w.terminate();}catch(e){}}
+}
+function ocrArmIdle(){clearTimeout(ocrIdleT);ocrIdleT=setTimeout(ocrTerminate,OCR_IDLE_MS);}
+
+/* ---- เตรียมรูป: ขาวดำ + ปรับขนาด + ภาพตัวอย่างเล็ก (ไม่เก็บรูป) ---- */
+async function ocrDecode(file){
+  try{if(window.createImageBitmap)return await createImageBitmap(file,{imageOrientation:'from-image'});}catch(e){}
+  return await new Promise((res,rej)=>{
+    const u=URL.createObjectURL(file),im=new Image();
+    im.onload=()=>{URL.revokeObjectURL(u);res(im);};
+    im.onerror=()=>{URL.revokeObjectURL(u);rej(new Error('ไฟล์นี้ไม่ใช่รูปที่เปิดได้'));};
+    im.src=u;
+  });
+}
+// ขยายภาพขาวดำด้วย bicubic (สัมประสิทธิ์ −0.75 เหมือน OpenCV INTER_CUBIC) — canvas ขยายเองแล้วตัวเลขเบลอกว่า ทำให้ OCR แม่นน้อยลง
+function ocrCubicW(t){t=Math.abs(t);const A=-0.75;return t<=1?((A+2)*t-(A+3))*t*t+1:(t<2?((A*t-5*A)*t+8*A)*t-4*A:0);}
+function ocrUpscaleGray(g0,w0,h0,w1,h1){
+  const out=new Uint8ClampedArray(w1*h1),sx=w0/w1,sy=h0/h1;
+  const xi=new Int32Array(w1*4),xw=new Float32Array(w1*4);
+  for(let x=0;x<w1;x++){const fx=(x+0.5)*sx-0.5,ix=Math.floor(fx),f=fx-ix;for(let k=0;k<4;k++){xi[x*4+k]=Math.min(w0-1,Math.max(0,ix-1+k));xw[x*4+k]=ocrCubicW(f-(k-1));}}
+  for(let y=0;y<h1;y++){
+    const fy=(y+0.5)*sy-0.5,iy=Math.floor(fy),f=fy-iy,wy=[0,1,2,3].map(k=>ocrCubicW(f-(k-1))),ry=[0,1,2,3].map(k=>Math.min(h0-1,Math.max(0,iy-1+k))*w0);
+    for(let x=0;x<w1;x++){
+      let v=0;const b=x*4;
+      for(let j=0;j<4;j++){const r=ry[j],wj=wy[j];v+=wj*(xw[b]*g0[r+xi[b]]+xw[b+1]*g0[r+xi[b+1]]+xw[b+2]*g0[r+xi[b+2]]+xw[b+3]*g0[r+xi[b+3]]);}
+      out[y*w1+x]=v;
+    }
+  }
+  return out;
+}
+async function ocrPrepare(file){
+  const src=await ocrDecode(file);
+  const w0=src.width,h0=src.height;
+  let k=OCR_SHORT_SIDE/Math.min(w0,h0);
+  k=Math.min(k,4000/Math.max(w0,h0));
+  const w1=Math.max(1,Math.round(w0*k)),h1=Math.max(1,Math.round(h0*k));
+  const cv=document.createElement('canvas');cv.width=w1;cv.height=h1;
+  const ctx=cv.getContext('2d',{willReadFrequently:true});
+  if(k>1.02){
+    // ภาพเล็กกว่าเป้า → อ่านพิกเซลเดิม แปลงเป็นขาวดำ แล้วขยาย bicubic
+    const c0=document.createElement('canvas');c0.width=w0;c0.height=h0;
+    const x0=c0.getContext('2d',{willReadFrequently:true});x0.drawImage(src,0,0);
+    const d0=x0.getImageData(0,0,w0,h0).data,g0=new Float32Array(w0*h0);
+    for(let i=0,j=0;i<d0.length;i+=4,j++)g0[j]=0.299*d0[i]+0.587*d0[i+1]+0.114*d0[i+2];
+    const g1=ocrUpscaleGray(g0,w0,h0,w1,h1),id=ctx.createImageData(w1,h1),d=id.data;
+    for(let i=0,j=0;j<g1.length;i+=4,j++){d[i]=d[i+1]=d[i+2]=g1[j];d[i+3]=255;}
+    ctx.putImageData(id,0,0);
+  }else{
+    // ภาพใหญ่ (ภาพถ่ายมือถือปกติ) → ย่อด้วย canvas คุณภาพสูง แล้วแปลงเป็นขาวดำ
+    ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality='high';
+    ctx.drawImage(src,0,0,w1,h1);
+    const id=ctx.getImageData(0,0,w1,h1),d=id.data;
+    for(let i=0;i<d.length;i+=4){const g=0.299*d[i]+0.587*d[i+1]+0.114*d[i+2];d[i]=d[i+1]=d[i+2]=g;}
+    ctx.putImageData(id,0,0);
+  }
+  // ภาพตัวอย่างสำหรับเทียบตัวเลข (สี ขนาดเล็ก)
+  const pk=Math.min(1,1000/Math.max(w0,h0)),pv=document.createElement('canvas');
+  pv.width=Math.round(w0*pk);pv.height=Math.round(h0*pk);
+  pv.getContext('2d').drawImage(src,0,0,pv.width,pv.height);
+  if(src.close)try{src.close();}catch(e){}
+  return {canvas:cv,url:pv.toDataURL('image/jpeg',0.8),w:w1,h:h1};
+}
+/* ---- ราคา/กก. จากประวัติในระบบ (ค่ากลาง 14 วันล่าสุด ปัดเป็นทศนิยม 2 ตำแหน่ง) ---- */
+function ocrRefPrice(){
+  const arr=[];
+  [...salesData].sort((a,b)=>a.date<b.date?1:-1).slice(0,14).forEach(x=>['k1','k2','k3'].forEach(k=>{if(x[k+'_gas']>0&&x[k+'_sale']>0)arr.push(x[k+'_sale']/x[k+'_gas']);}));
+  if(arr.length<3)return null;
+  const m=ocrParse.median(arr),s=Math.round(m*100)/100;
+  return Math.abs(m-s)<0.003?s:null;
+}
+/* ---- ผลดีพอไหม: ทุกใบมีรถ/ชนิด/วันที่ ยอดนำส่ง = เงินสด และ เงิน ≈ ก๊าซ × ราคา ---- */
+function ocrGood(res){
+  return res.slips.length>0&&res.slips.every(s=>s.cars!=null&&s.type&&s.date&&s.remit!=null&&s.cash!=null&&Math.abs(s.remit-s.cash)<0.005&&!s.fixed&&(!res.price||Math.abs(s.cash-s.kg*res.price)<=0.2));
+}
+async function ocrPass(w,im,langs){
+  if(ocrLang!==langs){await w.reinitialize(langs);await w.setParameters({tessedit_pageseg_mode:'11'});ocrLang=langs;}
+  const {data}=await w.recognize(im.canvas);
+  const words=(data.words||[]).filter(x=>x&&x.bbox).map(x=>({t:x.text,c:x.confidence,x0:x.bbox.x0,y0:x.bbox.y0,x1:x.bbox.x1,y1:x.bbox.y1}));
+  return {words,w:Math.min(im.w,im.h),h:Math.max(im.w,im.h)};
+}
+/* ---- อ่านรูป 1 ใบ → {slips} หรือ {err} (รูปแบบเดียวกับตัวอ่านเดิม) ----
+   รอบที่ 1: ไทย+อังกฤษ • ถ้ายังไม่ชัวร์ → รอบที่ 2: ไทยอย่างเดียว แล้วรวมผลเลือกใบที่เข้ากับราคา/ยอดนำส่งมากสุด */
+async function ocrReadSlips(im,onProgress){
+  ocrProgressCb=onProgress||null;
+  try{
+    const w=await ocrGetWorker();
+    const opt={today:todayStr(0),refPrice:ocrRefPrice()};
+    const passes=[await ocrPass(w,im,'tha+eng')];
+    let res=ocrParse.parsePasses(passes,opt);
+    if(!ocrGood(res)){
+      if(onProgress)onProgress('กำลังอ่านรอบที่ 2 (ตรวจซ้ำ)');
+      passes.push(await ocrPass(w,im,'tha'));
+      res=ocrParse.parsePasses(passes,opt);
+    }
+    const slips=res.slips.map(x=>{
+      const b=scanBlank(x.type,x.date);
+      b.cars=x.cars;b.kg=x.kg;b.cash=x.cash;b.remit=x.remit;b.note=x.note||'';
+      return b;
+    });
+    return {slips,price:res.price,passes:passes.length};
+  }finally{ocrProgressCb=null;ocrArmIdle();}
 }
 
 </script>
