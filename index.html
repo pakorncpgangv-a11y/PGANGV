@@ -220,7 +220,7 @@ body.role-acc .no-acc{display:none!important}
       <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center text-2xl">🌊</div>
       <div>
         <h1 class="text-xl font-bold tracking-wide">NGV BLUE ECO • กรุงเทพกรีฑาขาออก</h1>
-        <p class="text-sm opacity-90">เป็นมิตรต่อโลก • ประหยัดพลังงาน • KPI 16,000 กก./วัน <span id="ver_label" class="ml-1 px-2 py-0.5 rounded-full bg-white/20 text-[11px]">v1.7.0 (Draft)</span></p>
+        <p class="text-sm opacity-90">เป็นมิตรต่อโลก • ประหยัดพลังงาน • KPI 16,000 กก./วัน <span id="ver_label" class="ml-1 px-2 py-0.5 rounded-full bg-white/20 text-[11px]">v1.7.1 (Draft)</span></p>
       </div>
     </div>
     <div class="flex gap-2 items-center flex-wrap">
@@ -295,7 +295,7 @@ body.role-acc .no-acc{display:none!important}
     <!-- รายงานยอดขาย & KPI (v1.6.0) -->
     <div id="krCard" class="bg-white p-5 rounded-2xl shadow border border-sky-100">
       <h3 class="font-semibold text-[#0369a1] mb-1">📊 รายงานยอดขาย &amp; KPI — พิมพ์ / PDF และรูปส่ง LINE</h3>
-      <p class="text-xs text-gray-600 mb-3">เลือกช่วงรายงาน → ดูตัวอย่าง → บันทึกเป็นรูป (แชร์เข้า LINE) หรือพิมพ์ / PDF A4 หน้าเดียว • ก๊าซ = ลูกค้าเงินสด</p>
+      <p class="text-xs text-gray-600 mb-3">เลือกช่วงรายงาน → ดูตัวอย่าง → บันทึกเป็นรูป (แชร์เข้า LINE) หรือพิมพ์ / PDF A4 หน้าเดียว • รถและก๊าซ = รวมทุกประเภทการจ่ายเงิน (เงินสด + ฟลีทการ์ด + QR) • ยอดขาย = ยอดนำส่ง ปตท. (เงินสด)</p>
       <div class="flex flex-wrap items-end gap-3">
         <div id="kr_chips" class="flex gap-1.5 flex-wrap">
           <button type="button" class="kr-chip on" data-m="day" onclick="krSetMode('day')">รายวัน</button>
@@ -318,7 +318,7 @@ body.role-acc .no-acc{display:none!important}
         <h3 class="font-semibold text-[#0369a1]">🧾 บันทึกจากใบ POS (ถ่ายรูป / อัปโหลด)</h3>
         <span id="scan_left" class="text-xs text-gray-500"></span>
       </div>
-      <p class="text-xs text-gray-600 mb-3">ถ่ายรูปใบปิดกะ/ปิดวัน (หลายใบในรูปเดียว หรือหลายรูปก็ได้ — ระบบรวมให้ในหน้าเดียว) → ระบบอ่านตัวเลขให้ (OCR ในเครื่อง ไม่ใช้ AI ไม่ส่งรูปออกไปไหน) → <b>ทวนกับใบจริง</b> → กดบันทึก • ใช้เฉพาะ "ลูกค้าเงินสด" • ไม่เก็บรูป</p>
+      <p class="text-xs text-gray-600 mb-3">ถ่ายรูปใบปิดกะ/ปิดวัน (หลายใบในรูปเดียว หรือหลายรูปก็ได้ — ระบบรวมให้ในหน้าเดียว) → ระบบอ่านตัวเลขให้ (OCR ในเครื่อง ไม่ใช้ AI ไม่ส่งรูปออกไปไหน) → <b>ทวนกับใบจริง</b> → กดบันทึก • รถและก๊าซนับ<b>รวมทุกประเภทการจ่ายเงิน</b> (เงินสด + ฟลีทการ์ด + QR) ส่วนยอดเงิน = ยอดนำส่ง ปตท. (เงินสด) • ไม่เก็บรูป</p>
       <div class="flex flex-wrap gap-2">
         <label class="scan-btn bg-[#0284c7] text-white hover:bg-[#0369a1]">📷 ถ่ายรูป<input type="file" accept="image/*" capture="environment" class="scan-pick hidden" onchange="scanPick(this)"></label>
         <label class="scan-btn bg-sky-100 text-sky-800 hover:bg-sky-200">🖼 เลือกรูปจากเครื่อง (ได้หลายรูป)<input type="file" accept="image/*" multiple class="scan-pick hidden" onchange="scanPick(this)"></label>
@@ -920,7 +920,7 @@ end $$;
         <li>แท็บ "ยอดขาย &amp; KPI" → การ์ด <b>บันทึกจากใบ POS</b> → <b>ถ่ายรูป</b> หรือ <b>เลือกรูปจากเครื่อง</b> (หลายใบในรูปเดียว หรือหลายรูปก็ได้ ระบบรวมใบของทุกรูปไว้ในหน้าตรวจทานเดียว ใบที่ซ้ำจะถูกข้าม) หรือ <b>กรอกเอง</b> ถ้าไม่ใช้รูป</li>
         <li>ระบบอ่านตัวเลขจากรูปด้วย <b>OCR ในเครื่อง</b> (ไม่ใช้ AI ไม่ส่งรูปออกไปไหน ไม่เก็บรูป ไม่มีโควตา) ครั้งแรกจะโหลดตัวอ่านภาษาไทย/อังกฤษประมาณ 8–10 MB หลังจากนั้นเบราว์เซอร์จำไว้ให้ ใช้เวลาอ่านประมาณ 10–40 วินาทีต่อรูปแล้วแต่เครื่อง (ถ้ารอบแรกยังไม่ชัวร์ ระบบอ่านซ้ำรอบที่ 2 ให้เอง; มีตัวนับเวลาและปุ่มยกเลิก)</li>
         <li>ตัวเลขที่อ่านได้: รถ / ก๊าซ (กก.) / เงินสด / ยอดนำส่ง ปตท. + <b>ชนิดใบ</b> และ <b>วันที่ประจำวัน</b> (อ่านจากหัวใบภาษาไทย ถ้าอ่านไม่ออกใช้เวลาที่พิมพ์ช่วยเดา: 08:00 = กะที่ 1, 20:00 = กะที่ 2, 00:xx = กะที่ 3 หรือปิดวัน) แสดงข้างรูป — <b>ทวนทุกตัวเลขกับใบจริง</b> แก้ได้ทันที ช่องที่ระบบเดาจะมีข้อสังเกตสีส้มกำกับ</li>
-        <li>ปิดกะที่ 1 = 00:00–08:00 • ปิดกะที่ 2 = 08:00–20:00 • ปิดกะที่ 3 = 20:00–24:00 (ลงช่อง กะ3 / กะเช้า / กะ2 ในแท็บยอดขายให้เอง) ใช้เฉพาะ <b>ลูกค้าเงินสด</b> ไม่รวมฟลีทการ์ด/QR</li>
+        <li>ปิดกะที่ 1 = 00:00–08:00 • ปิดกะที่ 2 = 08:00–20:00 • ปิดกะที่ 3 = 20:00–24:00 (ลงช่อง กะ3 / กะเช้า / กะ2 ในแท็บยอดขายให้เอง) <b>รถและก๊าซ = รวมทุกประเภทการจ่ายเงิน</b> (เงินสด + ฟลีทการ์ด + QR) ระบบรวมให้จากส่วน "แยกตามประเภทการจ่ายเงิน" ในแต่ละใบ (ก๊าซ = บรรทัด "รวมทั้งสิ้น" ในใบ; รถ = รถเงินสด + ฟลีทการ์ด + QR เพราะใบไม่มีบรรทัดรถรวม) ถ้าอ่านบรรทัดรวมไม่ได้ ระบบไม่เดาให้ แต่มีปุ่ม "คำนวณรวมจากแยกประเภท" ส่วน <b>ยอดเงิน = ยอดนำส่ง ปตท.</b> (เงินสด) ตามเดิม • ตัวเลขเก่าที่บันทึกไว้ก่อนเวอร์ชันนี้เป็นเฉพาะเงินสด ไม่ถูกแก้อัตโนมัติ</li>
         <li>ตัวช่วยตรวจ (ไม่ใช้ AI): เงิน = ก๊าซ × ราคา/กก. (ราคาเดียวกันทุกกะ ระบบซ่อมตัวเลขที่ผิดหลักเดียวให้) • เงินสด = ยอดนำส่ง ปตท. • ผลรวม 3 กะต้องเท่าใบปิดวัน (กรอกใบปิดวันเพิ่มเพื่อให้ระบบตรวจ) • ชนิดใบ/วันที่ห้ามซ้ำหรือต่างกัน • ถ้าวันนั้นมีข้อมูลกะนี้ในระบบแล้วและไม่ตรง ต้องติ๊ก <b>ทับค่าเดิม</b></li>
         <li>ติ๊ก "ฉันทวนตัวเลขทุกใบกับใบจริงแล้ว" → <b>บันทึกลงยอดขาย</b> ช่อง ปตท. ในแท็บกระทบยอดเงินสดดึงจากยอดนี้อัตโนมัติ และถ้าช่อง ปตท. ไม่ตรงกับแท็บยอดขายของวันนั้น <b>ส่งรายงานกระทบยอดไม่ได้</b></li>
         <li><b>ถ่ายให้แม่นขึ้น:</b> ถ่ายใกล้ ตรง ไม่เอียง มีแสงพอ ไม่มีที่เย็บกระดาษ/นิ้วทับตัวเลข • ถ่ายทีละใบแม่นกว่าถ่ายหลายใบ • ถ้าอ่านไม่ได้หรืออ่านผิดบ่อย ลองถ่ายใหม่ หรือใช้ "กรอกเอง"</li>
@@ -1681,7 +1681,7 @@ function initYearFilter(){
 /* ================================================================
    v1.2.0 (Draft) — Login 3 บทบาท + Tab กระทบยอดเงินสด
    ================================================================ */
-const APP_VERSION='v1.7.0 (Draft)';
+const APP_VERSION='v1.7.1 (Draft)';
 const TOL=1;        // ผลต่างนับจริง-ปตท. ตั้งแต่ค่านี้ขึ้นไป (หรือนับขาด) ถือว่าผิดปกติ — แสดงคำเตือน (ไม่มีการปัดเศษ)
 const NOTE_REQUIRED=false;      // true = ผลต่างผิดปกติต้องใส่หมายเหตุก่อนส่ง • false = หมายเหตุไม่บังคับ (ค่าปัจจุบัน)
 const NEXT_DAY_REQUIRED=true;   // true = ส่งรายงานไม่ได้จนกว่าจะมียอด 00:00–08:00 ของวันถัดไป
@@ -2635,7 +2635,7 @@ const bahtOf=s=>s.cash!=null?s.cash:s.remit;   // เงินสด (ถ้า�
 const SCAN_ORDER={shift1:1,shift2:2,shift3:3,day:4,'':5};
 const sNum=v=>(v===''||v==null||!isFinite(Number(v)))?null:Number(v);
 const sEq=(a,b,t)=>Math.abs(a-b)<=t;
-function scanBlank(type,date){return {id:++scanSeq,type:type||'',date:date||'',cars:null,kg:null,cash:null,remit:null,note:'',ow:false};}
+function scanBlank(type,date){return {id:++scanSeq,type:type||'',date:date||'',cars:null,kg:null,cash:null,remit:null,note:'',ow:false,bd:{cc:null,ck:null,fc:null,fk:null,qc:null,qk:null,tk:null}};}
 function scanExisting(date){return salesData.find(x=>x.date===date)||null;}
 function scanExShift(date,type){
   const k=SCAN_KEY[type],ex=scanExisting(date);if(!k||!ex)return null;
@@ -2648,10 +2648,10 @@ function scanMainDate(){
 }
 function scanMedian(a){const x=[...a].sort((p,q)=>p-q),n=x.length;return n%2?x[(n-1)/2]:(x[n/2-1]+x[n/2])/2;}
 function scanRefPrice(){
-  // ราคาอ้างอิง (บาท/กก.) = ค่ากลางของทุกใบปิดกะในชุดนี้ (ใบที่ผิดจะเด่นออกมาเอง) ถ้ามีไม่ถึง 3 ใบ เพิ่มข้อมูลที่บันทึกไว้ 14 วันล่าสุด
-  let arr=scan.slips.filter(s=>s.type!=='day'&&s.kg>0&&bahtOf(s)>0).map(s=>bahtOf(s)/s.kg);
-  if(arr.length<3)[...salesData].sort((a,b)=>a.date<b.date?1:-1).slice(0,14).forEach(x=>['k1','k2','k3'].forEach(k=>{if(x[k+'_gas']>0&&x[k+'_sale']>0)arr.push(x[k+'_sale']/x[k+'_gas']);}));
-  return arr.length?scanMedian(arr):null;
+  // ราคาอ้างอิง (บาท/กก.) = ค่ากลางของ เงินสด ÷ ก๊าซเงินสด ของทุกใบปิดกะในชุดนี้ (ต้องมีอย่างน้อย 3 ใบ)
+  // ไม่ใช้ข้อมูลเดิมในระบบ เพราะก๊าซที่บันทึกตอนนี้รวมฟลีทการ์ด/QR แล้ว ส่วนยอดเงินเป็นเงินสดล้วน
+  const arr=scan.slips.filter(s=>s.type!=='day'&&s.bd&&s.bd.ck>0&&bahtOf(s)>0).map(s=>bahtOf(s)/s.bd.ck);
+  return arr.length>=3?scanMedian(arr):null;
 }
 
 /* ---------- ตรวจความถูกต้อง ---------- */
@@ -2667,9 +2667,20 @@ function scanCheck(){
     if(!s.date)push(m,'err','ระบุวันที่ประจำวัน');
     if(s.cars==null||s.kg==null||bahtOf(s)==null)push(m,'err','กรอกให้ครบ: รถ / ก๊าซ / เงินสด (หรือยอดนำส่ง ปตท.)');
     if(s.cash!=null&&s.remit!=null&&!sEq(s.cash,s.remit,0.004))push(m,'err','เงินสด '+fmt(s.cash)+' ≠ ยอดนำส่ง ปตท. '+fmt(s.remit)+' (ในใบเป็นเลขเดียวกัน) — อ่าน/พิมพ์ผิดตัวใดตัวหนึ่ง');
-    if(s.type!=='day'&&s.kg>0&&bahtOf(s)>0){
-      const ref=scanRefPrice(),p=bahtOf(s)/s.kg;
+    if(s.type!=='day'&&s.bd&&s.bd.ck>0&&bahtOf(s)>0){
+      const ref=scanRefPrice(),p=bahtOf(s)/s.bd.ck;
       if(ref&&Math.abs(p/ref-1)>SCAN_PRICE_TOL)push(m,'warn','ราคา/กก. '+p.toFixed(3)+' ต่างจากค่ากลาง ('+ref.toFixed(3)+') เกิน 1% — เช็คก๊าซ กก. และเงินอีกครั้ง');
+    }
+    { // ตรวจรถ/ก๊าซแยกประเภทการจ่ายเงิน (เงินสด + ฟลีทการ์ด + QR) เทียบกับ "รวมทั้งสิ้น" ในใบ
+      const b=s.bd||{},anyK=[b.ck,b.fk,b.qk].some(v=>v!=null),anyC=[b.cc,b.fc,b.qc].some(v=>v!=null);
+      if(anyK){
+        const sk=Math.round(((b.ck||0)+(b.fk||0)+(b.qk||0))*1000)/1000;
+        if(b.tk!=null&&!sEq(sk,b.tk,0.0005))push(m,'err','ผลรวมก๊าซแยกประเภท '+sk.toFixed(3)+' ≠ "รวมทั้งสิ้น" ในใบ '+Number(b.tk).toFixed(3)+' — ตรวจ เงินสด / ฟลีทการ์ด / QR เทียบใบ');
+        else if(s.kg!=null&&!sEq(sk,s.kg,0.0005))push(m,'warn','ก๊าซรวม '+s.kg+' ไม่เท่าผลรวมแยกประเภท '+sk.toFixed(3));
+        else if(b.tk!=null&&((b.fk||0)+(b.qk||0))>0)push(m,'ok','ก๊าซแยกประเภทรวมกันตรงกับ "รวมทั้งสิ้น" ในใบ ('+sk.toFixed(3)+')');
+      }
+      if(anyC){const sc=(b.cc||0)+(b.fc||0)+(b.qc||0);if(s.cars!=null&&s.cars!==sc)push(m,'warn','รถรวม '+s.cars+' ไม่เท่าผลรวมแยกประเภท '+sc);}
+      if(((b.fk||0)>0&&b.fc==null)||((b.qk||0)>0&&b.qc==null))push(m,'err','กรอกจำนวนรถของฟลีทการ์ด/QR ในรายละเอียดแยกประเภท (ระบบอ่านไม่ได้)');
     }
     if(s.type&&s.type!=='day'&&s.date){
       const ex=scanExShift(s.date,s.type);
@@ -2725,7 +2736,33 @@ function scanSet(id,k,v){
   scan.confirmed=false;
   if(k==='type'||k==='date')renderScan();else scanRefresh();
 }
+function scanSetBd(id,k,v){
+  const s=scan.slips.find(x=>x.id===id);if(!s)return;
+  s.bd[k]=sNum(v);scanBdRecalc(id);
+}
+function scanBdRecalc(id){
+  const s=scan.slips.find(x=>x.id===id);if(!s)return;
+  const b=s.bd,cs=[b.cc,b.fc,b.qc],ks=[b.ck,b.fk,b.qk];
+  if(cs.some(x=>x!=null)){s.cars=cs.reduce((a,x)=>a+(x||0),0);const e=el('sc_cars_'+id);if(e)e.value=s.cars;}
+  if(ks.some(x=>x!=null)){s.kg=Math.round(ks.reduce((a,x)=>a+(x||0),0)*1000)/1000;const e=el('sc_kg_'+id);if(e)e.value=s.kg;}
+  scan.confirmed=false;scanRefresh();
+}
 function scanSetConfirm(v){scan.confirmed=!!v;scanRefresh();}
+function scanBdHtml(s){
+  const b=s.bd||{},v=x=>x==null?'':x,hasX=[b.fc,b.fk,b.qc,b.qk].some(x=>x>0);
+  const inp=(k,step,w)=>`<input type="number" inputmode="${step==='1'?'numeric':'decimal'}" step="${step}" min="0" value="${v(b[k])}" oninput="scanSetBd(${s.id},'${k}',this.value)" class="rc-in" style="height:38px;${w||''}">`;
+  return `<details class="mt-2" ${(hasX||s.cars==null||s.kg==null)?'open':''}><summary class="cursor-pointer text-xs font-medium text-sky-800">แยกตามประเภทการจ่ายเงิน — เงินสด / ฟลีทการ์ด / QR (ใช้ตรวจเทียบใบ และคำนวณรวมให้)</summary>
+    <div class="grid gap-x-2 gap-y-1.5 mt-2 items-center text-xs" style="grid-template-columns:auto 1fr 1fr">
+      <div></div><div class="text-gray-500">รถ (คัน)</div><div class="text-gray-500">ก๊าซ (กก.)</div>
+      <div class="text-gray-700">ลูกค้าเงินสด</div>${inp('cc','1')}${inp('ck','0.001')}
+      <div class="text-gray-700">ฟลีทการ์ด</div>${inp('fc','1')}${inp('fk','0.001')}
+      <div class="text-gray-700">ลูกค้า QR</div>${inp('qc','1')}${inp('qk','0.001')}
+      <div class="text-gray-700">รวมทั้งสิ้น (ในใบ)</div><div class="text-gray-400 text-right pr-2">–</div>${inp('tk','0.001')}
+    </div>
+    <button type="button" onclick="scanBdRecalc(${s.id})" class="mt-2 px-3 h-9 rounded-lg bg-sky-100 text-sky-800 text-xs font-medium">คำนวณรถรวม/ก๊าซรวมจากแยกประเภท</button>
+    <div class="text-[11px] text-gray-500 mt-1">กรอก/แก้ช่องในนี้ ระบบรวมเป็น "รถรวม" และ "ก๊าซรวม" ให้เอง • ใบที่มีแต่เงินสด กรอกเฉพาะแถวเงินสดก็พอ</div>
+  </details>`;
+}
 function renderScan(){
   if(!scan)return;
   const date=scanMainDate();
@@ -2741,11 +2778,12 @@ function renderScan(){
       </div>
       ${s.note?`<div class="text-[11px] text-amber-700 mb-1">ข้อสังเกตจากการอ่านรูป: ${esc(s.note)}</div>`:''}
       <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
-        <label class="text-xs text-sky-800">รถ (คัน)<input type="number" inputmode="numeric" step="1" min="0" value="${s.cars==null?'':s.cars}" oninput="scanSet(${s.id},'cars',this.value)" class="rc-in"></label>
-        <label class="text-xs text-sky-800">ก๊าซ ปริมาณ (กก.)<input type="number" inputmode="decimal" step="0.001" min="0" value="${s.kg==null?'':s.kg}" oninput="scanSet(${s.id},'kg',this.value)" class="rc-in"></label>
+        <label class="text-xs text-sky-800">รถรวมทุกประเภท (คัน)<input id="sc_cars_${s.id}" type="number" inputmode="numeric" step="1" min="0" value="${s.cars==null?'':s.cars}" oninput="scanSet(${s.id},'cars',this.value)" class="rc-in"></label>
+        <label class="text-xs text-sky-800">ก๊าซรวมทุกประเภท (กก.)<input id="sc_kg_${s.id}" type="number" inputmode="decimal" step="0.001" min="0" value="${s.kg==null?'':s.kg}" oninput="scanSet(${s.id},'kg',this.value)" class="rc-in"></label>
         <label class="text-xs text-sky-800">เงินสด เป็นเงิน (บาท)<input type="number" inputmode="decimal" step="0.01" min="0" value="${s.cash==null?'':s.cash}" oninput="scanSet(${s.id},'cash',this.value)" class="rc-in"></label>
         <label class="text-xs text-sky-800">ยอดเงินนำส่ง ปตท. (บาท)<input type="number" inputmode="decimal" step="0.01" min="0" value="${s.remit==null?'':s.remit}" oninput="scanSet(${s.id},'remit',this.value)" class="rc-in" placeholder="ถ้าไม่กรอก = เท่าเงินสด"></label>
       </div>
+      ${scanBdHtml(s)}
       <div id="sc_ow_${s.id}" class="hidden mt-2"><label class="inline-flex items-center gap-2 text-sm text-amber-800"><input type="checkbox" ${s.ow?'checked':''} onchange="scanSet(${s.id},'ow',this.checked)" class="w-4 h-4">ทับค่าเดิมในระบบด้วยใบนี้</label></div>
       <div id="sc_st_${s.id}" class="mt-2 text-xs space-y-0.5"></div>
     </div>`).join('');
@@ -2874,6 +2912,7 @@ async function scanReadOne(cr,im){
     const b=scanBlank(x.slip==='unknown'?'':x.slip,x.business_date||'');
     b.cars=sNum(x.cash_cars);b.kg=sNum(x.cash_kg);b.cash=sNum(x.cash_baht);b.remit=sNum(x.remit_baht);b.note=x.notes||'';
     if(b.cash==null&&b.remit!=null){b.cash=b.remit;b.note=(b.note?b.note+' • ':'')+'ช่องเงินสดอ่านไม่ได้ ใช้ยอดนำส่ง ปตท. แทน (ในใบเป็นเลขเดียวกัน)';}
+    b.bd.cc=b.cars;b.bd.ck=b.kg;b.note=(b.note?b.note+' • ':'')+'AI อ่านเฉพาะเงินสด — ถ้ามีฟลีทการ์ด/QR ให้เพิ่มในรายละเอียดแยกประเภท';
     return b;
   });
   return {slips};
@@ -3007,7 +3046,7 @@ function buildKpiReport(){
   const sub=R.mode==='day'?'ประจำวันที่':R.mode==='week'?'ช่วงวันที่':'ประจำเดือน';
   const rng=R.mode==='day'?thLong(R.from):R.mode==='week'?(thShort(R.from)+' – '+thShort(R.to)):(MONTHS[Number(R.ym.slice(5))-1]+' '+(Number(R.ym.slice(0,4))+543));
   const head=`<div class="kr-head"><div><div class="kr-title">${title}</div><div class="kr-sub">NGV BLUE ECO • กรุงเทพกรีฑาขาออก</div></div><div class="kr-date">${sub}<br><b>${esc(rng)}</b></div></div>`;
-  const foot=`<div class="kr-foot">จัดทำโดยระบบ NGV Blue Eco ${APP_VERSION} • ${esc(fmtDT(new Date().toISOString()))} • ก๊าซ = ลูกค้าเงินสด</div>`;
+  const foot=`<div class="kr-foot">จัดทำโดยระบบ NGV Blue Eco ${APP_VERSION} • ${esc(fmtDT(new Date().toISOString()))} • รถ/ก๊าซ = รวมทุกประเภทการจ่ายเงิน • ยอดขาย = ยอดนำส่ง ปตท. (เงินสด)</div>`;
   if(!rows.length)return `<div id="krSheet" class="kr">${head}<div class="kr-empty">ไม่มีข้อมูลยอดขายในช่วงนี้<br><span>บันทึกในแท็บ "ยอดขาย &amp; KPI" ก่อน</span></div>${foot}</div>`;
   const st=krStats(rows);
   const card=(l,v,u,extra,cls)=>`<div class="kr-k ${cls||''}"><span>${l}</span><b>${v}${u?` <small>${u}</small>`:''}</b>${extra?`<span>${extra}</span>`:''}</div>`;
@@ -3259,6 +3298,61 @@ function krPrint(){
     let m=tm,y=ty;if(rec.d>td){m=tm-1;if(m<1){m=12;y=ty-1;}}
     return y+'-'+pad(m)+'-'+pad(rec.d);
   }
+
+  /* ---- 4b) ส่วนหลังลูกค้าเงินสด: ฟลีทการ์ด / ลูกค้า QR / รวมทั้งสิ้น ---- */
+  // จำนวนรถที่ OCR อ่านเพี้ยน (เช่น 142 → 1492): ต้องได้ ก๊าซ/คัน อยู่ในช่วงปกติ ไม่งั้นลองตัด/แก้ 1 หลักให้ใกล้ ก๊าซ/คันของลูกค้าเงินสดที่สุด
+  function fixCars(d,kg,refKpc){
+    const ok=c=>c>=1&&kg/c>=3&&kg/c<=30;
+    if(d&&ok(+d))return {v:+d,fixed:false};
+    if(!d||!refKpc)return {v:null,fixed:false};
+    const c=variants(d,1,4).map(Number).filter(ok).map(v=>({v,r:Math.abs(kg/v/refKpc-1)})).sort((x,y)=>x.r-y.r);
+    if(c.length&&c[0].r<=0.1&&(c.length===1||c[1].r-c[0].r>0.04))return {v:c[0].v,fixed:true};
+    return {v:null,fixed:false};
+  }
+  // คู่ (ก๊าซ,เงิน) ที่เข้ากับราคา/กก. (ซ่อมผิด 1 หลักได้) เรียงตาม y → คู่ที่ ก๊าซ = เงินสด + คู่ก่อนหน้า คือ "รวมทั้งสิ้น"
+  function readExtras(rest,cashKg,cashCars,P,W,H,sw,x1){
+    const out={sections:[],total:null,matched:false,totalSource:'',notes:[]};
+    if(P==null)return out;
+    const tol=0.035*W,pairs=[];
+    for(let i=0;i+1<rest.length;i++){
+      const b=rest[i],c=rest[i+1];
+      if(b.d.length<4||b.d.length>8||c.d.length<5||c.d.length>9)continue;
+      if(!near(b,c,tol))continue;
+      const hh=Math.max(b.h,c.h);if(c.y-b.y>5*hh||c.y-b.y<0.3*hh)continue;
+      const rp=repairPair(b.d,c.d,P,null,null);
+      if(rp.bad)continue;
+      pairs.push({i,b,c,kg:+rp.kgD/1000,baht:+rp.bD/100,fixed:rp.fixed});i++;
+    }
+    if(!pairs.length)return out;
+    const n=pairs.length;
+    let m=-1;
+    for(let k=n-1;k>=0;k--){
+      const prev=cashKg+pairs.slice(0,k).reduce((s,p)=>s+p.kg,0);
+      if(Math.abs(pairs[k].kg-prev)<=0.0015){m=k;break;}
+    }
+    let secs;
+    if(m>=0){secs=pairs.slice(0,m);out.total={kg:pairs[m].kg,baht:pairs[m].baht};out.matched=true;out.totalSource='printed';}
+    else{
+      const sumAll=cashKg+pairs.slice(0,n-1).reduce((s,p)=>s+p.kg,0);
+      if(n>=1&&pairs[n-1].kg>sumAll+0.0015&&pairs[n-1].kg>cashKg*1.001){secs=pairs.slice(0,n-1);out.total={kg:pairs[n-1].kg,baht:pairs[n-1].baht};out.totalSource='printed-unmatched';}
+      else{secs=pairs;out.total={kg:Math.round((cashKg+pairs.reduce((s,p)=>s+p.kg,0))*1000)/1000,baht:null};out.totalSource='sum';}
+    }
+    const kpc=cashCars?cashKg/cashCars:null;
+    secs.forEach((p,idx)=>{
+      let carsD=null;
+      for(let q=p.i-1;q>=Math.max(0,p.i-2);q--){const t=rest[q];if(t.d.length>=1&&t.d.length<=4&&!/^0/.test(t.d)&&p.b.y-t.y<=5*Math.max(t.h,p.b.h)){carsD=t.d;break;}}
+      const fc=fixCars(carsD,p.kg,kpc);
+      const k0=(H||W*1.78)/2400;
+      const yb=p.b.y-150*k0,ye=p.b.y-15*k0;
+      const txt=sw.filter(w=>{const cx=(w.x0+w.x1)/2,cy=(w.y0+w.y1)/2;return cy>=yb&&cy<=ye&&cx>=x1-0.5*W&&cx<=x1+0.06*W;}).map(w=>w.t).join('');
+      const kind=/QR|OR|คิวอาร์/.test(txt)?'qr':/ฟลี|ลีท|ฟสี|การ์ด|าร์ด/.test(txt)?'fleet':'unknown';
+      out.sections.push({kind,cars:fc.v,carsFixed:fc.fixed,kg:p.kg,baht:p.baht,fixed:p.fixed});
+    });
+    // ไม่มีป้ายชัด: สองชุด = ฟลีทการ์ด แล้ว QR • ชุดเดียว = QR
+    const labeled=new Set(out.sections.filter(x=>x.kind!=='unknown').map(x=>x.kind));
+    out.sections.forEach((x,i)=>{if(x.kind==='unknown'){x.kind=out.sections.length>=2?(i===0&&!labeled.has('fleet')?'fleet':'qr'):(labeled.has('qr')?'fleet':'qr');labeled.add(x.kind);}});
+    return out;
+  }
   /* ---- 6) ประกอบผล ---- */
   function parse(words,W,H,opt){
     opt=opt||{};
@@ -3302,8 +3396,10 @@ function krPrint(){
       }
       const lastBaht=[...rest].reverse().find(x=>x.d.length>=6);
       const sx=median([a.d?a.x1:b.x1,b.x1,c.x1]);
+      const swords=words.filter(w=>{const cx=(w.x0+w.x1)/2;return cx>=sx-0.5*W&&cx<=sx+0.06*W;});
+      const ex=readExtras(rest.filter(x=>x.y>c.y+2),+kgD/1000,a.d?+a.d:null,P,W,H,swords,sx);
       const hd=headerInfo(words,sx,a.y,W);
-      const slip={y:a.y,x:sx,cars:a.d?+a.d:null,kg:+kgD/1000,cash:+vb.d/100,remit:lastBaht&&similar(lastBaht.d,vb.d)?+lastBaht.d/100:null,
+      const slip={ex,y:a.y,x:sx,cars:a.d?+a.d:null,kg:+kgD/1000,cash:+vb.d/100,remit:lastBaht&&similar(lastBaht.d,vb.d)?+lastBaht.d/100:null,
         low:vb.low||vk.low,minConf:Math.min(a.d?a.conf:100,b.conf,c.conf),fixed,type:'',date:'',time:hd.time?pad(hd.time.h)+':'+pad(hd.time.m):''};
       if(hd.time){
         const h=hd.time.h;
@@ -3322,13 +3418,31 @@ function krPrint(){
       if(t.amb)notes.push('มีตัวเลขที่เป็นไปได้หลายแบบ — ตรวจเทียบรูป');
       if(slip.low)notes.push('ตัวเลขที่อ่านซ้ำไม่ตรงกัน ตรวจเทียบรูป');
       if(slip.minConf<60)notes.push('บางตัวเลขอ่านไม่ค่อยชัด');
+      {
+        const fl=ex.sections.find(x=>x.kind==='fleet')||null,qr=ex.sections.find(x=>x.kind==='qr')||null;
+        slip.fleet_kg=fl?fl.kg:0;slip.fleet_baht=fl?fl.baht:0;slip.fleet_cars=fl?fl.cars:0;
+        slip.qr_kg=qr?qr.kg:0;slip.qr_baht=qr?qr.baht:0;slip.qr_cars=qr?qr.cars:0;
+        slip.total_kg=ex.total?ex.total.kg:null;slip.total_baht=ex.total?ex.total.baht:null;slip.total_ok=ex.matched;slip.total_src=ex.totalSource;
+        const sumKg=Math.round((slip.kg+slip.fleet_kg+slip.qr_kg)*1000)/1000;
+        slip.kg_all=ex.total?(ex.totalSource==='printed'||ex.totalSource==='printed-unmatched'?ex.total.kg:sumKg):sumKg;
+        slip.cars_all=(slip.cars==null||slip.fleet_cars==null||slip.qr_cars==null)?null:slip.cars+slip.fleet_cars+slip.qr_cars;
+        if(!ex.total){slip.kg_all=null;slip.cars_all=null;}   // อ่านรวมทั้งสิ้นไม่ได้และไม่เจอฟลีทการ์ด/QR → ไม่เดา ให้กรอกเอง
+        else if(ex.totalSource==='sum'){slip.kg_all=null;slip.cars_all=null;}   // อ่านบรรทัด "รวมทั้งสิ้น" ไม่ได้ → ผลรวมอาจขาดฟลีทการ์ด/QR จึงไม่เติมให้ (มีปุ่มคำนวณรวมจากแยกประเภท)   // อ่านรวมทั้งสิ้นไม่ได้และไม่เจอฟลีทการ์ด/QR เลย → ไม่เดา
+        else if(!ex.matched){slip.cars_all=null;}   // ก๊าซรวมมากกว่าที่อ่านได้ → อาจมีฟลีทการ์ด/QR ที่ขาดไป จึงไม่รวมจำนวนรถให้   // อ่านรวมทั้งสิ้นไม่ได้และไม่เจอฟลีทการ์ด/QR → ไม่เดา ให้กรอกเอง
+        if(ex.totalSource==='sum')notes.push('อ่านบรรทัด "รวมทั้งสิ้น" ไม่ได้ — เปิด "แยกตามประเภทการจ่ายเงิน" ตรวจเทียบใบ แล้วกด "คำนวณรวมจากแยกประเภท" (หรือกรอกรถรวม/ก๊าซรวมเอง)');
+        if(ex.totalSource==='printed-unmatched')notes.push('ก๊าซรวมทั้งสิ้นมากกว่าผลรวมที่อ่านได้ — ฟลีทการ์ด/QR อาจอ่านไม่ครบ จึงไม่รวมจำนวนรถให้ ให้กรอกเอง');
+        if(!ex.total&&P!=null)notes.push('อ่านฟลีทการ์ด/QR/รวมทั้งสิ้นไม่ได้ — ตรวจก๊าซรวมและรถรวมเทียบใบ');
+        if(ex.sections.some(x=>x.cars==null))notes.push('อ่านจำนวนรถของฟลีทการ์ด/QR ไม่ได้ — กรอกเอง');
+        if(ex.sections.some(x=>x.carsFixed))notes.push('จำนวนรถของฟลีทการ์ด/QR ปรับจากค่าที่อ่านเพี้ยน (ประมาณจาก กก./คัน) — ตรวจเทียบใบ');
+        if(ex.sections.some(x=>x.fixed))notes.push('ซ่อมตัวเลขฟลีทการ์ด/QR จากราคา/กก. — ตรวจเทียบใบ');
+      }
       slip.note=notes.join(' • ');
       slips.push(slip);
     }
     slips.sort((p,q)=>p.x-q.x);
     return {slips,price:P};
   }
-  root.ocrParse={allStrictTriples,parse,numTokens,columns,strictTriple,lenientTriple,vote,similar,headerInfo,repairPair,variants,median};
+  root.ocrParse={readExtras,allStrictTriples,parse,numTokens,columns,strictTriple,lenientTriple,vote,similar,headerInfo,repairPair,variants,median};
   if(typeof module!=='undefined')module.exports=root.ocrParse;
 })(typeof window!=='undefined'?window:globalThis);
 
@@ -3395,6 +3509,7 @@ function score(s,Pz){
   let q=0;if(s.cars!=null)q+=1;
   if(Pz&&s.kg!=null&&s.cash!=null&&Math.abs(s.cash-s.kg*Pz)<=0.2)q+=3;
   if(s.remit!=null&&s.cash!=null&&Math.abs(s.remit-s.cash)<0.005)q+=2;
+  if(s.total_ok)q+=2;else if(s.total_src==='printed-unmatched')q+=0.5;if(s.cars_all!=null)q+=1;
   if(s.fixed)q-=1;if(s.low)q-=1;if((s.minConf==null?100:s.minConf)<60)q-=0.5;
   return q;
 }
@@ -3537,16 +3652,10 @@ async function ocrPrepare(file){
   return {canvas:cv,url:pv.toDataURL('image/jpeg',0.8),w:w1,h:h1};
 }
 /* ---- ราคา/กก. จากประวัติในระบบ (ค่ากลาง 14 วันล่าสุด ปัดเป็นทศนิยม 2 ตำแหน่ง) ---- */
-function ocrRefPrice(){
-  const arr=[];
-  [...salesData].sort((a,b)=>a.date<b.date?1:-1).slice(0,14).forEach(x=>['k1','k2','k3'].forEach(k=>{if(x[k+'_gas']>0&&x[k+'_sale']>0)arr.push(x[k+'_sale']/x[k+'_gas']);}));
-  if(arr.length<3)return null;
-  const m=ocrParse.median(arr),s=Math.round(m*100)/100;
-  return Math.abs(m-s)<0.003?s:null;
-}
+function ocrRefPrice(){return null;}   // ก๊าซในระบบรวมฟลีทการ์ด/QR แล้ว จึงอ้างราคา/กก. จากประวัติไม่ได้ — ตัวอ่านหาราคาจากตัวเลขในรูปเอง
 /* ---- ผลดีพอไหม: ทุกใบมีรถ/ชนิด/วันที่ ยอดนำส่ง = เงินสด และ เงิน ≈ ก๊าซ × ราคา ---- */
 function ocrGood(res){
-  return res.slips.length>0&&res.slips.every(s=>s.cars!=null&&s.type&&s.date&&s.remit!=null&&s.cash!=null&&Math.abs(s.remit-s.cash)<0.005&&!s.fixed&&(!res.price||Math.abs(s.cash-s.kg*res.price)<=0.2));
+  return res.slips.length>0&&res.slips.every(s=>s.cars!=null&&s.kg_all!=null&&s.cars_all!=null&&s.type&&s.date&&s.remit!=null&&s.cash!=null&&Math.abs(s.remit-s.cash)<0.005&&!s.fixed&&(!res.price||Math.abs(s.cash-s.kg*res.price)<=0.2));
 }
 async function ocrPass(w,im,langs){
   if(ocrLang!==langs){await w.reinitialize(langs);await w.setParameters({tessedit_pageseg_mode:'11'});ocrLang=langs;}
@@ -3569,8 +3678,10 @@ async function ocrReadSlips(im,onProgress){
       res=ocrParse.parsePasses(passes,opt);
     }
     const slips=res.slips.map(x=>{
-      const b=scanBlank(x.type,x.date);
-      b.cars=x.cars;b.kg=x.kg;b.cash=x.cash;b.remit=x.remit;b.note=x.note||'';
+      const b=scanBlank(x.type,x.date),nn=v=>v==null?null:v;
+      // รถ/ก๊าซ = รวมทุกประเภทการจ่ายเงิน (เงินสด + ฟลีทการ์ด + QR) • ยอดเงิน = เงินสด / ยอดนำส่ง ปตท.
+      b.cars=nn(x.cars_all);b.kg=nn(x.kg_all);b.cash=x.cash;b.remit=x.remit;b.note=x.note||'';
+      b.bd={cc:nn(x.cars),ck:nn(x.kg),fc:nn(x.fleet_cars),fk:nn(x.fleet_kg),qc:nn(x.qr_cars),qk:nn(x.qr_kg),tk:nn(x.total_kg)};
       return b;
     });
     return {slips,price:res.price,passes:passes.length};
